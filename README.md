@@ -25,13 +25,24 @@ understandable, reproducible, and easy to join.
 - `Roadmap`: current maturity of companion, vault, ESP32, smartcard, and hardware.
 - `Developers`: specs, test vectors, transports, and contribution paths.
 
+## Current Capabilities
+
+- Static first page under `public/index.html`.
+- System-map visual explaining client, companion, and signer lines.
+- Honest maturity status for specs, companion, vault, ESP32, smartcard, and
+  hardware work.
+- Site validation script that checks required text, local asset links, and
+  unsupported production security claims.
+
 ## Candidate Stack
 
 Astro is the default candidate for the first implementation because the site is
 mostly static, documentation-heavy, and can later publish from GitHub Pages or a
 simple static host.
 
-Final stack selection should happen after the content model is stable.
+Final framework selection should happen after the content model is stable. The
+current foundation is plain static HTML/CSS to avoid introducing build
+complexity too early.
 
 ## Initial Layout
 
@@ -58,6 +69,9 @@ Run the repository verification loop with:
 ```sh
 make ci
 ```
+
+Open `public/index.html` directly in a browser to inspect the current static
+site.
 
 ## License
 

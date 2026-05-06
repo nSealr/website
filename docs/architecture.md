@@ -17,3 +17,15 @@
 
 Astro is the default static-site candidate for the first implementation.
 
+## Implemented Foundation
+
+The first implementation is plain static HTML/CSS:
+
+- `public/index.html`: documentation-first landing page.
+- `public/styles.css`: responsive layout and system-map styling.
+- `scripts/validate_site.py`: required-content, local-link, and unsupported
+  security-claim checks.
+
+This keeps publishing simple while the project is private and the content model
+is still stabilizing. A later Astro migration should preserve the same content
+tests before adding routing, MDX, or generated status pages.

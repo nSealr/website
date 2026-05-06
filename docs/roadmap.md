@@ -1,8 +1,16 @@
 # Roadmap
 
+## Foundation: Static Documentation Site
+
+- Static first page.
+- System-map visual.
+- Maturity status.
+- Site validator.
+
+Status: implemented as the first website foundation.
+
 ## M4: Private Alpha
 
-- Astro scaffold.
 - Homepage.
 - Product shape page.
 - Solution matrix page.
@@ -15,4 +23,3 @@
 - Secret audit.
 - Release notes.
 - Publication checklist.
-

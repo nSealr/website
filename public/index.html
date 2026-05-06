@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NostrSeal</title>
+    <meta
+      name="description"
+      content="NostrSeal is a non-profit open-source hardware and software program for Nostr signing devices."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="NostrSeal home">
+        <span class="brand-mark" aria-hidden="true">NS</span>
+        <span>NostrSeal</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#system">System</a>
+        <a href="#status">Status</a>
+        <a href="#security">Security</a>
+        <a href="#build">Build</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="intro">
+        <div class="intro-copy">
+          <p class="eyebrow">non-profit open-source signer program</p>
+          <h1>NostrSeal</h1>
+          <p class="lead">
+            A reproducible ecosystem for Nostr signing devices: shared specs,
+            a desktop companion, QR vaults, ESP32 firmware, smartcard research,
+            and open hardware references.
+          </p>
+          <div class="actions" aria-label="Repository links">
+            <a class="button primary" href="https://github.com/NostrSeal/specs">Specs</a>
+            <a class="button" href="https://github.com/NostrSeal/companion">Companion</a>
+            <a class="button" href="https://github.com/NostrSeal/lab">Research Lab</a>
+          </div>
+        </div>
+
+        <figure class="system-map" aria-label="NostrSeal system map">
+          <svg viewBox="0 0 760 420" role="img" aria-labelledby="map-title map-desc">
+            <title id="map-title">NostrSeal signer architecture</title>
+            <desc id="map-desc">
+              Nostr clients send signing requests to the companion, which routes them to a vault,
+              ESP32 signer, smartcard, or future hardware board.
+            </desc>
+            <path class="link" d="M164 210h124" />
+            <path class="link" d="M420 142h122" />
+            <path class="link" d="M420 210h122" />
+            <path class="link" d="M420 278h122" />
+            <g class="node client">
+              <rect x="32" y="154" width="132" height="112" rx="8" />
+              <text x="98" y="202">Nostr</text>
+              <text x="98" y="230">Client</text>
+            </g>
+            <g class="node companion">
+              <rect x="288" y="122" width="132" height="176" rx="8" />
+              <text x="354" y="198">Companion</text>
+              <text x="354" y="228">Verifier</text>
+            </g>
+            <g class="node signer">
+              <rect x="542" y="88" width="154" height="92" rx="8" />
+              <text x="619" y="128">Pi Zero Vault</text>
+              <text x="619" y="154">QR</text>
+            </g>
+            <g class="node signer alt">
+              <rect x="542" y="198" width="154" height="92" rx="8" />
+              <text x="619" y="238">ESP32</text>
+              <text x="619" y="264">USB / QR</text>
+            </g>
+            <g class="node signer card">
+              <rect x="542" y="308" width="154" height="76" rx="8" />
+              <text x="619" y="342">Smartcard</text>
+              <text x="619" y="364">APDU</text>
+            </g>
+          </svg>
+        </figure>
+      </section>
+
+      <section id="system" class="band">
+        <div class="section-copy">
+          <p class="eyebrow">product shape</p>
+          <h2>One companion, multiple signer lines.</h2>
+          <p>
+            The companion prepares requests, moves them over QR, file, stdio,
+            serial, USB, or card transports, and verifies every successful
+            response. The signer keeps or protects the private key and signs
+            only through an explicit policy boundary.
+          </p>
+        </div>
+        <div class="columns">
+          <article>
+            <h3>QR Vault</h3>
+            <p>Air-gapped Pi Zero flow inspired by SeedSigner principles for Nostr events.</p>
+          </article>
+          <article>
+            <h3>ESP32</h3>
+            <p>USB and QR firmware lines for ESP32-S3 first, with classic ESP32 compatibility later.</p>
+          </article>
+          <article>
+            <h3>Smartcard</h3>
+            <p>Display-less APDU card research for key protection, not trusted event review alone.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="status" class="status-grid">
+        <div>
+          <p class="eyebrow">status</p>
+          <h2>Current maturity is explicit.</h2>
+        </div>
+        <ul>
+          <li><strong>Specs:</strong> v0 request, response, QR envelope, fixtures.</li>
+          <li><strong>Companion:</strong> CLI, verification, transports, QR, serial framing.</li>
+          <li><strong>Pi Zero Vault:</strong> desktop QR signer simulation.</li>
+          <li><strong>ESP32:</strong> host-buildable serial and approval core.</li>
+          <li><strong>Smartcard:</strong> APDU simulator for public key and event-id signing.</li>
+          <li><strong>Hardware:</strong> checked requirements and BOM scaffold.</li>
+        </ul>
+      </section>
+
+      <section id="security" class="band muted">
+        <div class="section-copy">
+          <p class="eyebrow">security</p>
+          <h2>No production security claim yet.</h2>
+          <p>
+            NostrSeal is pre-production research and implementation work. The
+            project documents trust boundaries, test evidence, and known limits
+            before presenting any device as ready for real keys.
+          </p>
+        </div>
+      </section>
+
+      <section id="build" class="repo-list">
+        <p class="eyebrow">build and audit</p>
+        <h2>Everything is intended to be reproducible.</h2>
+        <a href="https://github.com/NostrSeal/specs">Protocol specs and test vectors</a>
+        <a href="https://github.com/NostrSeal/vault">Pi Zero QR vault</a>
+        <a href="https://github.com/NostrSeal/esp32">ESP32 firmware</a>
+        <a href="https://github.com/NostrSeal/smartcard">Smartcard research</a>
+        <a href="https://github.com/NostrSeal/hardware">Open hardware</a>
+      </section>
+    </main>
+
+    <footer>
+      <span>NostrSeal is open-source and non-profit.</span>
+      <span>MIT for code, permissive open licenses for docs and hardware.</span>
+    </footer>
+  </body>
+</html>
