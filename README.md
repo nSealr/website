@@ -51,8 +51,16 @@ Final stack selection should happen after the content model is stable.
 - `NostrSeal/smartcard`: JavaCard/NFC/contact smartcard signer work.
 - `NostrSeal/hardware`: open hardware designs and assembly docs.
 
-## License Plan
+## Quality Baseline
 
-Website code should use a copyleft software license. Documentation content can
-use a Creative Commons license that allows redistribution and modification while
-preserving attribution.
+Run the repository verification loop with:
+
+```sh
+make ci
+```
+
+## License
+
+Website code is released under the MIT License unless a file says otherwise.
+Website content is intended to be released under CC0-1.0 when the project is
+ready for publication.
