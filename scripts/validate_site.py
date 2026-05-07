@@ -18,6 +18,8 @@ REQUIRED_TEXT = [
     "Hardware",
     "approval_digest",
     "signing_disabled",
+    "NIP-46 bridge decisions",
+    "nseal nip46 decide",
     "No production security claim",
 ]
 

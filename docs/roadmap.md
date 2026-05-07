@@ -7,7 +7,9 @@
 - Maturity status.
 - Site validator.
 
-Status: implemented as the first website foundation.
+Status: implemented as the first website foundation. Current private status
+copy now includes NIP-46 bridge decisions and the `nseal nip46 decide` harness
+without claiming relay, NIP-44, persistent grants, or production readiness.
 
 ## M4: Private Alpha
 

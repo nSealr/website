@@ -34,6 +34,8 @@ understandable, reproducible, and easy to join.
 - System-map visual explaining client, companion, and signer lines.
 - Honest maturity status for specs, companion, Raspberry/Pi, ESP32, smartcard,
   custom hardware-wallet, and hardware work.
+- Current companion status copy for NIP-46 bridge decisions and the
+  `nseal nip46 decide` harness.
 - Site validation script that checks required text, local asset links, and
   unsupported production security claims.
 

@@ -15,6 +15,8 @@ compilation, and direct site validation.
 - Required project, status, and security-boundary text is present.
 - Current safety-contract text mentions `approval_digest` and
   `signing_disabled`.
+- Current companion boundary text mentions NIP-46 bridge decisions and
+  `nseal nip46 decide`.
 - Local stylesheet and asset references resolve.
 - Unsupported production security claims are rejected.
 
