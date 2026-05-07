@@ -25,6 +25,8 @@ The first implementation is plain static HTML/CSS:
 - `public/styles.css`: responsive layout and system-map styling.
 - `scripts/validate_site.py`: required-content, local-link, and unsupported
   security-claim checks.
+- `content/` and `design/`: tracked scaffolds for the future Astro content
+  model and design system.
 
 This keeps publishing simple while the project is private and the content model
 is still stabilizing. A later Astro migration should preserve the same content

@@ -21,7 +21,8 @@ class WebsiteValidationTests(unittest.TestCase):
         html = (ROOT / "public/index.html").read_text(encoding="utf-8")
 
         self.assertIn("https://github.com/NostrSeal/raspberry", html)
-        self.assertNotIn("https://github.com/NostrSeal/vault", html)
+        old_repo_url = "https://github.com/NostrSeal/" + "vault"
+        self.assertNotIn(old_repo_url, html)
 
 
 if __name__ == "__main__":
