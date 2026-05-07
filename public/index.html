@@ -114,12 +114,12 @@
           <h2>Current maturity is explicit.</h2>
         </div>
         <ul>
-          <li><strong>Specs:</strong> v0 request, response, QR envelope, fixtures.</li>
+          <li><strong>Specs:</strong> v0 request, response, QR envelope, fixtures, review-screen vectors, and approval_digest contracts.</li>
           <li><strong>Companion:</strong> CLI, verification, transports, QR, serial framing.</li>
-          <li><strong>Pi Zero Vault:</strong> desktop QR signer simulation.</li>
-          <li><strong>ESP32:</strong> host-buildable serial and approval core.</li>
+          <li><strong>Pi Zero Vault:</strong> desktop QR signer simulation with NIP-06 signing and approval_digest-bound review.</li>
+          <li><strong>ESP32:</strong> native USB scaffold with get_public_key, signing_disabled, and approval_digest-gated approval core.</li>
           <li><strong>Smartcard:</strong> APDU simulator for public key and event-id signing.</li>
-          <li><strong>Hardware:</strong> checked requirements and BOM scaffold.</li>
+          <li><strong>Hardware:</strong> checked requirements and BOM scaffold, including request-id and approval_digest review binding.</li>
         </ul>
       </section>
 

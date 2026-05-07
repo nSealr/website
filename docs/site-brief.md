@@ -45,6 +45,8 @@ Avoid until verified:
 ## First Release Content
 
 - Homepage with project overview and current maturity state.
+- Current safety-contract wording for `approval_digest` and
+  `signing_disabled` so the public site does not overstate maturity.
 - Hardware line comparison page.
 - Companion overview page.
 - Security model page.

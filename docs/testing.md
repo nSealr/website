@@ -13,6 +13,8 @@ compilation, and direct site validation.
 
 - `public/index.html` exists.
 - Required project, status, and security-boundary text is present.
+- Current safety-contract text mentions `approval_digest` and
+  `signing_disabled`.
 - Local stylesheet and asset references resolve.
 - Unsupported production security claims are rejected.
 

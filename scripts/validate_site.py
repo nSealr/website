@@ -16,6 +16,8 @@ REQUIRED_TEXT = [
     "ESP32",
     "Smartcard",
     "Hardware",
+    "approval_digest",
+    "signing_disabled",
     "No production security claim",
 ]
 
