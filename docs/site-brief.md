@@ -15,14 +15,16 @@ documentation.
 
 ## Product Narrative
 
-The practical product is a shared companion plus several signer forms:
+The practical product is a shared companion plus five signer families:
 
-- QR vault for air-gapped review and signing.
-- ESP32-S3 USB/NIP-46 signer for daily desktop use.
-- ESP32-S3 QR signer for smaller self-contained devices.
-- Classic ESP32/TTGO compatibility target where feasible.
-- JavaCard/NFC/contact smartcard line for compact secure-element custody.
-- TROPIC01 research and possible embedded hardening through the ESP32 line.
+- Raspberry/Pi Stateless QR Vault for air-gapped RAM-only review and signing.
+- ESP32 Stateless QR Vault for smaller self-contained camera/display devices.
+- ESP32 USB/NIP-46 Signer for daily desktop use, with Classic ESP32/TTGO as a
+  compatibility target where feasible.
+- JavaCard/NFC Smartcard Signer for compact secure-element custody without
+  trusted event review by itself.
+- Custom Nostr Hardware Wallet With Persistent Secret for later TROPIC01,
+  custom PCB, and Trezor Safe 7 firmware research.
 
 The site should show these as one ecosystem, not as unrelated experiments.
 

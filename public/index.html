@@ -31,8 +31,9 @@
           <h1>NostrSeal</h1>
           <p class="lead">
             A reproducible ecosystem for Nostr signing devices: shared specs,
-            a desktop companion, Raspberry QR vaults, ESP32 firmware, smartcard research,
-            and open hardware references.
+            a desktop companion, Raspberry/Pi stateless QR vaults, ESP32 firmware,
+            smartcard research, custom hardware-wallet research, and open
+            hardware references.
           </p>
           <div class="actions" aria-label="Repository links">
             <a class="button primary" href="https://github.com/NostrSeal/specs">Specs</a>
@@ -46,7 +47,8 @@
             <title id="map-title">NostrSeal signer architecture</title>
             <desc id="map-desc">
               Nostr clients send signing requests to the companion, which routes them to a
-              Raspberry QR vault, ESP32 signer, smartcard, or future hardware board.
+              Raspberry/Pi stateless QR vault, ESP32 signer, smartcard, or custom
+              persistent-secret hardware wallet.
             </desc>
             <path class="link" d="M164 210h124" />
             <path class="link" d="M420 142h122" />
@@ -94,12 +96,12 @@
         </div>
         <div class="columns">
           <article>
-            <h3>Raspberry QR Vault</h3>
-            <p>Air-gapped Raspberry/Pi flow inspired by SeedSigner principles for Nostr events.</p>
+            <h3>Raspberry/Pi Stateless QR Vault</h3>
+            <p>Air-gapped RAM-only Raspberry/Pi flow inspired by SeedSigner principles for Nostr events.</p>
           </article>
           <article>
             <h3>ESP32</h3>
-            <p>USB and QR firmware lines for ESP32-S3 first, with classic ESP32 compatibility later.</p>
+            <p>USB/NIP-46 and stateless QR firmware lines for ESP32-S3 first, with classic ESP32 compatibility later.</p>
           </article>
           <article>
             <h3>Smartcard</h3>
@@ -116,8 +118,8 @@
         <ul>
           <li><strong>Specs:</strong> v0 request, response, QR envelope, fixtures, review-screen vectors, and approval_digest contracts.</li>
           <li><strong>Companion:</strong> CLI, verification, transports, QR, serial framing.</li>
-          <li><strong>Raspberry:</strong> desktop QR vault simulation with NIP-06 signing and approval_digest-bound review.</li>
-          <li><strong>ESP32:</strong> native USB scaffold with get_public_key, signing_disabled, approval_digest-gated approval core, and future ESP32-S3 QR vault target.</li>
+          <li><strong>Raspberry:</strong> desktop stateless QR vault simulation with NIP-06 signing and approval_digest-bound review.</li>
+          <li><strong>ESP32:</strong> native USB scaffold with get_public_key, signing_disabled, approval_digest-gated approval core, and ESP32 stateless QR vault host-core review flow.</li>
           <li><strong>Smartcard:</strong> APDU simulator for public key and event-id signing.</li>
           <li><strong>Hardware:</strong> checked requirements and BOM scaffold, including request-id and approval_digest review binding.</li>
         </ul>
@@ -139,7 +141,7 @@
         <p class="eyebrow">build and audit</p>
         <h2>Everything is intended to be reproducible.</h2>
         <a href="https://github.com/NostrSeal/specs">Protocol specs and test vectors</a>
-        <a href="https://github.com/NostrSeal/raspberry">Raspberry QR vault</a>
+        <a href="https://github.com/NostrSeal/raspberry">Raspberry/Pi stateless QR vault</a>
         <a href="https://github.com/NostrSeal/esp32">ESP32 firmware</a>
         <a href="https://github.com/NostrSeal/smartcard">Smartcard research</a>
         <a href="https://github.com/NostrSeal/hardware">Open hardware</a>

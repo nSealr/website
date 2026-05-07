@@ -13,7 +13,7 @@ Status: implemented as the first website foundation.
 
 - Homepage.
 - Product shape page.
-- Solution matrix page.
+- Five-family solution matrix page.
 - Security model page.
 - Build status page.
 
