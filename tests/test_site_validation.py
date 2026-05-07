@@ -17,6 +17,12 @@ class WebsiteValidationTests(unittest.TestCase):
         self.assertIn("approval_digest", html)
         self.assertIn("signing_disabled", html)
 
+    def test_static_site_links_to_raspberry_repo_not_old_vault_repo(self) -> None:
+        html = (ROOT / "public/index.html").read_text(encoding="utf-8")
+
+        self.assertIn("https://github.com/NostrSeal/raspberry", html)
+        self.assertNotIn("https://github.com/NostrSeal/vault", html)
+
 
 if __name__ == "__main__":
     unittest.main()

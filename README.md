@@ -22,14 +22,14 @@ understandable, reproducible, and easy to join.
 - `Use`: how users will connect a client, companion, and signer.
 - `Build`: reproducible build guides for each hardware line.
 - `Security`: threat model, trust boundaries, and known limitations.
-- `Roadmap`: current maturity of companion, vault, ESP32, smartcard, and hardware.
+- `Roadmap`: current maturity of companion, Raspberry, ESP32, smartcard, and hardware.
 - `Developers`: specs, test vectors, transports, and contribution paths.
 
 ## Current Capabilities
 
 - Static first page under `public/index.html`.
 - System-map visual explaining client, companion, and signer lines.
-- Honest maturity status for specs, companion, vault, ESP32, smartcard, and
+- Honest maturity status for specs, companion, Raspberry, ESP32, smartcard, and
   hardware work.
 - Site validation script that checks required text, local asset links, and
   unsupported production security claims.
@@ -57,7 +57,7 @@ complexity too early.
 - `NostrSeal/lab`: source-backed research and roadmap.
 - `NostrSeal/specs`: shared protocol and test vectors.
 - `NostrSeal/companion`: host-side companion software.
-- `NostrSeal/vault`: Pi Zero / SeedSigner-style QR vault.
+- `NostrSeal/raspberry`: Raspberry/Pi software, first line QR vault.
 - `NostrSeal/esp32`: ESP32 firmware targets.
 - `NostrSeal/smartcard`: JavaCard/NFC/contact smartcard signer work.
 - `NostrSeal/hardware`: open hardware designs and assembly docs.

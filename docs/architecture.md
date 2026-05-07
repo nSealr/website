@@ -6,7 +6,7 @@
 
 - Explain NostrSeal clearly.
 - Present product shape and maturity honestly.
-- Link to specs, companion, firmware, vault, smartcard, hardware, and lab work.
+- Link to specs, companion, Raspberry, ESP32, smartcard, hardware, and lab work.
 - Publish security model and build status when public.
 
 ## Non-Responsibilities

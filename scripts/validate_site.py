@@ -12,7 +12,7 @@ REQUIRED_TEXT = [
     "open-source",
     "non-profit",
     "Companion",
-    "Pi Zero Vault",
+    "Raspberry",
     "ESP32",
     "Smartcard",
     "Hardware",
