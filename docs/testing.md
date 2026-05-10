@@ -17,6 +17,8 @@ compilation, and direct site validation.
   `signing_disabled`.
 - Current companion boundary text mentions NIP-46 bridge decisions and
   `nseal nip46 decide`.
+- Current shared-review and hardware status text mentions review detail pages
+  and Raspberry/Pi kit requirements.
 - Local stylesheet and asset references resolve.
 - Unsupported production security claims are rejected.
 

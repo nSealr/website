@@ -9,7 +9,9 @@
 
 Status: implemented as the first website foundation. Current private status
 copy now includes NIP-46 bridge decisions and the `nseal nip46 decide` harness
-without claiming relay, NIP-44, persistent grants, or production readiness.
+plus review detail pages and Raspberry/Pi kit requirements without claiming
+relay, NIP-44, persistent grants, production readiness, or production hardware
+security.
 
 ## M4: Private Alpha
 

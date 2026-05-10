@@ -20,6 +20,8 @@ REQUIRED_TEXT = [
     "signing_disabled",
     "NIP-46 bridge decisions",
     "nseal nip46 decide",
+    "review detail pages",
+    "Raspberry/Pi kit requirements",
     "No production security claim",
 ]
 

@@ -36,6 +36,8 @@ understandable, reproducible, and easy to join.
   custom hardware-wallet, and hardware work.
 - Current companion status copy for NIP-46 bridge decisions and the
   `nseal nip46 decide` harness.
+- Current shared review detail-page and Raspberry/Pi kit-requirement status
+  copy without production security claims.
 - Site validation script that checks required text, local asset links, and
   unsupported production security claims.
 
