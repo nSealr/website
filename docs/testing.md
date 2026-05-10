@@ -16,11 +16,12 @@ compilation, and direct site validation.
 - Current safety-contract text mentions `approval_digest` and
   `signing_disabled`.
 - Current companion boundary text mentions NIP-46 bridge decisions and
-  `nseal nip46 decide`.
+  `nseal nip46 decide`, plus request-bound serial capture checks.
 - Current shared-review and hardware status text mentions review detail pages,
   Raspberry/Pi kit requirements, and the Raspberry/Pi OS profile.
 - Current ESP32 status text mentions T-Display S3 review scenario smoke while
-  keeping `signing_disabled` present.
+  keeping `signing_disabled` present, and now also mentions the companion-to-
+  device serial smoke.
 - Current smartcard status text mentions `nseal-smartcard` CLI probes while
   preserving the no-trusted-review and no-real-card-compatibility boundary.
 - Local stylesheet and asset references resolve.
