@@ -24,6 +24,8 @@ REQUIRED_TEXT = [
     "T-Display S3 review scenario smoke",
     "Raspberry/Pi kit requirements",
     "Raspberry/Pi OS profile",
+    "nseal-smartcard CLI probes",
+    "no trusted review or real-card compatibility claim",
     "No production security claim",
 ]
 
