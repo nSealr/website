@@ -21,6 +21,7 @@ class WebsiteValidationTests(unittest.TestCase):
         self.assertIn("review detail pages", html)
         self.assertIn("T-Display S3 review scenario smoke", html)
         self.assertIn("Raspberry/Pi kit requirements", html)
+        self.assertIn("Raspberry/Pi OS profile", html)
 
     def test_static_site_links_to_raspberry_repo_not_old_vault_repo(self) -> None:
         html = (ROOT / "public/index.html").read_text(encoding="utf-8")

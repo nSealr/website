@@ -17,8 +17,8 @@ compilation, and direct site validation.
   `signing_disabled`.
 - Current companion boundary text mentions NIP-46 bridge decisions and
   `nseal nip46 decide`.
-- Current shared-review and hardware status text mentions review detail pages
-  and Raspberry/Pi kit requirements.
+- Current shared-review and hardware status text mentions review detail pages,
+  Raspberry/Pi kit requirements, and the Raspberry/Pi OS profile.
 - Current ESP32 status text mentions T-Display S3 review scenario smoke while
   keeping `signing_disabled` present.
 - Local stylesheet and asset references resolve.

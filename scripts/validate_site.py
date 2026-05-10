@@ -23,6 +23,7 @@ REQUIRED_TEXT = [
     "review detail pages",
     "T-Display S3 review scenario smoke",
     "Raspberry/Pi kit requirements",
+    "Raspberry/Pi OS profile",
     "No production security claim",
 ]
 
