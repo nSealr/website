@@ -21,6 +21,7 @@ REQUIRED_TEXT = [
     "NIP-46 bridge decisions",
     "nseal nip46 decide",
     "review detail pages",
+    "T-Display S3 review scenario smoke",
     "Raspberry/Pi kit requirements",
     "No production security claim",
 ]

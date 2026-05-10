@@ -19,6 +19,8 @@ compilation, and direct site validation.
   `nseal nip46 decide`.
 - Current shared-review and hardware status text mentions review detail pages
   and Raspberry/Pi kit requirements.
+- Current ESP32 status text mentions T-Display S3 review scenario smoke while
+  keeping `signing_disabled` present.
 - Local stylesheet and asset references resolve.
 - Unsupported production security claims are rejected.
 

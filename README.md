@@ -38,6 +38,8 @@ understandable, reproducible, and easy to join.
   `nseal nip46 decide` harness.
 - Current shared review detail-page and Raspberry/Pi kit-requirement status
   copy without production security claims.
+- Current ESP32 T-Display S3 review scenario smoke status while preserving the
+  `signing_disabled` and pre-production safety boundary.
 - Site validation script that checks required text, local asset links, and
   unsupported production security claims.
 
