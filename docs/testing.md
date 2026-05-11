@@ -13,6 +13,8 @@ compilation, and direct site validation.
 
 - `public/index.html` exists.
 - Required project, status, and security-boundary text is present.
+- The product-shape section names the five current first-class signer families
+  in public copy.
 - Current safety-contract text mentions `approval_digest` and
   `signing_disabled`.
 - Current companion boundary text mentions NIP-46 bridge decisions,

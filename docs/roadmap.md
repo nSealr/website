@@ -21,6 +21,14 @@ Smartcard status copy now names the APDU simulator and
 `nseal-smartcard` CLI probes while explicitly avoiding trusted-review or
 real-card compatibility claims.
 
+Status note, 2026-05-11: the static homepage now names the five first-class
+signer families directly in the product-shape section and validation checks:
+Raspberry/Pi Stateless QR Vault, ESP32 Stateless QR Vault, ESP32 USB/NIP-46
+Signer, JavaCard/NFC Smartcard Signer, and Custom Nostr Hardware Wallet With
+Persistent Secret. The copy still frames companion, specs, lab, and hardware as
+supporting infrastructure and keeps production security and real-signing claims
+out of scope.
+
 ## M4: Private Alpha
 
 - Homepage.

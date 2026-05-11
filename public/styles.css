@@ -168,8 +168,16 @@ h3 {
   stroke: var(--gold);
 }
 
+.node.signer.usb rect {
+  stroke: var(--blue);
+}
+
 .node.signer.card rect {
   stroke: var(--red);
+}
+
+.node.signer.custom rect {
+  stroke: var(--muted);
 }
 
 .node text {
@@ -204,28 +212,36 @@ h3 {
   max-width: 780px;
 }
 
-.columns {
+.families {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 18px;
   margin-top: 28px;
 }
 
-.columns article {
+.families article {
   border-top: 3px solid var(--line);
   padding-top: 18px;
 }
 
-.columns article:nth-child(1) {
+.families article:nth-child(1) {
   border-color: var(--green);
 }
 
-.columns article:nth-child(2) {
+.families article:nth-child(2) {
   border-color: var(--gold);
 }
 
-.columns article:nth-child(3) {
+.families article:nth-child(3) {
+  border-color: var(--blue);
+}
+
+.families article:nth-child(4) {
   border-color: var(--red);
+}
+
+.families article:nth-child(5) {
+  border-color: var(--muted);
 }
 
 .status-grid {
@@ -281,7 +297,7 @@ footer {
 
   .intro,
   .status-grid,
-  .columns {
+  .families {
     grid-template-columns: 1fr;
   }
 

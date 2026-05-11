@@ -31,9 +31,9 @@
           <h1>NostrSeal</h1>
           <p class="lead">
             A reproducible ecosystem for Nostr signing devices: shared specs,
-            a desktop companion, Raspberry/Pi stateless QR vaults, ESP32 firmware,
-            smartcard research, custom hardware-wallet research, and open
-            hardware references.
+            a desktop companion, five signer families, and open hardware
+            references for builders who want auditable devices instead of a
+            proprietary product.
           </p>
           <div class="actions" aria-label="Repository links">
             <a class="button primary" href="https://github.com/NostrSeal/specs">Specs</a>
@@ -43,17 +43,19 @@
         </div>
 
         <figure class="system-map" aria-label="NostrSeal system map">
-          <svg viewBox="0 0 760 420" role="img" aria-labelledby="map-title map-desc">
+          <svg viewBox="0 0 760 480" role="img" aria-labelledby="map-title map-desc">
             <title id="map-title">NostrSeal signer architecture</title>
             <desc id="map-desc">
               Nostr clients send signing requests to the companion, which routes them to a
-              Raspberry/Pi stateless QR vault, ESP32 signer, smartcard, or custom
-              persistent-secret hardware wallet.
+              Raspberry/Pi stateless QR vault, ESP32 QR vault, ESP32 USB signer,
+              smartcard, or custom persistent-secret hardware wallet.
             </desc>
             <path class="link" d="M164 210h124" />
-            <path class="link" d="M420 142h122" />
-            <path class="link" d="M420 210h122" />
-            <path class="link" d="M420 278h122" />
+            <path class="link" d="M420 210h74v-118h48" />
+            <path class="link" d="M420 210h96v-30h26" />
+            <path class="link" d="M420 210h96v52h26" />
+            <path class="link" d="M420 210h96v134h26" />
+            <path class="link" d="M420 210h74v216h48" />
             <g class="node client">
               <rect x="32" y="154" width="132" height="112" rx="8" />
               <text x="98" y="202">Nostr</text>
@@ -65,19 +67,29 @@
               <text x="354" y="228">Verifier</text>
             </g>
             <g class="node signer">
-              <rect x="542" y="88" width="154" height="92" rx="8" />
-              <text x="619" y="128">Raspberry</text>
-              <text x="619" y="154">QR</text>
+              <rect x="542" y="56" width="170" height="72" rx="8" />
+              <text x="627" y="88">Raspberry</text>
+              <text x="627" y="112">QR Vault</text>
             </g>
             <g class="node signer alt">
-              <rect x="542" y="198" width="154" height="92" rx="8" />
-              <text x="619" y="238">ESP32</text>
-              <text x="619" y="264">USB / QR</text>
+              <rect x="542" y="148" width="170" height="64" rx="8" />
+              <text x="627" y="174">ESP32</text>
+              <text x="627" y="196">QR Vault</text>
+            </g>
+            <g class="node signer usb">
+              <rect x="542" y="230" width="170" height="64" rx="8" />
+              <text x="627" y="256">ESP32</text>
+              <text x="627" y="278">USB/NIP-46</text>
             </g>
             <g class="node signer card">
-              <rect x="542" y="308" width="154" height="76" rx="8" />
-              <text x="619" y="342">Smartcard</text>
-              <text x="619" y="364">APDU</text>
+              <rect x="542" y="312" width="170" height="64" rx="8" />
+              <text x="627" y="338">Smartcard</text>
+              <text x="627" y="360">APDU</text>
+            </g>
+            <g class="node signer custom">
+              <rect x="542" y="394" width="170" height="64" rx="8" />
+              <text x="627" y="420">Custom</text>
+              <text x="627" y="442">Wallet</text>
             </g>
           </svg>
         </figure>
@@ -86,7 +98,7 @@
       <section id="system" class="band">
         <div class="section-copy">
           <p class="eyebrow">product shape</p>
-          <h2>One companion, multiple signer lines.</h2>
+          <h2>One companion, five signer families.</h2>
           <p>
             The companion prepares requests, moves them over QR, file, stdio,
             serial, USB, or card transports, and verifies every successful
@@ -94,18 +106,26 @@
             only through an explicit policy boundary.
           </p>
         </div>
-        <div class="columns">
+        <div class="families">
           <article>
             <h3>Raspberry/Pi Stateless QR Vault</h3>
             <p>Air-gapped RAM-only Raspberry/Pi flow inspired by SeedSigner principles for Nostr events.</p>
           </article>
           <article>
-            <h3>ESP32</h3>
-            <p>USB/NIP-46 and stateless QR firmware lines for ESP32-S3 first, with classic ESP32 compatibility later.</p>
+            <h3>ESP32 Stateless QR Vault</h3>
+            <p>Air-gapped ESP32-S3 camera/display signer line, led by the T-Display S3 Pro OV5640 candidate and no persistent secret.</p>
           </article>
           <article>
-            <h3>Smartcard</h3>
+            <h3>ESP32 USB/NIP-46 Signer</h3>
+            <p>Daily-use USB/display signer firmware for ESP32-S3 first, with classic ESP32/TTGO compatibility later and real signing still gated.</p>
+          </article>
+          <article>
+            <h3>JavaCard/NFC Smartcard Signer</h3>
             <p>Display-less APDU card research for key protection, not trusted event review alone.</p>
+          </article>
+          <article>
+            <h3>Custom Nostr Hardware Wallet With Persistent Secret</h3>
+            <p>Advanced persistent-secret research for custom boards and secure-element-assisted designs; direct TROPIC01 Schnorr remains unproven.</p>
           </article>
         </div>
       </section>
@@ -119,8 +139,10 @@
           <li><strong>Specs:</strong> v0 request, response, QR envelope, fixtures, review-screen vectors, review detail pages, approval_digest contracts, and NIP-46 bridge decisions.</li>
           <li><strong>Companion:</strong> CLI, verification, transports, QR, serial framing with request-bound capture checks, nseal serial-line exchange for one-shot local USB-serial bring-up, nseal nip46 decide for already-decrypted payload policy checks, and untrusted detail-page previews.</li>
           <li><strong>Raspberry:</strong> desktop stateless QR vault simulation with NIP-06 signing, approval_digest-bound review, and hardware-neutral adapter boundaries for later Pi drivers.</li>
-          <li><strong>ESP32:</strong> native USB scaffold with get_public_key, signing_disabled, approval_digest-gated approval core, ESP32 stateless QR vault host-core review flow, T-Display S3 review scenario smoke, companion-to-device serial smoke, sign-event-disabled smoke, firmware protocol evidence, and Unicode fallback tracking for disabled-signing development firmware.</li>
-          <li><strong>Smartcard:</strong> APDU simulator plus nseal-smartcard CLI probes for public-key and event-id signing research; no trusted review or real-card compatibility claim yet.</li>
+          <li><strong>ESP32 QR:</strong> stateless QR vault host-core review flow and T-Display S3 review scenario smoke while the T-Display S3 Pro OV5640 hardware target remains pending.</li>
+          <li><strong>ESP32 USB/NIP-46:</strong> native USB scaffold with get_public_key, signing_disabled, approval_digest-gated approval core, companion-to-device serial smoke, sign-event-disabled smoke, firmware protocol evidence, and Unicode fallback tracking for disabled-signing development firmware.</li>
+          <li><strong>Smartcard:</strong> JavaCard/NFC Smartcard Signer research with APDU simulator plus nseal-smartcard CLI probes for public-key and event-id signing research; no trusted review or real-card compatibility claim yet.</li>
+          <li><strong>Custom wallet:</strong> Custom Nostr Hardware Wallet With Persistent Secret research is limited to secure-element/root-of-trust and persistent-secret architecture until real hardware evidence exists.</li>
           <li><strong>Hardware:</strong> checked requirements, BOM scaffold, and Raspberry/Pi OS profile, including Raspberry/Pi kit requirements, request-id and approval_digest review binding.</li>
         </ul>
       </section>

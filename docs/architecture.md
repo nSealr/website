@@ -28,6 +28,13 @@ The first implementation is plain static HTML/CSS:
 - `content/` and `design/`: tracked scaffolds for the future Astro content
   model and design system.
 
+The landing page must name the five first-class signer families explicitly:
+Raspberry/Pi Stateless QR Vault, ESP32 Stateless QR Vault, ESP32 USB/NIP-46
+Signer, JavaCard/NFC Smartcard Signer, and Custom Nostr Hardware Wallet With
+Persistent Secret. This keeps the public product shape aligned with the lab
+taxonomy without turning companion, specs, lab, or hardware artifacts into
+signing-solution families.
+
 This keeps publishing simple while the project is private and the content model
 is still stabilizing. A later Astro migration should preserve the same content
 tests before adding routing, MDX, or generated status pages.

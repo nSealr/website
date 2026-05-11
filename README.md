@@ -31,9 +31,11 @@ understandable, reproducible, and easy to join.
 ## Current Capabilities
 
 - Static first page under `public/index.html`.
-- System-map visual explaining client, companion, and signer lines.
-- Honest maturity status for specs, companion, Raspberry/Pi, ESP32, smartcard,
-  custom hardware-wallet, and hardware work.
+- System-map visual explaining client, companion, and the five first-class
+  signer families.
+- Honest maturity status for specs, companion, Raspberry/Pi, ESP32 stateless
+  QR, ESP32 USB/NIP-46, JavaCard/NFC smartcard, custom hardware-wallet, and
+  hardware work.
 - Current companion status copy for NIP-46 bridge decisions, the
   `nseal nip46 decide` harness, request-bound serial capture checks, and
   `nseal serial-line exchange` bring-up evidence.

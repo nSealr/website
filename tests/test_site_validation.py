@@ -27,6 +27,19 @@ class WebsiteValidationTests(unittest.TestCase):
         self.assertIn("Raspberry/Pi kit requirements", html)
         self.assertIn("Raspberry/Pi OS profile", html)
 
+    def test_static_site_names_five_first_class_signer_families(self) -> None:
+        html = (ROOT / "public/index.html").read_text(encoding="utf-8")
+
+        for family in (
+            "Raspberry/Pi Stateless QR Vault",
+            "ESP32 Stateless QR Vault",
+            "ESP32 USB/NIP-46 Signer",
+            "JavaCard/NFC Smartcard Signer",
+            "Custom Nostr Hardware Wallet With Persistent Secret",
+        ):
+            with self.subTest(family=family):
+                self.assertIn(family, html)
+
     def test_static_site_links_to_raspberry_repo_not_old_vault_repo(self) -> None:
         html = (ROOT / "public/index.html").read_text(encoding="utf-8")
 
