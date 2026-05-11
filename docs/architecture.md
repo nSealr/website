@@ -35,6 +35,12 @@ Persistent Secret. This keeps the public product shape aligned with the lab
 taxonomy without turning companion, specs, lab, or hardware artifacts into
 signing-solution families.
 
+Feature status copy should be derived from `NostrSeal/specs`
+`vectors/features/signer-feature-matrix-v0.json`. The site may simplify the
+language, but it must preserve the same distinction between target and current
+status and must not imply a feature behaves differently across implementations
+when the shared specs matrix assigns the same `contract_id`.
+
 This keeps publishing simple while the project is private and the content model
 is still stabilizing. A later Astro migration should preserve the same content
 tests before adding routing, MDX, or generated status pages.

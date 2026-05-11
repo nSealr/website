@@ -11,6 +11,8 @@ understandable, reproducible, and easy to join.
 - Present NostrSeal as a non-profit open-source signer ecosystem.
 - Explain the main product shape: companion software plus multiple signer
   implementations.
+- Describe per-family features from the shared specs feature matrix rather
+  than inventing public-only feature claims.
 - Publish status pages for each first-class signer family and supporting
   infrastructure track.
 - Link to specs, lab research, firmware, hardware, and smartcard work.
@@ -47,6 +49,10 @@ understandable, reproducible, and easy to join.
   and Unicode fallback status.
 - Current smartcard status copy for APDU simulator and `nseal-smartcard` CLI
   probes without trusted-review or real-card compatibility claims.
+- Public-facing feature status should track `NostrSeal/specs`
+  `vectors/features/signer-feature-matrix-v0.json`: a signer family can expose
+  more or fewer features, but the same feature must have the same behavior when
+  present on multiple implementations.
 - Site validation script that checks required text, local asset links, and
   unsupported production security claims.
 
