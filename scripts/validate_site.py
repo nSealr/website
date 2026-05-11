@@ -21,6 +21,8 @@ REQUIRED_TEXT = [
     "NIP-46 bridge decisions",
     "nseal nip46 decide",
     "request-bound capture checks",
+    "nseal serial-line exchange",
+    "sign-event-disabled smoke",
     "review detail pages",
     "T-Display S3 review scenario smoke",
     "companion-to-device serial smoke",

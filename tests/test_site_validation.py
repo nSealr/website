@@ -18,6 +18,8 @@ class WebsiteValidationTests(unittest.TestCase):
         self.assertIn("signing_disabled", html)
         self.assertIn("NIP-46 bridge decisions", html)
         self.assertIn("nseal nip46 decide", html)
+        self.assertIn("nseal serial-line exchange", html)
+        self.assertIn("sign-event-disabled smoke", html)
         self.assertIn("review detail pages", html)
         self.assertIn("T-Display S3 review scenario smoke", html)
         self.assertIn("Raspberry/Pi kit requirements", html)

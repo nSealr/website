@@ -34,13 +34,14 @@ understandable, reproducible, and easy to join.
 - System-map visual explaining client, companion, and signer lines.
 - Honest maturity status for specs, companion, Raspberry/Pi, ESP32, smartcard,
   custom hardware-wallet, and hardware work.
-- Current companion status copy for NIP-46 bridge decisions and the
-  `nseal nip46 decide` harness, plus request-bound serial capture checks.
+- Current companion status copy for NIP-46 bridge decisions, the
+  `nseal nip46 decide` harness, request-bound serial capture checks, and
+  `nseal serial-line exchange` bring-up evidence.
 - Current shared review detail-page, Raspberry/Pi kit-requirement, and
   Raspberry/Pi OS profile status copy without production security claims.
 - Current ESP32 T-Display S3 review scenario smoke status while preserving the
   `signing_disabled` and pre-production safety boundary, plus companion-to-
-  device serial smoke status.
+  device serial smoke and sign-event-disabled smoke status.
 - Current smartcard status copy for APDU simulator and `nseal-smartcard` CLI
   probes without trusted-review or real-card compatibility claims.
 - Site validation script that checks required text, local asset links, and
