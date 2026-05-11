@@ -28,6 +28,13 @@ The practical product is a shared companion plus five signer families:
 
 The site should show these as one ecosystem, not as unrelated experiments.
 
+Account/custody copy should stay precise: QR vaults are stateless RAM-only
+session signers; ESP32 USB/NIP-46 and custom hardware-wallet lines are future
+persistent encrypted device-vault signers; smartcards are display-less
+slot-backed custody; companion is secretless routing and verification
+infrastructure. Policy records are internal NostrSeal records, not Nostr
+events, and the final per-account policy UX is still under design.
+
 ## Trust Claims
 
 Allowed:
