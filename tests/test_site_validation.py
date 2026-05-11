@@ -20,6 +20,8 @@ class WebsiteValidationTests(unittest.TestCase):
         self.assertIn("nseal nip46 decide", html)
         self.assertIn("nseal serial-line exchange", html)
         self.assertIn("sign-event-disabled smoke", html)
+        self.assertIn("firmware protocol evidence", html)
+        self.assertIn("Unicode fallback", html)
         self.assertIn("review detail pages", html)
         self.assertIn("T-Display S3 review scenario smoke", html)
         self.assertIn("Raspberry/Pi kit requirements", html)

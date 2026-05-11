@@ -26,6 +26,8 @@ REQUIRED_TEXT = [
     "review detail pages",
     "T-Display S3 review scenario smoke",
     "companion-to-device serial smoke",
+    "firmware protocol evidence",
+    "Unicode fallback",
     "Raspberry/Pi kit requirements",
     "Raspberry/Pi OS profile",
     "nseal-smartcard CLI probes",

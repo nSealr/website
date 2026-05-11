@@ -41,7 +41,8 @@ understandable, reproducible, and easy to join.
   Raspberry/Pi OS profile status copy without production security claims.
 - Current ESP32 T-Display S3 review scenario smoke status while preserving the
   `signing_disabled` and pre-production safety boundary, plus companion-to-
-  device serial smoke and sign-event-disabled smoke status.
+  device serial smoke, sign-event-disabled smoke, firmware protocol evidence,
+  and Unicode fallback status.
 - Current smartcard status copy for APDU simulator and `nseal-smartcard` CLI
   probes without trusted-review or real-card compatibility claims.
 - Site validation script that checks required text, local asset links, and

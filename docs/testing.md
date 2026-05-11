@@ -22,7 +22,8 @@ compilation, and direct site validation.
   Raspberry/Pi kit requirements, and the Raspberry/Pi OS profile.
 - Current ESP32 status text mentions T-Display S3 review scenario smoke while
   keeping `signing_disabled` present, and now also mentions the companion-to-
-  device serial smoke plus sign-event-disabled smoke.
+  device serial smoke, sign-event-disabled smoke, firmware protocol evidence,
+  and Unicode fallback tracking.
 - Current smartcard status text mentions `nseal-smartcard` CLI probes while
   preserving the no-trusted-review and no-real-card-compatibility boundary.
 - Local stylesheet and asset references resolve.

@@ -14,8 +14,9 @@ detail pages, Raspberry/Pi kit requirements, and the Raspberry/Pi OS profile
 without claiming relay, NIP-44, persistent grants, production readiness, a
 downloadable Raspberry OS release, or production hardware security. It also
 names the T-Display S3 review scenario smoke, companion-to-device serial smoke,
-and sign-event-disabled smoke as disabled-signing development evidence, not
-production trusted-display or signing acceptance.
+sign-event-disabled smoke, firmware protocol evidence, and Unicode fallback
+tracking as disabled-signing development evidence, not production
+trusted-display, full Unicode review acceptance, or signing acceptance.
 Smartcard status copy now names the APDU simulator and
 `nseal-smartcard` CLI probes while explicitly avoiding trusted-review or
 real-card compatibility claims.
