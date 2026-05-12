@@ -22,7 +22,7 @@ Required content:
 
 ## Use
 
-Purpose: explain how a future user will interact with NostrSeal.
+Purpose: explain how a future user will interact with nSealr.
 
 Required content:
 

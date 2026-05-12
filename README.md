@@ -1,6 +1,6 @@
-# NostrSeal Website
+# nSealr Website
 
-Public website and documentation hub for NostrSeal.
+Public website and documentation hub for nSealr.
 
 The website should explain the project without turning the core work into a
 proprietary product. It should make the open-source hardware/software program
@@ -8,7 +8,7 @@ understandable, reproducible, and easy to join.
 
 ## Goals
 
-- Present NostrSeal as a non-profit open-source signer ecosystem.
+- Present nSealr as a non-profit open-source signer ecosystem.
 - Explain the main product shape: companion software plus multiple signer
   implementations.
 - Describe per-family features from the shared specs feature matrix rather
@@ -21,7 +21,7 @@ understandable, reproducible, and easy to join.
 
 ## Initial Site Sections
 
-- `Overview`: what NostrSeal is and why hardware signing matters for Nostr.
+- `Overview`: what nSealr is and why hardware signing matters for Nostr.
 - `Use`: how users will connect a client, companion, and signer.
 - `Build`: reproducible build guides for each hardware line.
 - `Security`: threat model, trust boundaries, and known limitations.
@@ -39,17 +39,17 @@ understandable, reproducible, and easy to join.
   QR, ESP32 USB/NIP-46, JavaCard/NFC smartcard, custom hardware-wallet, and
   hardware work.
 - Current companion status copy for NIP-46 bridge decisions, the
-  `nseal nip46 decide` harness, request-bound serial capture checks, and
-  `nseal serial-line exchange` bring-up evidence.
+  `nsealr nip46 decide` harness, request-bound serial capture checks, and
+  `nsealr serial-line exchange` bring-up evidence.
 - Current shared review detail-page, Raspberry/Pi kit-requirement, and
   Raspberry/Pi OS profile status copy without production security claims.
 - Current ESP32 T-Display S3 review scenario smoke status while preserving the
   `signing_disabled` and pre-production safety boundary, plus companion-to-
   device serial smoke, sign-event-disabled smoke, firmware protocol evidence,
   and Unicode fallback status.
-- Current smartcard status copy for APDU simulator and `nseal-smartcard` CLI
+- Current smartcard status copy for APDU simulator and `nsealr-smartcard` CLI
   probes without trusted-review or real-card compatibility claims.
-- Public-facing feature status should track `NostrSeal/specs`
+- Public-facing feature status should track `nSealr/specs`
   `vectors/features/signer-feature-matrix-v0.json`: a signer family can expose
   more or fewer features, but the same feature must have the same behavior when
   present on multiple implementations.
@@ -76,14 +76,14 @@ complexity too early.
 
 ## Related Repositories
 
-- `NostrSeal/lab`: source-backed research and roadmap.
-- `NostrSeal/specs`: shared protocol and test vectors.
-- `NostrSeal/companion`: host-side companion software.
-- `NostrSeal/raspberry`: Raspberry/Pi software for the stateless QR vault
+- `nSealr/lab`: source-backed research and roadmap.
+- `nSealr/specs`: shared protocol and test vectors.
+- `nSealr/companion`: host-side companion software.
+- `nSealr/raspberry`: Raspberry/Pi software for the stateless QR vault
   family.
-- `NostrSeal/esp32`: ESP32 firmware for stateless QR and USB/NIP-46 families.
-- `NostrSeal/smartcard`: JavaCard/NFC/contact smartcard signer work.
-- `NostrSeal/hardware`: open hardware designs and assembly docs.
+- `nSealr/esp32`: ESP32 firmware for stateless QR and USB/NIP-46 families.
+- `nSealr/smartcard`: JavaCard/NFC/contact smartcard signer work.
+- `nSealr/hardware`: open hardware designs and assembly docs.
 
 ## Quality Baseline
 

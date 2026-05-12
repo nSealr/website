@@ -17,8 +17,8 @@ class WebsiteValidationTests(unittest.TestCase):
         self.assertIn("approval_digest", html)
         self.assertIn("signing_disabled", html)
         self.assertIn("NIP-46 bridge decisions", html)
-        self.assertIn("nseal nip46 decide", html)
-        self.assertIn("nseal serial-line exchange", html)
+        self.assertIn("nsealr nip46 decide", html)
+        self.assertIn("nsealr serial-line exchange", html)
         self.assertIn("sign-event-disabled smoke", html)
         self.assertIn("firmware protocol evidence", html)
         self.assertIn("Unicode fallback", html)
@@ -43,9 +43,14 @@ class WebsiteValidationTests(unittest.TestCase):
     def test_static_site_links_to_raspberry_repo_not_old_vault_repo(self) -> None:
         html = (ROOT / "public/index.html").read_text(encoding="utf-8")
 
-        self.assertIn("https://github.com/NostrSeal/raspberry", html)
-        old_repo_url = "https://github.com/NostrSeal/" + "vault"
-        self.assertNotIn(old_repo_url, html)
+        self.assertIn("https://github.com/nSealr/raspberry", html)
+        forbidden_repo_urls = [
+            "https://github.com/nSealr/" + "vault",
+            "https://github.com/" + "Nostr" + "Seal/vault",
+        ]
+        for old_repo_url in forbidden_repo_urls:
+            with self.subTest(old_repo_url=old_repo_url):
+                self.assertNotIn(old_repo_url, html)
 
 
 if __name__ == "__main__":

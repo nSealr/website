@@ -3,18 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>NostrSeal</title>
+    <title>nSealr</title>
     <meta
       name="description"
-      content="NostrSeal is a non-profit open-source hardware and software program for Nostr signing devices."
+      content="nSealr is a non-profit open-source hardware and software program for Nostr signing devices."
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="#top" aria-label="NostrSeal home">
+      <a class="brand" href="#top" aria-label="nSealr home">
         <span class="brand-mark" aria-hidden="true">NS</span>
-        <span>NostrSeal</span>
+        <span>nSealr</span>
       </a>
       <nav aria-label="Primary navigation">
         <a href="#system">System</a>
@@ -28,7 +28,7 @@
       <section class="intro">
         <div class="intro-copy">
           <p class="eyebrow">non-profit open-source signer program</p>
-          <h1>NostrSeal</h1>
+          <h1>nSealr</h1>
           <p class="lead">
             A reproducible ecosystem for Nostr signing devices: shared specs,
             a desktop companion, five signer families, and open hardware
@@ -36,15 +36,15 @@
             proprietary product.
           </p>
           <div class="actions" aria-label="Repository links">
-            <a class="button primary" href="https://github.com/NostrSeal/specs">Specs</a>
-            <a class="button" href="https://github.com/NostrSeal/companion">Companion</a>
-            <a class="button" href="https://github.com/NostrSeal/lab">Research Lab</a>
+            <a class="button primary" href="https://github.com/nSealr/specs">Specs</a>
+            <a class="button" href="https://github.com/nSealr/companion">Companion</a>
+            <a class="button" href="https://github.com/nSealr/lab">Research Lab</a>
           </div>
         </div>
 
-        <figure class="system-map" aria-label="NostrSeal system map">
+        <figure class="system-map" aria-label="nSealr system map">
           <svg viewBox="0 0 760 480" role="img" aria-labelledby="map-title map-desc">
-            <title id="map-title">NostrSeal signer architecture</title>
+            <title id="map-title">nSealr signer architecture</title>
             <desc id="map-desc">
               Nostr clients send signing requests to the companion, which routes them to a
               Raspberry/Pi stateless QR vault, ESP32 QR vault, ESP32 USB signer,
@@ -137,11 +137,11 @@
         </div>
         <ul>
           <li><strong>Specs:</strong> v0 request, response, QR envelope, fixtures, review-screen vectors, review detail pages, approval_digest contracts, and NIP-46 bridge decisions.</li>
-          <li><strong>Companion:</strong> CLI, verification, transports, QR, serial framing with request-bound capture checks, nseal serial-line exchange for one-shot local USB-serial bring-up, nseal nip46 decide for already-decrypted payload policy checks, and untrusted detail-page previews.</li>
+          <li><strong>Companion:</strong> CLI, verification, transports, QR, serial framing with request-bound capture checks, nsealr serial-line exchange for one-shot local USB-serial bring-up, nsealr nip46 decide for already-decrypted payload policy checks, and untrusted detail-page previews.</li>
           <li><strong>Raspberry:</strong> desktop stateless QR vault simulation with NIP-06 signing, approval_digest-bound review, and hardware-neutral adapter boundaries for later Pi drivers.</li>
           <li><strong>ESP32 QR:</strong> stateless QR vault host-core review flow and T-Display S3 review scenario smoke while the T-Display S3 Pro OV5640 hardware target remains pending.</li>
           <li><strong>ESP32 USB/NIP-46:</strong> native USB scaffold with get_public_key, signing_disabled, approval_digest-gated approval core, companion-to-device serial smoke, sign-event-disabled smoke, firmware protocol evidence, and Unicode fallback tracking for disabled-signing development firmware.</li>
-          <li><strong>Smartcard:</strong> JavaCard/NFC Smartcard Signer research with APDU simulator plus nseal-smartcard CLI probes for public-key and event-id signing research; no trusted review or real-card compatibility claim yet.</li>
+          <li><strong>Smartcard:</strong> JavaCard/NFC Smartcard Signer research with APDU simulator plus nsealr-smartcard CLI probes for public-key and event-id signing research; no trusted review or real-card compatibility claim yet.</li>
           <li><strong>Custom wallet:</strong> Custom Nostr Hardware Wallet With Persistent Secret research is limited to secure-element/root-of-trust and persistent-secret architecture until real hardware evidence exists.</li>
           <li><strong>Hardware:</strong> checked requirements, BOM scaffold, and Raspberry/Pi OS profile, including Raspberry/Pi kit requirements, request-id and approval_digest review binding.</li>
         </ul>
@@ -152,7 +152,7 @@
           <p class="eyebrow">security</p>
           <h2>No production security claim yet.</h2>
           <p>
-            NostrSeal is pre-production research and implementation work. The
+            nSealr is pre-production research and implementation work. The
             project documents trust boundaries, test evidence, and known limits
             before presenting any device as ready for real keys.
           </p>
@@ -162,16 +162,16 @@
       <section id="build" class="repo-list">
         <p class="eyebrow">build and audit</p>
         <h2>Everything is intended to be reproducible.</h2>
-        <a href="https://github.com/NostrSeal/specs">Protocol specs and test vectors</a>
-        <a href="https://github.com/NostrSeal/raspberry">Raspberry/Pi stateless QR vault</a>
-        <a href="https://github.com/NostrSeal/esp32">ESP32 firmware</a>
-        <a href="https://github.com/NostrSeal/smartcard">Smartcard research</a>
-        <a href="https://github.com/NostrSeal/hardware">Open hardware</a>
+        <a href="https://github.com/nSealr/specs">Protocol specs and test vectors</a>
+        <a href="https://github.com/nSealr/raspberry">Raspberry/Pi stateless QR vault</a>
+        <a href="https://github.com/nSealr/esp32">ESP32 firmware</a>
+        <a href="https://github.com/nSealr/smartcard">Smartcard research</a>
+        <a href="https://github.com/nSealr/hardware">Open hardware</a>
       </section>
     </main>
 
     <footer>
-      <span>NostrSeal is open-source and non-profit.</span>
+      <span>nSealr is open-source and non-profit.</span>
       <span>MIT for code, permissive open licenses for docs and hardware.</span>
     </footer>
   </body>

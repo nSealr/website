@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_TEXT = [
-    "NostrSeal",
+    "nSealr",
     "open-source",
     "non-profit",
     "Companion",
@@ -24,9 +24,9 @@ REQUIRED_TEXT = [
     "approval_digest",
     "signing_disabled",
     "NIP-46 bridge decisions",
-    "nseal nip46 decide",
+    "nsealr nip46 decide",
     "request-bound capture checks",
-    "nseal serial-line exchange",
+    "nsealr serial-line exchange",
     "sign-event-disabled smoke",
     "review detail pages",
     "T-Display S3 review scenario smoke",
@@ -35,7 +35,7 @@ REQUIRED_TEXT = [
     "Unicode fallback",
     "Raspberry/Pi kit requirements",
     "Raspberry/Pi OS profile",
-    "nseal-smartcard CLI probes",
+    "nsealr-smartcard CLI probes",
     "no trusted review or real-card compatibility claim",
     "No production security claim",
 ]
@@ -46,6 +46,11 @@ FORBIDDEN_CLAIMS = [
     "unhackable",
     "guaranteed secure",
     "most secure",
+]
+
+FORBIDDEN_LINKS = [
+    "https://github.com/nSealr/" + "vault",
+    "https://github.com/" + "Nostr" + "Seal/vault",
 ]
 
 
@@ -66,6 +71,9 @@ def validate_site(public_root: Path) -> None:
     for claim in FORBIDDEN_CLAIMS:
         if claim in lower_html:
             raise ValueError(f"forbidden unsupported claim: {claim}")
+    for link in FORBIDDEN_LINKS:
+        if link in html:
+            raise ValueError(f"forbidden stale repository link: {link}")
     for rel in _local_refs(html, "href") + _local_refs(html, "src"):
         if rel.startswith(("https://", "http://", "mailto:")):
             continue
@@ -76,7 +84,7 @@ def validate_site(public_root: Path) -> None:
 
 def main() -> int:
     validate_site(ROOT / "public")
-    print("NostrSeal website validation passed")
+    print("nSealr website validation passed")
     return 0
 
 

@@ -18,15 +18,15 @@ compilation, and direct site validation.
 - Current safety-contract text mentions `approval_digest` and
   `signing_disabled`.
 - Current companion boundary text mentions NIP-46 bridge decisions,
-  `nseal nip46 decide`, request-bound serial capture checks, and
-  `nseal serial-line exchange`.
+  `nsealr nip46 decide`, request-bound serial capture checks, and
+  `nsealr serial-line exchange`.
 - Current shared-review and hardware status text mentions review detail pages,
   Raspberry/Pi kit requirements, and the Raspberry/Pi OS profile.
 - Current ESP32 status text mentions T-Display S3 review scenario smoke while
   keeping `signing_disabled` present, and now also mentions the companion-to-
   device serial smoke, sign-event-disabled smoke, firmware protocol evidence,
   and Unicode fallback tracking.
-- Current smartcard status text mentions `nseal-smartcard` CLI probes while
+- Current smartcard status text mentions `nsealr-smartcard` CLI probes while
   preserving the no-trusted-review and no-real-card-compatibility boundary.
 - Local stylesheet and asset references resolve.
 - Unsupported production security claims are rejected.
@@ -37,6 +37,6 @@ compilation, and direct site validation.
 - Link check.
 - Content lint.
 - No broken repository links.
-- Security and maturity claims checked against `NostrSeal/lab`.
+- Security and maturity claims checked against `nSealr/lab`.
 
 The site remains private until publication is explicitly approved.

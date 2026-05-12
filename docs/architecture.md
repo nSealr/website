@@ -1,10 +1,10 @@
 # Architecture
 
-`NostrSeal/website` is the public-facing documentation and project site.
+`nSealr/website` is the public-facing documentation and project site.
 
 ## Responsibilities
 
-- Explain NostrSeal clearly.
+- Explain nSealr clearly.
 - Present product shape and maturity honestly.
 - Link to specs, companion, Raspberry, ESP32, smartcard, hardware, and lab work.
 - Publish security model and build status when public.
@@ -35,7 +35,7 @@ Persistent Secret. This keeps the public product shape aligned with the lab
 taxonomy without turning companion, specs, lab, or hardware artifacts into
 signing-solution families.
 
-Feature status copy should be derived from `NostrSeal/specs`
+Feature status copy should be derived from `nSealr/specs`
 `vectors/features/signer-feature-matrix-v0.json`. The site may simplify the
 language, but it must preserve the same distinction between target and current
 status and must not imply a feature behaves differently across implementations
