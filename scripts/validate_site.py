@@ -48,10 +48,7 @@ FORBIDDEN_CLAIMS = [
     "most secure",
 ]
 
-FORBIDDEN_LINKS = [
-    "https://github.com/nSealr/" + "vault",
-    "https://github.com/" + "Nostr" + "Seal/vault",
-]
+FORBIDDEN_REPOSITORY_LINK_RE = re.compile(r"https://github\.com/[A-Za-z0-9_.-]+/vault(?:[\"/#?]|$)")
 
 
 def _local_refs(html: str, attribute: str) -> list[str]:
@@ -71,9 +68,8 @@ def validate_site(public_root: Path) -> None:
     for claim in FORBIDDEN_CLAIMS:
         if claim in lower_html:
             raise ValueError(f"forbidden unsupported claim: {claim}")
-    for link in FORBIDDEN_LINKS:
-        if link in html:
-            raise ValueError(f"forbidden stale repository link: {link}")
+    if FORBIDDEN_REPOSITORY_LINK_RE.search(html):
+        raise ValueError("forbidden /vault GitHub link")
     for rel in _local_refs(html, "href") + _local_refs(html, "src"):
         if rel.startswith(("https://", "http://", "mailto:")):
             continue
