@@ -42,7 +42,7 @@ const hiddenTagsCount = Math.max(0, tags.length - TAG_CHIPS_LIMIT);
 >
   <section class="container">
     <p class="eyebrow">// blog</p>
-    <h1>Notes on the program.</h1>
+    <h1>Blog.</h1>
     <p class="lead">Release notes, research, tutorials, and news from nSealr signers, companion, and specs.</p>
 
     {page.currentPage === 1 && (
@@ -64,9 +64,7 @@ const hiddenTagsCount = Math.max(0, tags.length - TAG_CHIPS_LIMIT);
               {visibleTags.map(([t, n]) => (
                 <a href={`/blog/tags/${t}/`}>#{t} <span class="n">{n}</span></a>
               ))}
-              {hiddenTagsCount > 0 && (
-                <a class="see-more" href="/blog/tags/">+{hiddenTagsCount} more →</a>
-              )}
+              <a class="see-more" href="/blog/tags/">See all tags →</a>
             </div>
           </div>
         )}

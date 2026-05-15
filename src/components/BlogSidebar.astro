@@ -34,9 +34,6 @@ const grouped = CATEGORY_ORDER.map(cat => {
     <span class="chevron" aria-hidden="true">▾</span>
   </button>
   <nav id="blog-sidebar-nav">
-    <section class="head-row">
-      <a href="/blog/" class={currentHref === '/blog/' ? 'all-link current' : 'all-link'}>All posts ({posts.length})</a>
-    </section>
     {grouped.map(group => (
       <section data-section={group.category} data-default-open={group.isCurrent ? 'true' : 'false'}>
         <button class="group-toggle" type="button" aria-expanded={group.isCurrent ? 'true' : 'false'}>
@@ -66,10 +63,6 @@ const grouped = CATEGORY_ORDER.map(cat => {
         </ul>
       </section>
     ))}
-    <section class="rss-row">
-      <a href="/blog/tags/">Browse all tags →</a>
-      <a href="/blog/rss.xml">RSS feed →</a>
-    </section>
   </nav>
 </aside>
 <style>
@@ -107,16 +100,6 @@ const grouped = CATEGORY_ORDER.map(cat => {
 
   .blog-sidebar nav { padding: 8px 0; }
   .blog-sidebar section { padding: 2px 12px; }
-  .blog-sidebar section.head-row { padding: 4px 16px 8px; }
-  .all-link {
-    display: block; padding: 6px 8px;
-    color: var(--fg-strong); text-decoration: none;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    font-weight: 600; font-size: 12px;
-  }
-  .all-link.current { color: var(--accent-soft); border-color: var(--accent); background: var(--accent-bg); }
-  .all-link:hover { border-color: var(--accent); color: var(--accent-soft); }
 
   .group-toggle {
     display: flex; align-items: center; gap: 8px;
@@ -173,13 +156,6 @@ const grouped = CATEGORY_ORDER.map(cat => {
     text-decoration: none; border-left: none;
   }
   .more-row a.more:hover { text-decoration: underline; }
-
-  .blog-sidebar section.rss-row {
-    padding-top: 16px; border-top: 1px dashed var(--border); margin-top: 12px;
-    display: grid; gap: 4px;
-  }
-  .blog-sidebar section.rss-row a { color: var(--accent-soft); font-size: 12px; text-decoration: none; }
-  .blog-sidebar section.rss-row a:hover { text-decoration: underline; }
 
   @media (max-width: 960px) {
     .blog-sidebar {
