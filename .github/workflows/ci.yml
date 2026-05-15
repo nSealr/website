@@ -35,7 +35,7 @@ jobs:
         with:
           args: >-
             --no-progress
-            --base dist
+            --root-dir ${{ github.workspace }}/dist
             --exclude '^https://nsealr\.com'
             --exclude '^https://github\.com/nSealr/lab'
             dist
