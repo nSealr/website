@@ -1,3 +1,72 @@
 ---
-return Astro.redirect('/docs/getting-started/overview/');
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { getDocsNav, DOC_SECTION_LABEL } from '~/lib/docs-nav';
+
+const nav = await getDocsNav();
+const SECTION_DESC: Record<string, string> = {
+  'getting-started': 'Read this first: what nSealr is, who it is for, and how a signing request flows from client to signer.',
+  'guides': 'Hands-on build, flash, and bring-up walkthroughs for the hardware lines.',
+  'signers': 'Per-solution status pages with maturity, capability matrix, and shared contract IDs.',
+  'specs': 'Reference for the protocol contracts: event canonicalization, QR envelopes, transports.',
+  'security': 'Trust boundaries, threat model, and the safety contracts the project enforces today.',
+};
 ---
+<BaseLayout
+  title="Docs — nSealr"
+  description="Documentation, build guides, per-solution status, specs reference, and security model for nSealr."
+>
+  <section class="container">
+    <p class="eyebrow">// docs</p>
+    <h1>Documentation.</h1>
+    <p class="lead">
+      Build guides, per-solution status, protocol references, and the
+      security model. Every signer solution shares the same
+      <code>contract_id</code>s from
+      <a href="https://github.com/nSealr/specs">nSealr/specs</a>.
+    </p>
+
+    <div class="grid">
+      {nav.filter(g => g.items.length > 0).map(group => (
+        <article class="card">
+          <header>
+            <p class="eyebrow small">{group.section}</p>
+            <h2>{group.label}</h2>
+            <p class="muted">{SECTION_DESC[group.section]}</p>
+          </header>
+          <ul>
+            {group.items.map(item => (
+              <li><a href={item.href}>{item.title}</a></li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .container { padding-block: 60px; max-width: 1100px; }
+  h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(28px, 4vw, 44px); margin: 8px 0 14px; }
+  .lead { color: var(--fg-muted); font-size: 17px; max-width: 64ch; margin: 0 0 28px; }
+  .lead code { background: var(--accent-bg); color: var(--accent-soft); border: 0; padding: 1px 6px; border-radius: var(--radius-sm); }
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-elevated);
+    padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .card h2 { font-family: var(--font-mono); color: var(--fg-strong); font-size: 18px; margin: 4px 0 6px; }
+  .eyebrow.small { font-size: 11px; }
+  .muted { color: var(--fg-muted); margin: 0; font-size: 13px; }
+  ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
+  li a {
+    font-family: var(--font-mono); font-size: 13px;
+    color: var(--fg); text-decoration: none;
+    padding: 4px 0; border-bottom: 1px dashed var(--border);
+    display: block;
+  }
+  li a:hover { color: var(--accent-soft); border-color: var(--accent); }
+  li:last-child a { border-bottom: 0; }
+</style>
