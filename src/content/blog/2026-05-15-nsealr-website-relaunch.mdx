@@ -1,0 +1,31 @@
+---
+title: 'nSealr website relaunches on Astro'
+description: 'The public site moves from a hand-rolled static page to a Markdown-driven Astro build with documentation, a blog, and a light/dark theme.'
+publishedAt: 2026-05-15
+category: 'release'
+tags: ['website', 'release']
+authors:
+  - nsealr-core
+---
+
+# nSealr website relaunches on Astro
+
+The public site that used to be a single `index.html` is now an Astro
+build driven by Markdown / MDX. Concretely:
+
+- **Content lives in `src/content/`** — `docs/`, `blog/`, and a
+  type-safe `signers/` collection sourced from
+  `nSealr/specs vectors/features/signer-feature-matrix-v0.json`.
+- **Light & dark themes** with Nostr purple `#8E30EB` as the primary
+  accent. The toggle persists in `localStorage` and honors
+  `prefers-color-scheme` on first load.
+- **A real documentation section** with sidebar, ToC, and per-family
+  status pages.
+- **A blog** with categories, tags, and an RSS feed.
+- **Vercel one-click deploy** with strict CSP and immutable caching for
+  assets.
+
+Nothing about the safety posture changes. The site still reports
+`signing_disabled` on prototype firmware, never makes a production
+security claim, and links to canonical specs and lab research instead of
+duplicating them.

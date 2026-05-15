@@ -1,0 +1,49 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import TagPill from '~/components/TagPill.astro';
+import { getEntry } from 'astro:content';
+interface Props {
+  title: string;
+  description: string;
+  publishedAt: Date;
+  updatedAt?: Date;
+  category: string;
+  tags: string[];
+  authorIds: string[];
+  ogImage: string;
+}
+const { title, description, publishedAt, updatedAt, category, tags, authorIds, ogImage } = Astro.props;
+const authors = await Promise.all(authorIds.map(id => getEntry('authors', id)));
+const authorNames = authors.filter(Boolean).map(a => a!.data.name).join(', ');
+---
+<BaseLayout title={`${title} — nSealr Blog`} description={description} ogImage={ogImage}>
+  <article class="container post">
+    <header class="post-head">
+      <p class="meta">
+        <span class="cat">{category}</span>
+        <time datetime={publishedAt.toISOString()}>{publishedAt.toISOString().slice(0,10)}</time>
+        {authorNames && <span class="by">by {authorNames}</span>}
+      </p>
+      <h1>{title}</h1>
+      <p class="lead">{description}</p>
+      {tags.length > 0 && <div class="tags">{tags.map(t => <TagPill tag={t} href={`/blog/tags/${t}/`} />)}</div>}
+    </header>
+    <div class="prose">
+      <slot />
+    </div>
+    <footer class="post-foot">
+      {updatedAt && <p class="muted">Updated {updatedAt.toISOString().slice(0,10)}</p>}
+      <p><a href="/blog/">← all posts</a></p>
+    </footer>
+  </article>
+</BaseLayout>
+<style>
+  .post { padding-block: 48px; max-width: 760px; }
+  .post-head { margin-bottom: 28px; }
+  .meta { font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); display: flex; gap: 14px; flex-wrap: wrap; margin: 0 0 10px; }
+  .cat { color: var(--accent-soft); text-transform: lowercase; }
+  h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(28px, 4vw, 44px); line-height: 1.05; margin: 4px 0 12px; }
+  .lead { color: var(--fg-muted); font-size: 17px; margin: 0 0 12px; max-width: 64ch; }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .post-foot { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--border); font-size: 14px; color: var(--fg-muted); }
+</style>
