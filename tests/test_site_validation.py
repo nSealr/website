@@ -1,49 +1,50 @@
 import unittest
 from pathlib import Path
 
-from scripts.validate_site import validate_site
+from scripts.validate_site import (
+    validate_home,
+    validate_security,
+    validate_signers,
+    validate_global_no_forbidden_repo,
+    parse_required_text_from_frontmatter,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
+DIST = ROOT / "dist"
+SIGNERS = ROOT / "src" / "content" / "signers"
 
 
+@unittest.skipUnless(DIST.exists(), "dist/ not built; run `pnpm run build` first")
 class WebsiteValidationTests(unittest.TestCase):
-    def test_static_site_is_valid(self) -> None:
-        validate_site(ROOT / "public")
+    def test_home_required_text(self) -> None:
+        validate_home(DIST)
 
-    def test_static_site_names_current_safety_contracts(self) -> None:
-        html = (ROOT / "public/index.html").read_text(encoding="utf-8")
+    def test_security_required_text(self) -> None:
+        validate_security(DIST)
 
-        self.assertIn("approval_digest", html)
-        self.assertIn("signing_disabled", html)
-        self.assertIn("NIP-46 bridge decisions", html)
-        self.assertIn("nsealr nip46 decide", html)
-        self.assertIn("nsealr serial-line exchange", html)
-        self.assertIn("sign-event-disabled smoke", html)
-        self.assertIn("firmware protocol evidence", html)
-        self.assertIn("Unicode fallback", html)
-        self.assertIn("review detail pages", html)
-        self.assertIn("T-Display S3 review scenario smoke", html)
-        self.assertIn("Raspberry/Pi kit requirements", html)
-        self.assertIn("Raspberry/Pi OS profile", html)
+    def test_signers_required_text(self) -> None:
+        validate_signers(DIST)
 
-    def test_static_site_names_five_first_class_signer_families(self) -> None:
-        html = (ROOT / "public/index.html").read_text(encoding="utf-8")
+    def test_no_forbidden_repo_links(self) -> None:
+        validate_global_no_forbidden_repo(DIST)
 
-        for family in (
-            "Raspberry/Pi Stateless QR Vault",
-            "ESP32 Stateless QR Vault",
-            "ESP32 USB/NIP-46 Signer",
-            "JavaCard/NFC Smartcard Signer",
-            "Custom Nostr Hardware Wallet With Persistent Secret",
-        ):
-            with self.subTest(family=family):
-                self.assertIn(family, html)
 
-    def test_static_site_links_to_raspberry_repo(self) -> None:
-        html = (ROOT / "public/index.html").read_text(encoding="utf-8")
+class FrontmatterParserTests(unittest.TestCase):
+    def test_each_signer_declares_required_text(self) -> None:
+        for mdx in SIGNERS.glob("*.mdx"):
+            with self.subTest(file=mdx.name):
+                self.assertTrue(
+                    parse_required_text_from_frontmatter(mdx),
+                    f"{mdx.name} has empty requiredText",
+                )
 
-        self.assertIn("https://github.com/nSealr/raspberry", html)
+    def test_five_signer_files_present(self) -> None:
+        names = {p.stem for p in SIGNERS.glob("*.mdx")}
+        self.assertEqual(
+            names,
+            {"raspberry-qr", "esp32-qr", "esp32-usb", "smartcard", "custom-wallet"},
+        )
 
 
 if __name__ == "__main__":
