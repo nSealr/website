@@ -1,0 +1,54 @@
+---
+family: 'esp32-usb'
+displayName: 'ESP32 USB/NIP-46 Signer'
+tagline: 'Daily-use USB/display signer firmware for ESP32-S3 first, with classic ESP32/TTGO compatibility later. Real signing still gated.'
+repo: 'https://github.com/nSealr/esp32'
+productGoal: 'A daily-use connected ESP32-S3 signer with USB/display review, optional scoped policy automation through the companion, and real signing disabled until hardening gates pass.'
+maturity: 'prototype'
+order: 3
+capabilities:
+  - { id: 'request_validation_v0',        target: 'required', current: 'implemented', contractId: 'signing-request-v0+implementation-limits-v0+invalid-vectors' }
+  - { id: 'nostr_event_review_universal', target: 'required', current: 'implemented', contractId: 'trusted-review-v0+review-detail-pages-v0' }
+  - { id: 'review_detail_pages',          target: 'optional', current: 'implemented', contractId: 'review-detail-pages-v0' }
+  - { id: 'approval_digest_binding',      target: 'required', current: 'implemented', contractId: 'approval-digest-v0' }
+  - { id: 'physical_approval',            target: 'required', current: 'partial',     contractId: 'physical-approval-v0' }
+  - { id: 'sign_event_bip340',            target: 'required', current: 'disabled_until_gates_pass', contractId: 'nostr-sign-event-bip340-v0' }
+  - { id: 'serial_usb_transport',         target: 'required', current: 'implemented', contractId: 'serial-usb-transport-v0' }
+  - { id: 'nip46_decrypted_bridge',       target: 'required', current: 'partial',     contractId: 'nip46-decrypted-bridge-v0' }
+  - { id: 'scoped_policy_automation',     target: 'required', current: 'planned',     contractId: 'scoped-policy-automation-v0' }
+  - { id: 'persistent_secret_custody',    target: 'required', current: 'planned',     contractId: 'persistent-secret-custody-v0' }
+  - { id: 'secure_boot_hardening',        target: 'required', current: 'planned',     contractId: 'firmware-boot-hardening-v0' }
+  - { id: 'response_verification',        target: 'required', current: 'implemented', contractId: 'signed-response-verification-v0' }
+  - { id: 'stateless_session_custody',    target: 'forbidden', current: 'forbidden' }
+requiredText:
+  - 'ESP32 USB/NIP-46 Signer'
+  - 'NIP-46 bridge decisions'
+  - 'nsealr nip46 decide'
+  - 'request-bound capture checks'
+  - 'nsealr serial-line exchange'
+  - 'sign-event-disabled smoke'
+  - 'companion-to-device serial smoke'
+  - 'firmware protocol evidence'
+  - 'Unicode fallback'
+  - 'signing_disabled'
+  - 'approval_digest'
+---
+
+import FeatureMatrix from '~/components/FeatureMatrix.astro';
+
+# ESP32 USB/NIP-46 Signer
+
+Daily-use connected ESP32-S3 signer with USB/display review and bridged NIP-46 inputs.
+
+## Boundaries
+
+- The companion handles **NIP-46 bridge decisions** via `nsealr nip46 decide`; the device receives already-decrypted, validated signing requests.
+- USB transport uses bounded frames with **request-bound capture checks**. Bring-up is covered by `nsealr serial-line exchange`.
+- Smoke evidence: **companion-to-device serial smoke**, **sign-event-disabled smoke**, **firmware protocol evidence**, **Unicode fallback** tracking.
+- `signing_disabled` until hardening gates pass; approvals are bound to `approval_digest`.
+
+<FeatureMatrix family="esp32-usb" />
+
+## Repository
+
+[github.com/nSealr/esp32](https://github.com/nSealr/esp32)

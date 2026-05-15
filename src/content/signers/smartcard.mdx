@@ -1,0 +1,44 @@
+---
+family: 'smartcard'
+displayName: 'JavaCard/NFC Smartcard Signer'
+tagline: 'Display-less APDU card research for key protection, not trusted event review alone.'
+repo: 'https://github.com/nSealr/smartcard'
+productGoal: 'A display-less card custody line that can sign through APDUs only after external review acknowledgement and deterministic policy checks.'
+maturity: 'research'
+order: 4
+capabilities:
+  - { id: 'request_validation_v0',         target: 'required', current: 'partial',     contractId: 'signing-request-v0+implementation-limits-v0+invalid-vectors' }
+  - { id: 'approval_digest_binding',       target: 'required', current: 'partial',     contractId: 'approval-digest-v0' }
+  - { id: 'sign_event_bip340',             target: 'required', current: 'partial',     contractId: 'nostr-sign-event-bip340-v0' }
+  - { id: 'persistent_secret_custody',     target: 'required', current: 'partial',     contractId: 'persistent-secret-custody-v0' }
+  - { id: 'smartcard_apdu',                target: 'required', current: 'implemented', contractId: 'smartcard-apdu-v0' }
+  - { id: 'external_review_acknowledgement', target: 'required', current: 'partial', contractId: 'external-review-acknowledgement-v0' }
+  - { id: 'response_verification',         target: 'required', current: 'partial',     contractId: 'signed-response-verification-v0' }
+  - { id: 'device_display_review',         target: 'not_applicable', current: 'not_applicable' }
+  - { id: 'physical_approval',             target: 'not_applicable', current: 'not_applicable' }
+  - { id: 'stateless_session_custody',     target: 'forbidden', current: 'forbidden' }
+requiredText:
+  - 'JavaCard/NFC Smartcard Signer'
+  - 'nsealr-smartcard CLI probes'
+  - 'no trusted review or real-card compatibility claim'
+---
+
+import FeatureMatrix from '~/components/FeatureMatrix.astro';
+
+# JavaCard/NFC Smartcard Signer
+
+Display-less APDU custody. The card cannot provide trusted event review by itself; external review acknowledgement is required before any APDU signing operation reaches the card.
+
+## Current evidence
+
+- Python APDU codec with `GET_PUBLIC_KEY` and `SIGN_EVENT_ID` proprietary constants.
+- secp256k1-backed simulator returning x-only public keys and signatures on 32-byte event ids.
+- **nsealr-smartcard CLI probes** for simulator and PC/SC probes; PC/SC commands fail clearly without `pyscard` or a reader.
+- Tests against shared `nSealr/specs` event-id and APDU status-word rejection vectors.
+- **No trusted review or real-card compatibility claim** yet.
+
+<FeatureMatrix family="smartcard" />
+
+## Repository
+
+[github.com/nSealr/smartcard](https://github.com/nSealr/smartcard)

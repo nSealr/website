@@ -1,0 +1,35 @@
+---
+family: 'custom-wallet'
+displayName: 'Custom Nostr Hardware Wallet With Persistent Secret'
+tagline: 'Advanced persistent-secret research for custom boards and secure-element-assisted designs; direct TROPIC01 Schnorr remains unproven.'
+repo: 'https://github.com/nSealr/hardware'
+productGoal: 'A research family for a purpose-built persistent-secret Nostr hardware wallet, including custom ESP32-S3 boards, secure-element-assisted prototypes, and firmware hardening.'
+maturity: 'research'
+order: 5
+capabilities:
+  - { id: 'request_validation_v0',        target: 'required', current: 'planned',  contractId: 'signing-request-v0+implementation-limits-v0+invalid-vectors' }
+  - { id: 'nostr_event_review_universal', target: 'required', current: 'planned',  contractId: 'trusted-review-v0+review-detail-pages-v0' }
+  - { id: 'review_detail_pages',          target: 'required', current: 'planned',  contractId: 'review-detail-pages-v0' }
+  - { id: 'approval_digest_binding',      target: 'required', current: 'planned',  contractId: 'approval-digest-v0' }
+  - { id: 'physical_approval',            target: 'required', current: 'planned',  contractId: 'physical-approval-v0' }
+  - { id: 'sign_event_bip340',            target: 'required', current: 'research', contractId: 'nostr-sign-event-bip340-v0' }
+  - { id: 'persistent_secret_custody',    target: 'required', current: 'research', contractId: 'persistent-secret-custody-v0' }
+  - { id: 'secure_boot_hardening',        target: 'required', current: 'research', contractId: 'firmware-boot-hardening-v0' }
+  - { id: 'device_display_review',        target: 'required', current: 'planned',  contractId: 'device-display-review-v0' }
+  - { id: 'response_verification',        target: 'required', current: 'planned',  contractId: 'signed-response-verification-v0' }
+  - { id: 'stateless_session_custody',    target: 'forbidden', current: 'forbidden' }
+requiredText:
+  - 'Custom Nostr Hardware Wallet With Persistent Secret'
+---
+
+import FeatureMatrix from '~/components/FeatureMatrix.astro';
+
+# Custom Nostr Hardware Wallet With Persistent Secret
+
+Research family for a purpose-built persistent-secret Nostr hardware wallet: custom ESP32-S3 boards, secure-element-assisted prototypes, and firmware hardening. The default research path is host-MCU signing unless secure-element direct BIP-340 (e.g. TROPIC01 Schnorr) is independently proven.
+
+<FeatureMatrix family="custom-wallet" />
+
+## Repository
+
+Open hardware: [github.com/nSealr/hardware](https://github.com/nSealr/hardware). ESP32 firmware references: [github.com/nSealr/esp32](https://github.com/nSealr/esp32).

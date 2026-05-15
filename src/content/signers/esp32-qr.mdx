@@ -1,0 +1,53 @@
+---
+family: 'esp32-qr'
+displayName: 'ESP32 Stateless QR Vault'
+tagline: 'Air-gapped ESP32-S3 camera/display signer line; T-Display S3 Pro OV5640 candidate, no persistent secret.'
+repo: 'https://github.com/nSealr/esp32'
+productGoal: 'An airgapped ESP32-S3 QR signer with camera, display, local controls, RAM-only key custody, and behavior matching the Raspberry QR vault where features overlap.'
+maturity: 'prototype'
+order: 2
+capabilities:
+  - { id: 'request_validation_v0',        target: 'required', current: 'implemented', contractId: 'signing-request-v0+implementation-limits-v0+invalid-vectors' }
+  - { id: 'nostr_event_review_universal', target: 'required', current: 'implemented', contractId: 'trusted-review-v0+review-detail-pages-v0' }
+  - { id: 'review_detail_pages',          target: 'required', current: 'implemented', contractId: 'review-detail-pages-v0' }
+  - { id: 'approval_digest_binding',      target: 'required', current: 'implemented', contractId: 'approval-digest-v0' }
+  - { id: 'physical_approval',            target: 'required', current: 'partial',     contractId: 'physical-approval-v0' }
+  - { id: 'sign_event_bip340',            target: 'required', current: 'disabled_until_gates_pass', contractId: 'nostr-sign-event-bip340-v0' }
+  - { id: 'qr_static_request',            target: 'required', current: 'partial',     contractId: 'qr-envelope-static-v0' }
+  - { id: 'qr_animated_request',          target: 'required', current: 'partial',     contractId: 'qr-envelope-animated-v0' }
+  - { id: 'qr_response',                  target: 'required', current: 'planned',     contractId: 'qr-response-v0' }
+  - { id: 'stateless_session_custody',    target: 'required', current: 'planned',     contractId: 'stateless-session-custody-v0' }
+  - { id: 'manual_only_policy',           target: 'required', current: 'implemented', contractId: 'manual-only-approval-policy-v0' }
+  - { id: 'device_display_review',        target: 'required', current: 'partial',     contractId: 'device-display-review-v0' }
+  - { id: 'response_verification',        target: 'required', current: 'planned',     contractId: 'signed-response-verification-v0' }
+  - { id: 'secure_boot_hardening',        target: 'optional', current: 'planned',     contractId: 'firmware-boot-hardening-v0' }
+requiredText:
+  - 'ESP32 Stateless QR Vault'
+  - 'T-Display S3 review scenario smoke'
+  - 'signing_disabled'
+  - 'approval_digest'
+  - 'firmware protocol evidence'
+  - 'Unicode fallback'
+---
+
+import FeatureMatrix from '~/components/FeatureMatrix.astro';
+
+# ESP32 Stateless QR Vault
+
+Air-gapped ESP32-S3 camera + display signer. Behavior parity with the Raspberry QR vault is enforced through shared `contract_id`s in `nSealr/specs`.
+
+## Hardware target
+
+- Primary candidate: **T-Display S3 Pro OV5640** (camera + display).
+- Secondary target: Waveshare `ESP32-S3-Touch-LCD-3.5B-C`.
+- Production-readiness gates: real camera ingestion, display acceptance, button drivers, provisioning.
+
+## Current status
+
+Real `sign_event` is **`signing_disabled`** in development firmware until all hardening, display, button, and provisioning gates pass. The **T-Display S3 review scenario smoke** confirms host-core review frames render correctly; this is **development evidence**, not a production trusted-display claim. Approvals are bound to `approval_digest`. **Firmware protocol evidence** and **Unicode fallback** tracking are recorded in `nSealr/esp32`.
+
+<FeatureMatrix family="esp32-qr" />
+
+## Repository
+
+[github.com/nSealr/esp32](https://github.com/nSealr/esp32)

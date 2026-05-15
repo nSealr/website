@@ -1,0 +1,62 @@
+---
+family: 'raspberry-qr'
+displayName: 'Raspberry/Pi Stateless QR Vault'
+tagline: 'Air-gapped RAM-only Raspberry/Pi flow inspired by SeedSigner principles for Nostr events.'
+repo: 'https://github.com/nSealr/raspberry'
+productGoal: 'A SeedSigner-like airgapped Nostr signer for Raspberry/Pi hardware with RAM-only key custody and QR request/response workflows.'
+maturity: 'alpha'
+order: 1
+capabilities:
+  - { id: 'request_validation_v0',        target: 'required', current: 'implemented', contractId: 'signing-request-v0+implementation-limits-v0+invalid-vectors' }
+  - { id: 'nostr_event_review_universal', target: 'required', current: 'implemented', contractId: 'trusted-review-v0+review-detail-pages-v0' }
+  - { id: 'review_detail_pages',          target: 'required', current: 'implemented', contractId: 'review-detail-pages-v0' }
+  - { id: 'approval_digest_binding',      target: 'required', current: 'implemented', contractId: 'approval-digest-v0' }
+  - { id: 'physical_approval',            target: 'required', current: 'partial',     contractId: 'physical-approval-v0' }
+  - { id: 'sign_event_bip340',            target: 'required', current: 'implemented', contractId: 'nostr-sign-event-bip340-v0' }
+  - { id: 'qr_static_request',            target: 'required', current: 'implemented', contractId: 'qr-envelope-static-v0' }
+  - { id: 'qr_animated_request',          target: 'required', current: 'implemented', contractId: 'qr-envelope-animated-v0' }
+  - { id: 'qr_response',                  target: 'required', current: 'implemented', contractId: 'qr-response-v0' }
+  - { id: 'stateless_session_custody',    target: 'required', current: 'partial',     contractId: 'stateless-session-custody-v0' }
+  - { id: 'manual_only_policy',           target: 'required', current: 'implemented', contractId: 'manual-only-approval-policy-v0' }
+  - { id: 'device_display_review',        target: 'required', current: 'partial',     contractId: 'device-display-review-v0' }
+  - { id: 'response_verification',        target: 'required', current: 'implemented', contractId: 'signed-response-verification-v0' }
+  - { id: 'persistent_secret_custody',    target: 'forbidden', current: 'forbidden' }
+  - { id: 'scoped_policy_automation',     target: 'forbidden', current: 'forbidden' }
+requiredText:
+  - 'Raspberry/Pi Stateless QR Vault'
+  - 'Raspberry/Pi kit requirements'
+  - 'Raspberry/Pi OS profile'
+  - 'review detail pages'
+  - 'approval_digest'
+---
+
+import FeatureMatrix from '~/components/FeatureMatrix.astro';
+
+# Raspberry/Pi Stateless QR Vault
+
+A SeedSigner-style air-gapped Nostr signer for Raspberry/Pi hardware. Secret material lives in RAM only for the current signing session and is wiped when the device powers off. Every request and response moves over QR; no wireless, no host link.
+
+## Hardware target
+
+The primary kit follows the SeedSigner Pi Zero pattern:
+
+- Pi Zero-class board.
+- Pi/ZeroCam OV5647 camera.
+- Waveshare-compatible ST7789 240×240 LCD HAT.
+- GPIO joystick / buttons.
+- Removable microSD boot media.
+- SeedSigner-OS-inspired minimal runtime (**Raspberry/Pi OS profile**: removable boot media, disabled or absent wireless, RAM-only session custody, no swap during signing, no remote access during signing, no persistent signing-secret storage).
+
+Pi 3/4/5 variants can be development or accessibility targets later only if they preserve the same offline QR, local review, physical approval, and RAM-only custody boundary. See the **Raspberry/Pi kit requirements** in `nSealr/hardware`.
+
+## Capabilities
+
+<FeatureMatrix family="raspberry-qr" />
+
+## Trust boundary
+
+The companion is not trusted with key custody — it routes static and animated `nsealr1:` QR requests to the device and verifies signed responses against `nSealr/specs` fixtures. The vault performs trusted display **review detail pages** so long content and tags reach the user without truncation, binds the local approval action to the exact reviewed material through `approval_digest`, and signs BIP-340/secp256k1.
+
+## Repository
+
+[github.com/nSealr/raspberry](https://github.com/nSealr/raspberry)
