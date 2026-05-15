@@ -1,0 +1,80 @@
+---
+title: 'Why a hardware signer for Nostr?'
+description: 'Where the private key actually lives is the only honest answer to "is this account safe?". Hardware signers move that answer to a place where review and approval are explicit.'
+publishedAt: 2026-05-15
+category: 'research'
+tags: ['nostr', 'hardware', 'threat-model']
+authors:
+  - nsealr-core
+---
+
+A Nostr account is just a keypair. Whoever holds the secret key can speak
+as you, forever, with no recovery path. The interesting question is
+therefore not "is Nostr secure?" — it is **where does my key live, and
+what does it take to use it?**
+
+## Soft signers leak the key into too many places
+
+When the key lives in a browser extension or a copy-pasted `nsec`, the
+answer is "everywhere":
+
+- inside every page the extension touches (NIP-07 reads),
+- inside every relay-side bridge that asks for a signature (NIP-46
+  client),
+- inside every backup file you forgot you made,
+- inside whatever clipboard manager auto-archived the `nsec` you typed
+  once.
+
+Each of those places is a different attack surface, and most of them
+sign without showing you what they are signing. A compromise of any one
+of them is a permanent account takeover.
+
+## Hardware signers move the secret behind a boundary
+
+A hardware signer changes the model from *"the key is everywhere a
+program can read it"* to *"the key is inside a device, and to use it
+something physical has to happen"*. nSealr makes that boundary explicit
+through five solutions:
+
+- **stateless QR vaults** (Raspberry/Pi, ESP32) — secret only in RAM for
+  the current session, no network at all, every signing decision happens
+  on a trusted display through a physical button;
+- **USB/NIP-46 signer** — daily-use connected device with a display,
+  reviewing every request before signing;
+- **smartcard** — persistent secret in a card, where the *external*
+  reviewer acknowledges what is being signed before the APDU goes out;
+- **custom hardware wallet** — research line for purpose-built
+  persistent-secret hardware.
+
+## What that actually buys you
+
+A hardware boundary is not magic. It does not eliminate trust, it
+relocates it. The wins are concrete:
+
+1. **The host can lie, the device cannot be silently bypassed.** A
+   compromised companion or client can show you a fake event template,
+   but the device renders its own review screen bound to the exact bytes
+   it will sign through <code>approval_digest</code>. Lying to the screen
+   would also corrupt the signature.
+2. **No automatic signing.** Every <code>sign_event</code> requires a
+   physical approval gesture, distinct from navigation, connection, or
+   request receipt.
+3. **No accidental key extraction.** The signer exposes
+   <code>sign_event</code>, not <code>export_key</code>. The host never
+   sees the secret.
+
+## What it does not yet buy you
+
+This is pre-production research. <code>signing_disabled</code> is the
+default on every prototype firmware until camera, display, button,
+provisioning, and secure-boot gates pass independently. See the
+[security page](/security/) and the per-solution maturity in
+[docs/signers](/docs/signers/raspberry-qr/).
+
+A hardware signer is not safer because the box is shiny. It is safer
+because the trust boundary is documented, reviewable, and the same
+across implementations through shared
+[`contract_id`](https://github.com/nSealr/specs)s in
+<code>nSealr/specs</code>.
+
+That is the whole point.

@@ -1,0 +1,83 @@
+---
+title: 'approval_digest: binding what you reviewed to what you sign'
+description: 'A hardware signer is only as honest as the link between the screen you read and the bytes the device puts a signature on. approval_digest is the contract that makes that link non-forgeable.'
+publishedAt: 2026-05-14
+category: 'research'
+tags: ['contracts', 'security', 'approval-digest']
+authors:
+  - nsealr-core
+---
+
+A trusted display is necessary but not sufficient. If the firmware can
+display screen A and sign payload B, the display is worth nothing.
+nSealr closes that gap with one specific contract:
+<code>approval_digest</code>.
+
+## The contract
+
+`approval_digest` is a deterministic hash over the **exact canonical
+material the user reviewed**: signer pubkey, event kind, `created_at`,
+the full unmodified content, the complete tag list (including detail
+pages for long fields), the request id, and the review context.
+
+The local approval action — pressing a physical button, completing an
+on-card acknowledgement — is bound to that digest. The signer refuses to
+emit a signature whose underlying serialization does not reproduce the
+same digest. Any drift between "what was shown" and "what gets signed"
+fails closed.
+
+```sh
+# companion, when verifying a signed response:
+$ nsealr verify --request req.json --response resp.json
+✓ event id matches BIP-340 signature
+✓ approval_digest matches reviewed material
+```
+
+If the second line fails, the response is rejected even if the BIP-340
+signature is mathematically valid. No display, no signature.
+
+## What it specifically prevents
+
+- **Host-side template swap.** A compromised client cannot show you
+  benign metadata then sneak a different `kind` or different tags into
+  the bytes the device signs — the digest would not match.
+- **Unicode look-alikes inside content.** Long content goes through the
+  review-detail-page contract; the digest covers the same canonical
+  bytes the user sees, with explicit `Unicode fallback` for codepoints
+  the display cannot render.
+- **Replay across contexts.** The digest includes the request id and
+  review context, so an approval gesture for request A cannot authorize
+  signing request B.
+
+## Why it lives in the shared specs and not in each firmware
+
+Every signer solution that claims trusted review uses the same
+`approval-digest-v0` contract from
+[`nSealr/specs`](https://github.com/nSealr/specs). Raspberry/Pi
+QR vault, ESP32 QR vault, ESP32 USB/NIP-46 signer, and (for displayful
+hardware) the custom wallet line — they share the contract, so swapping
+the hardware does not silently downgrade the safety story.
+
+Display-less solutions are an exception: a smartcard cannot bind a
+review it cannot show. The smartcard line therefore depends on the
+`external-review-acknowledgement-v0` contract instead — an explicit
+external reviewer takes responsibility for binding what was reviewed to
+the APDU that gets sent.
+
+## Status today
+
+The `approval_digest` contract is **implemented** on:
+
+- Raspberry/Pi stateless QR vault,
+- ESP32 stateless QR vault (host-core review flow),
+- ESP32 USB/NIP-46 signer (disabled-signing development firmware).
+
+It is **partial** on smartcard (acknowledgement plumbing under
+development) and **planned** on the custom hardware-wallet line. See
+the [feature matrix per solution](/docs/signers/raspberry-qr/) for the
+exact target/current status.
+
+The point of writing this down: when someone asks "what does the
+hardware actually guarantee?" the answer is not "we promise" — the
+answer is a `contract_id` you can read, vectors you can run, and a
+digest the device refuses to lie about.
