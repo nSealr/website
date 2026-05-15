@@ -7,23 +7,21 @@ const CATEGORY_COLOR: Record<string, string> = {
   release: 'var(--ok)',
   research: 'var(--accent-soft)',
   tutorial: 'var(--pending)',
-  news: 'var(--fg-muted)'
+  news: 'var(--fg-muted)',
 };
 ---
 <ul class="post-list">
   {posts.map(p => (
-    <li>
-      <a href={`/blog/${p.id}/`} class="post-card">
-        <div class="meta">
-          <span class="cat" style={`--cat: ${CATEGORY_COLOR[p.data.category]}`}>{p.data.category}</span>
-          <time datetime={p.data.publishedAt.toISOString()}>{p.data.publishedAt.toISOString().slice(0,10)}</time>
-        </div>
-        <h3>{p.data.title}</h3>
-        <p class="excerpt">{p.data.description}</p>
-        {p.data.tags.length > 0 && (
-          <div class="tags">{p.data.tags.map(t => <TagPill tag={t} href={`/blog/tags/${t}/`} />)}</div>
-        )}
-      </a>
+    <li class="post-card">
+      <div class="meta">
+        <a class="cat" style={`--cat: ${CATEGORY_COLOR[p.data.category]}`} href={`/blog/categories/${p.data.category}/`}>{p.data.category}</a>
+        <time datetime={p.data.publishedAt.toISOString()}>{p.data.publishedAt.toISOString().slice(0,10)}</time>
+      </div>
+      <h3><a href={`/blog/${p.id}/`}>{p.data.title}</a></h3>
+      <p class="excerpt">{p.data.description}</p>
+      {p.data.tags.length > 0 && (
+        <div class="tags">{p.data.tags.map(t => <TagPill tag={t} href={`/blog/tags/${t}/`} />)}</div>
+      )}
     </li>
   ))}
 </ul>
@@ -34,13 +32,21 @@ const CATEGORY_COLOR: Record<string, string> = {
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     background: var(--bg-elevated);
-    text-decoration: none; color: var(--fg);
-    transition: border-color 120ms, transform 120ms;
+    color: var(--fg);
+    transition: border-color 120ms;
   }
-  .post-card:hover { border-color: var(--accent); transform: translateY(-1px); }
-  .meta { display: flex; gap: 12px; font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); margin-bottom: 6px; }
-  .cat { color: var(--cat); text-transform: lowercase; }
-  h3 { font-family: var(--font-mono); margin: 0 0 6px; color: var(--fg-strong); font-size: 18px; }
+  .post-card:hover { border-color: var(--accent); }
+  .meta { display: flex; gap: 12px; font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); margin-bottom: 6px; align-items: center; }
+  .meta .cat {
+    color: var(--cat); text-transform: lowercase;
+    text-decoration: none;
+    border: 1px solid color-mix(in oklab, var(--cat) 35%, transparent);
+    padding: 1px 8px; border-radius: var(--radius-pill);
+  }
+  .meta .cat:hover { background: color-mix(in oklab, var(--cat) 12%, transparent); }
+  h3 { font-family: var(--font-mono); margin: 0 0 6px; font-size: 18px; }
+  h3 a { color: var(--fg-strong); text-decoration: none; }
+  h3 a:hover { color: var(--accent-soft); }
   .excerpt { margin: 0 0 10px; color: var(--fg-muted); font-size: 14px; }
   .tags { display: flex; gap: 6px; flex-wrap: wrap; }
 </style>

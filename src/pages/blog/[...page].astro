@@ -1,0 +1,113 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BlogList from '~/components/BlogList.astro';
+import PrevNext from '~/components/PrevNext.astro';
+import { getCollection } from 'astro:content';
+import type { GetStaticPathsOptions } from 'astro';
+
+const TAG_CHIPS_LIMIT = 12;
+
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+  const allPosts = (await getCollection('blog', ({ data }) => !data.draft || import.meta.env.DEV))
+    .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+
+  // Collect aggregate filter data once and pass via props to every page.
+  const categoryCounts = new Map<string, number>();
+  const tagCounts = new Map<string, number>();
+  for (const p of allPosts) {
+    categoryCounts.set(p.data.category, (categoryCounts.get(p.data.category) ?? 0) + 1);
+    for (const t of p.data.tags) tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
+  }
+  const categories = Array.from(categoryCounts.entries()).sort((a, b) => b[1] - a[1]);
+  const tags = Array.from(tagCounts.entries()).sort((a, b) => b[1] - a[1]);
+
+  return paginate(allPosts, {
+    pageSize: 10,
+    props: { categories, tags, totalPosts: allPosts.length },
+  });
+}
+
+const { page, categories, tags, totalPosts } = Astro.props as {
+  page: import('astro').Page<import('astro:content').CollectionEntry<'blog'>>;
+  categories: [string, number][];
+  tags: [string, number][];
+  totalPosts: number;
+};
+const visibleTags = tags.slice(0, TAG_CHIPS_LIMIT);
+const hiddenTagsCount = Math.max(0, tags.length - TAG_CHIPS_LIMIT);
+---
+<BaseLayout
+  title={page.currentPage === 1 ? 'Blog — nSealr' : `Blog · page ${page.currentPage} — nSealr`}
+  description="Release notes, research, tutorials, and news from the nSealr program."
+>
+  <section class="container">
+    <p class="eyebrow">// blog</p>
+    <h1>Notes on the program.</h1>
+    <p class="lead">Release notes, research, tutorials, and news from nSealr signers, companion, and specs.</p>
+
+    {page.currentPage === 1 && (
+      <>
+        <div class="filter-block">
+          <p class="filter-label">Filter by category</p>
+          <div class="filters">
+            <a href="/blog/" class="active">all <span class="n">{totalPosts}</span></a>
+            {categories.map(([c, n]) => (
+              <a href={`/blog/categories/${c}/`}>{c} <span class="n">{n}</span></a>
+            ))}
+          </div>
+        </div>
+
+        {tags.length > 0 && (
+          <div class="filter-block">
+            <p class="filter-label">Filter by tag</p>
+            <div class="filters">
+              {visibleTags.map(([t, n]) => (
+                <a href={`/blog/tags/${t}/`}>#{t} <span class="n">{n}</span></a>
+              ))}
+              {hiddenTagsCount > 0 && (
+                <a class="see-more" href="/blog/tags/">+{hiddenTagsCount} more →</a>
+              )}
+            </div>
+          </div>
+        )}
+      </>
+    )}
+
+    <BlogList posts={page.data} />
+
+    <PrevNext
+      prev={page.url.prev ? { href: page.url.prev, title: `Page ${page.currentPage - 1}`, label: 'Newer posts' } : undefined}
+      next={page.url.next ? { href: page.url.next, title: `Page ${page.currentPage + 1}`, label: 'Older posts' } : undefined}
+    />
+
+    <p class="rss-row"><a href="/blog/rss.xml">RSS feed →</a></p>
+  </section>
+</BaseLayout>
+
+<style>
+  .container { padding-block: 60px; max-width: 880px; }
+  h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(28px, 4vw, 44px); margin: 8px 0 12px; }
+  .lead { color: var(--fg-muted); font-size: 17px; max-width: 64ch; margin: 0 0 22px; }
+  .filter-block { margin-bottom: 16px; }
+  .filter-label {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--fg-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin: 0 0 6px;
+  }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 12px; }
+  .filters a {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--fg-muted); border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: var(--radius-pill);
+    text-decoration: none;
+    transition: color 120ms, border-color 120ms;
+  }
+  .filters a:hover { color: var(--accent-soft); border-color: var(--accent); }
+  .filters a.active { color: var(--accent-soft); border-color: var(--accent); background: var(--accent-bg); }
+  .filters a .n { color: var(--fg-muted); font-size: 10px; }
+  .filters a:hover .n, .filters a.active .n { color: var(--accent-soft); }
+  .filters a.see-more { color: var(--accent-soft); border-style: dashed; }
+  .rss-row { margin-top: 28px; font-family: var(--font-mono); font-size: 12px; }
+  .rss-row a { color: var(--accent-soft); }
+</style>
