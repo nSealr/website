@@ -1,0 +1,132 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props { currentHref?: string; }
+const { currentHref } = Astro.props;
+
+const CATEGORY_ORDER = ['release', 'research', 'tutorial', 'news'] as const;
+const CATEGORY_LABEL: Record<typeof CATEGORY_ORDER[number], string> = {
+  release: 'Releases',
+  research: 'Research',
+  tutorial: 'Tutorials',
+  news: 'News',
+};
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft || import.meta.env.DEV))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+
+const grouped = CATEGORY_ORDER.map(cat => ({
+  category: cat,
+  label: CATEGORY_LABEL[cat],
+  items: posts.filter(p => p.data.category === cat),
+})).filter(g => g.items.length > 0);
+---
+<details class="blog-sidebar" aria-label="Blog posts">
+  <summary>
+    <span class="label">All posts</span>
+    <span class="count">{posts.length}</span>
+    <span class="chevron" aria-hidden="true">▾</span>
+  </summary>
+  <nav>
+    {grouped.map(group => (
+      <section>
+        <h3>{group.label}</h3>
+        <ul>
+          {group.items.map(p => {
+            const href = `/blog/${p.id}/`;
+            return (
+              <li>
+                <a href={href} class={href === currentHref ? 'current' : ''}>
+                  <span class="title">{p.data.title}</span>
+                  <time datetime={p.data.publishedAt.toISOString()}>{p.data.publishedAt.toISOString().slice(0, 10)}</time>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    ))}
+    <section class="rss-row">
+      <a href="/blog/rss.xml">RSS feed →</a>
+    </section>
+  </nav>
+</details>
+<style>
+  .blog-sidebar {
+    font-family: var(--font-mono); font-size: 13px;
+    padding: 12px 0;
+    border-right: 1px solid var(--border);
+  }
+  .blog-sidebar summary {
+    list-style: none; cursor: pointer;
+    padding: 8px 12px;
+    display: none;
+    align-items: center; gap: 8px;
+    color: var(--fg-strong); font-weight: 600;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-elevated);
+    margin: 0 0 8px;
+  }
+  .blog-sidebar summary::-webkit-details-marker { display: none; }
+  .blog-sidebar summary .count {
+    color: var(--fg-muted); font-size: 11px;
+    border: 1px solid var(--border); padding: 1px 6px;
+    border-radius: var(--radius-pill);
+    margin-left: auto;
+  }
+  .blog-sidebar summary .chevron { transition: transform 150ms; color: var(--accent-soft); }
+  .blog-sidebar[open] summary .chevron { transform: rotate(180deg); }
+
+  .blog-sidebar nav { padding: 12px 0; }
+  .blog-sidebar section { padding: 8px 16px; }
+  .blog-sidebar section.rss-row { padding-top: 16px; border-top: 1px dashed var(--border); margin-top: 12px; }
+  .blog-sidebar section.rss-row a { color: var(--accent-soft); font-size: 12px; }
+  .blog-sidebar h3 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--fg-muted); margin: 6px 0 8px;
+  }
+  .blog-sidebar ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+  .blog-sidebar li a {
+    display: grid; gap: 2px;
+    color: var(--fg-muted); text-decoration: none;
+    padding: 6px 8px; border-radius: var(--radius-sm);
+    border-left: 2px solid transparent;
+  }
+  .blog-sidebar li a:hover {
+    color: var(--fg-strong); background: var(--bg-elevated);
+    border-left-color: var(--border-strong);
+  }
+  .blog-sidebar li a.current {
+    color: var(--accent-soft); background: var(--accent-bg);
+    border-left-color: var(--accent);
+  }
+  .blog-sidebar li .title {
+    color: inherit; font-weight: 600;
+    overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    line-clamp: 2;
+  }
+  .blog-sidebar li time {
+    color: var(--fg-muted); font-size: 11px;
+  }
+
+  /* Desktop: always-on sidebar */
+  @media (min-width: 961px) {
+    .blog-sidebar summary { display: none !important; }
+    .blog-sidebar > nav { display: block !important; }
+  }
+
+  /* Mobile: collapsible */
+  @media (max-width: 960px) {
+    .blog-sidebar { border-right: 0; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+    .blog-sidebar summary { display: flex; }
+    .blog-sidebar nav {
+      max-height: 50vh; overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg);
+      padding: 4px 0;
+    }
+  }
+</style>

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
+import DocsSidebar from '~/components/DocsSidebar.astro';
 import { getDocsNav } from '~/lib/docs-nav';
 
 const nav = await getDocsNav();
@@ -16,50 +17,68 @@ const SECTION_DESC: Record<string, string> = {
 function spanFor(count: number): 1 | 2 {
   return count >= 4 ? 2 : 1;
 }
+
+const currentHref = Astro.url.pathname;
 ---
 <BaseLayout
   title="Docs — nSealr"
   description="Documentation, build guides, per-solution status, specs reference, and security model for nSealr."
 >
-  <section class="container">
-    <p class="eyebrow">// docs</p>
-    <h1>Documentation.</h1>
-    <p class="lead">
-      Build guides, per-solution status, protocol references, and the
-      security model. Every signer solution shares the same
-      <code>contract_id</code>s from
-      <a href="https://github.com/nSealr/specs">nSealr/specs</a>.
-    </p>
+  <div class="docs-index-shell container">
+    <DocsSidebar currentHref={currentHref} />
 
-    <div class="grid">
-      {nav.filter(g => g.items.length > 0).map(group => (
-        <article class={`card span-${spanFor(group.items.length)}`}>
-          <header>
-            <div class="head-line">
-              <span class="eyebrow">{group.section}</span>
-              <span class="count" aria-label={`${group.items.length} pages`}>{group.items.length} {group.items.length === 1 ? 'page' : 'pages'}</span>
-            </div>
-            <h2>{group.label}</h2>
-            <p class="muted">{SECTION_DESC[group.section]}</p>
-          </header>
-          <ul>
-            {group.items.map(item => (
-              <li>
-                <a href={item.href}>
-                  <span class="title">{item.title}</span>
-                  <span class="arrow" aria-hidden="true">→</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </article>
-      ))}
-    </div>
-  </section>
+    <main class="content">
+      <p class="eyebrow">// docs</p>
+      <h1>Documentation.</h1>
+      <p class="lead">
+        Build guides, per-solution status, protocol references, and the
+        security model. Every signer solution shares the same
+        <code>contract_id</code>s from
+        <a href="https://github.com/nSealr/specs">nSealr/specs</a>.
+      </p>
+
+      <div class="grid">
+        {nav.filter(g => g.items.length > 0).map(group => (
+          <article class={`card span-${spanFor(group.items.length)}`}>
+            <header>
+              <div class="head-line">
+                <span class="eyebrow">{group.section}</span>
+                <span class="count" aria-label={`${group.items.length} pages`}>{group.items.length} {group.items.length === 1 ? 'page' : 'pages'}</span>
+              </div>
+              <h2>{group.label}</h2>
+              <p class="muted">{SECTION_DESC[group.section]}</p>
+            </header>
+            <ul>
+              {group.items.map(item => (
+                <li>
+                  <a href={item.href}>
+                    <span class="title">{item.title}</span>
+                    <span class="arrow" aria-hidden="true">→</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </main>
+  </div>
 </BaseLayout>
 
 <style>
-  .container { padding-block: 60px; max-width: 1180px; }
+  .docs-index-shell {
+    display: grid; gap: clamp(20px, 3vw, 40px);
+    grid-template-columns: 240px minmax(0, 1fr);
+    align-items: start;
+    padding-block: 28px 60px;
+    max-width: 1280px;
+  }
+  @media (max-width: 960px) {
+    .docs-index-shell { grid-template-columns: 1fr; }
+  }
+
+  .content { min-width: 0; padding-top: 12px; }
+
   h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(28px, 4vw, 44px); margin: 8px 0 14px; }
   .lead { color: var(--fg-muted); font-size: 17px; max-width: 64ch; margin: 0 0 36px; }
   .lead code { background: var(--accent-bg); color: var(--accent-soft); border: 0; padding: 1px 6px; border-radius: var(--radius-sm); }
@@ -70,7 +89,7 @@ function spanFor(count: number): 1 | 2 {
     gap: 18px;
     grid-auto-flow: dense;
   }
-  @media (max-width: 880px) {
+  @media (max-width: 1080px) {
     .grid { grid-template-columns: 1fr; }
   }
 
@@ -80,11 +99,11 @@ function spanFor(count: number): 1 | 2 {
     background: var(--bg-elevated);
     padding: 24px 26px;
     display: flex; flex-direction: column; gap: 16px;
-    transition: border-color 120ms, transform 120ms;
+    transition: border-color 120ms;
   }
   .card:hover { border-color: var(--border-strong); }
   .card.span-2 { grid-column: span 2; }
-  @media (max-width: 880px) {
+  @media (max-width: 1080px) {
     .card.span-2 { grid-column: span 1; }
   }
 
@@ -112,7 +131,6 @@ function spanFor(count: number): 1 | 2 {
     display: grid; gap: 2px;
   }
   .card.span-2 ul {
-    /* two-column dense layout for the heavy section (signers) */
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 2px 16px;
   }
