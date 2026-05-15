@@ -2,15 +2,39 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
 jobs:
-  verify:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - run: make ci
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Astro check
+        run: pnpm exec astro check
+      - name: Build
+        run: pnpm run build
+      - name: Validate site
+        run: python3 scripts/validate_site.py
+      - name: Unit tests
+        run: python3 -m unittest discover -s tests
+      - name: Link check
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --exclude-mail dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist

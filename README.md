@@ -2,102 +2,99 @@
 
 Public website and documentation hub for nSealr.
 
-The website should explain the project without turning the core work into a
-proprietary product. It should make the open-source hardware/software program
-understandable, reproducible, and easy to join.
+Non-profit, open-source program for Nostr signing devices. The site
+explains the program without turning the core work into a proprietary
+product.
 
-## Goals
+## Stack
 
-- Present nSealr as a non-profit open-source signer ecosystem.
-- Explain the main product shape: companion software plus multiple signer
-  implementations.
-- Describe per-family features from the shared specs feature matrix rather
-  than inventing public-only feature claims.
-- Publish status pages for each first-class signer family and supporting
-  infrastructure track.
-- Link to specs, lab research, firmware, hardware, and smartcard work.
-- Host build guides, security notes, and release documentation.
-- Avoid marketing claims before prototypes are independently tested.
+- **Astro 5** (static output) + TypeScript strict.
+- **Markdown / MDX content collections** — `blog`, `docs`, `signers`,
+  `authors` — validated by Zod schemas at build time. Bad frontmatter
+  fails the build.
+- **JetBrains Mono + Inter** (variable, self-hosted from
+  `public/fonts/`).
+- **Light / dark theme** with Nostr purple `#8E30EB` as the primary
+  accent. Toggle persists in `localStorage`, respects
+  `prefers-color-scheme` on first load, no FOUC.
+- **Pagefind** for static client-side search.
+- **Shiki** for syntax highlighting (dual-theme: `github-dark-dimmed`
+  + `min-light`).
+- **Vercel** preset with strict CSP, immutable cache for `/_astro/*`
+  and `/fonts/*`. The CSP `script-src` hash is computed from
+  `src/scripts/theme-init.ts` by `scripts/compute_csp_hash.mjs` at
+  every build, so `vercel.json` stays in sync.
 
-## Initial Site Sections
-
-- `Overview`: what nSealr is and why hardware signing matters for Nostr.
-- `Use`: how users will connect a client, companion, and signer.
-- `Build`: reproducible build guides for each hardware line.
-- `Security`: threat model, trust boundaries, and known limitations.
-- `Roadmap`: current maturity of companion, Raspberry/Pi stateless QR, ESP32
-  stateless QR, ESP32 USB/NIP-46, smartcard, custom hardware-wallet, and
-  hardware artifact work.
-- `Developers`: specs, test vectors, transports, and contribution paths.
-
-## Current Capabilities
-
-- Static first page under `public/index.html`.
-- System-map visual explaining client, companion, and the five first-class
-  signer families.
-- Honest maturity status for specs, companion, Raspberry/Pi, ESP32 stateless
-  QR, ESP32 USB/NIP-46, JavaCard/NFC smartcard, custom hardware-wallet, and
-  hardware work.
-- Current companion status copy for NIP-46 bridge decisions, the
-  `nsealr nip46 decide` harness, request-bound serial capture checks, and
-  `nsealr serial-line exchange` bring-up evidence.
-- Current shared review detail-page, Raspberry/Pi kit-requirement, and
-  Raspberry/Pi OS profile status copy without production security claims.
-- Current ESP32 T-Display S3 review scenario smoke status while preserving the
-  `signing_disabled` and pre-production safety boundary, plus companion-to-
-  device serial smoke, sign-event-disabled smoke, firmware protocol evidence,
-  and Unicode fallback status.
-- Current smartcard status copy for APDU simulator and `nsealr-smartcard` CLI
-  probes without trusted-review or real-card compatibility claims.
-- Public-facing feature status should track `nSealr/specs`
-  `vectors/features/signer-feature-matrix-v0.json`: a signer family can expose
-  more or fewer features, but the same feature must have the same behavior when
-  present on multiple implementations.
-- Site validation script that checks required text, local asset links, and
-  unsupported production security claims.
-
-## Candidate Stack
-
-Astro is the default candidate for the first implementation because the site is
-mostly static, documentation-heavy, and can later publish from GitHub Pages or a
-simple static host.
-
-Final framework selection should happen after the content model is stable. The
-current foundation is plain static HTML/CSS to avoid introducing build
-complexity too early.
-
-## Initial Layout
-
-- `docs/`: site plan, information architecture, design notes, and publishing
-  decisions.
-- `content/`: future Markdown/MDX source content.
-- `public/`: static assets.
-- `design/`: brand, typography, and visual references.
-
-## Related Repositories
-
-- `nSealr/lab`: source-backed research and roadmap.
-- `nSealr/specs`: shared protocol and test vectors.
-- `nSealr/companion`: host-side companion software.
-- `nSealr/raspberry`: Raspberry/Pi software for the stateless QR vault
-  family.
-- `nSealr/esp32`: ESP32 firmware for stateless QR and USB/NIP-46 families.
-- `nSealr/smartcard`: JavaCard/NFC/contact smartcard signer work.
-- `nSealr/hardware`: open hardware designs and assembly docs.
-
-## Quality Baseline
-
-Run the repository verification loop with:
+## Develop
 
 ```sh
-make ci
+make setup        # pnpm install --frozen-lockfile
+make dev          # → http://localhost:4321
 ```
 
-Open `public/index.html` directly in a browser to inspect the current static
-site.
+## Build & validate
+
+```sh
+make build        # → dist/ (astro build + pagefind + og images)
+make ci           # check + build + validate_site.py + unittest + lint
+```
+
+`scripts/validate_site.py` scans the built `dist/` tree:
+
+- `HOME_REQUIRED_TEXT` — required brand + safety-contract strings on
+  `dist/index.html`.
+- Each signer family page (`dist/docs/signers/<family>/index.html`)
+  contains its declared `requiredText` from the MDX frontmatter.
+- `dist/security/index.html` contains the safety-contract phrases.
+- No forbidden production claims appear anywhere.
+- No `/vault` repo link appears anywhere.
+
+## Deploy (Vercel)
+
+The project is Vercel-preset-aware. Connect the repo, framework =
+`astro`. Production = push to `main`; preview deploys per PR. Initial
+URL is `nsealr.vercel.app`; attach a custom domain when ready without
+code changes.
+
+## Authoring
+
+- **Blog post**: add `src/content/blog/<date>-<slug>.mdx`.
+- **Doc page**: add `src/content/docs/<section>/<slug>.mdx` with
+  `section` in `getting-started | guides | signers | specs | security`.
+- **Signer family update**: edit
+  `src/content/signers/<family>.mdx`. The `capabilities` array mirrors
+  `nSealr/specs vectors/features/signer-feature-matrix-v0.json` — the
+  same `contract_id` must keep the same behavior across families.
+
+## Layout
+
+```
+website/
+  astro.config.mjs · vercel.json(.tpl) · package.json · Makefile
+  public/         # fonts, favicon, robots, og-default.png
+  src/
+    content/      # MDX + JSON content (blog, docs, signers, authors)
+    components/   # Astro UI primitives
+    layouts/      # BaseLayout, DocsLayout, BlogPostLayout
+    pages/        # routes
+    styles/       # tokens.css, base.css, prose.css
+    scripts/      # theme-init.ts (inline blocking script source)
+    lib/          # docs-nav.ts, og.mjs
+  scripts/
+    validate_site.py        # required-text / forbidden-claims validator
+    verify_repo.py          # repo lint
+    build_og.mjs            # satori OG image generation
+    compute_csp_hash.mjs    # writes vercel.json from vercel.json.tpl
+    og-fonts/               # TTF fonts used only by satori
+  tests/
+    test_site_validation.py
+```
+
+## Related repositories
+
+`nSealr/specs`, `nSealr/companion`, `nSealr/raspberry`,
+`nSealr/esp32`, `nSealr/smartcard`, `nSealr/hardware`, `nSealr/lab`.
 
 ## License
 
-Website code is released under the MIT License unless a file says otherwise.
-Website content is intended to be released under CC0-1.0 when the project is
-ready for publication.
+MIT for code. CC0-1.0 for content when published.
