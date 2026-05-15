@@ -1,7 +1,7 @@
 ---
 ---
 <figure class="system-map" aria-label="nSealr system map">
-  <svg viewBox="0 0 760 480" role="img" aria-labelledby="map-title map-desc">
+  <svg viewBox="0 0 760 420" role="img" aria-labelledby="map-title map-desc">
     <title id="map-title">nSealr signer architecture</title>
     <desc id="map-desc">
       Nostr clients send signing requests to the companion, which routes them
@@ -12,12 +12,14 @@
     <g class="links">
       <!-- client → companion -->
       <path d="M164 210 H288" />
-      <!-- companion (420,210) → 5 signer left-middles (542, y) with bezier control points to keep horizontal entry/exit -->
-      <path d="M420 210 C 481 210 481 92  542 92"  />
-      <path d="M420 210 C 481 210 481 180 542 180" />
+      <!-- companion right-middle (420,210) → each signer left-middle (542, y).
+           Signer centres are evenly spaced and symmetric around y=210:
+           50, 130, 210, 290, 370. The middle path is a straight line. -->
+      <path d="M420 210 C 481 210 481 50  542 50"  />
+      <path d="M420 210 C 481 210 481 130 542 130" />
       <path d="M420 210 H542" />
-      <path d="M420 210 C 481 210 481 344 542 344" />
-      <path d="M420 210 C 481 210 481 426 542 426" />
+      <path d="M420 210 C 481 210 481 290 542 290" />
+      <path d="M420 210 C 481 210 481 370 542 370" />
     </g>
     <g class="node client">
       <rect x="32" y="154" width="132" height="112" rx="8" />
@@ -26,33 +28,33 @@
     </g>
     <g class="node companion">
       <rect x="288" y="122" width="132" height="176" rx="8" />
-      <text x="354" y="194">Companion</text>
-      <text x="354" y="220">Verifier</text>
+      <text x="354" y="200">Companion</text>
+      <text x="354" y="226">Verifier</text>
     </g>
     <g class="node signer s1">
-      <rect x="542" y="56" width="170" height="72" rx="8" />
-      <text x="627" y="86">Raspberry</text>
-      <text x="627" y="108">QR Vault</text>
+      <rect x="542" y="18" width="170" height="64" rx="8" />
+      <text x="627" y="44">Raspberry</text>
+      <text x="627" y="66">QR Vault</text>
     </g>
     <g class="node signer s2">
-      <rect x="542" y="148" width="170" height="64" rx="8" />
-      <text x="627" y="172">ESP32</text>
-      <text x="627" y="194">QR Vault</text>
+      <rect x="542" y="98" width="170" height="64" rx="8" />
+      <text x="627" y="124">ESP32</text>
+      <text x="627" y="146">QR Vault</text>
     </g>
     <g class="node signer s3">
-      <rect x="542" y="230" width="170" height="64" rx="8" />
-      <text x="627" y="254">ESP32</text>
-      <text x="627" y="276">USB / NIP-46</text>
+      <rect x="542" y="178" width="170" height="64" rx="8" />
+      <text x="627" y="204">ESP32</text>
+      <text x="627" y="226">USB / NIP-46</text>
     </g>
     <g class="node signer s4">
-      <rect x="542" y="312" width="170" height="64" rx="8" />
-      <text x="627" y="336">Smartcard</text>
-      <text x="627" y="358">APDU</text>
+      <rect x="542" y="258" width="170" height="64" rx="8" />
+      <text x="627" y="284">Smartcard</text>
+      <text x="627" y="306">APDU</text>
     </g>
     <g class="node signer s5">
-      <rect x="542" y="394" width="170" height="64" rx="8" />
-      <text x="627" y="418">Custom</text>
-      <text x="627" y="440">Wallet</text>
+      <rect x="542" y="338" width="170" height="64" rx="8" />
+      <text x="627" y="364">Custom</text>
+      <text x="627" y="386">Wallet</text>
     </g>
   </svg>
 </figure>
