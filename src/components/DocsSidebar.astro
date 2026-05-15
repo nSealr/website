@@ -4,12 +4,12 @@ interface Props { currentHref: string; }
 const { currentHref } = Astro.props;
 const nav = await getDocsNav();
 ---
-<details class="docs-sidebar" aria-label="Documentation sections">
-  <summary>
+<aside class="docs-sidebar" data-open="false" aria-label="Documentation sections">
+  <button class="sidebar-toggle" type="button" aria-expanded="false" aria-controls="docs-sidebar-nav">
     <span class="label">Documentation</span>
     <span class="chevron" aria-hidden="true">▾</span>
-  </summary>
-  <nav>
+  </button>
+  <nav id="docs-sidebar-nav">
     {nav.map(group => (
       <section>
         <h3>{group.label}</h3>
@@ -23,27 +23,28 @@ const nav = await getDocsNav();
       </section>
     ))}
   </nav>
-</details>
+</aside>
 <style>
   .docs-sidebar {
     font-family: var(--font-mono); font-size: 13px;
     padding: 12px 0;
     border-right: 1px solid var(--border);
   }
-  .docs-sidebar summary {
-    list-style: none; cursor: pointer;
-    padding: 8px 16px;
+  .sidebar-toggle {
     display: none; /* hidden on desktop */
+    width: 100%;
     align-items: center; justify-content: space-between;
+    padding: 8px 12px;
     color: var(--fg-strong); font-weight: 600;
+    font-family: var(--font-mono); font-size: 13px;
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     background: var(--bg-elevated);
     margin: 0 0 8px;
+    cursor: pointer;
   }
-  .docs-sidebar summary::-webkit-details-marker { display: none; }
-  .docs-sidebar summary .chevron { transition: transform 150ms; color: var(--accent-soft); }
-  .docs-sidebar[open] summary .chevron { transform: rotate(180deg); }
+  .sidebar-toggle .chevron { transition: transform 150ms; color: var(--accent-soft); }
+  .docs-sidebar[data-open='true'] .sidebar-toggle .chevron { transform: rotate(180deg); }
 
   .docs-sidebar nav { padding: 12px 0; }
   .docs-sidebar section { padding: 8px 16px; }
@@ -59,16 +60,10 @@ const nav = await getDocsNav();
   .docs-sidebar a:hover { color: var(--fg-strong); background: var(--bg-elevated); }
   .docs-sidebar a.current { color: var(--accent-soft); background: var(--accent-bg); }
 
-  /* Desktop: always-on sidebar — summary hidden, nav forced visible */
-  @media (min-width: 961px) {
-    .docs-sidebar summary { display: none !important; }
-    .docs-sidebar > nav { display: block !important; }
-  }
-
-  /* Mobile: collapsible drawer */
+  /* Mobile: collapsible drawer; toggle visible, nav hidden unless data-open='true' */
   @media (max-width: 960px) {
     .docs-sidebar { border-right: 0; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
-    .docs-sidebar summary { display: flex; }
+    .sidebar-toggle { display: flex; }
     .docs-sidebar nav {
       max-height: 50vh; overflow-y: auto;
       border: 1px solid var(--border);
@@ -76,5 +71,16 @@ const nav = await getDocsNav();
       background: var(--bg);
       padding: 4px 0;
     }
+    .docs-sidebar[data-open='false'] nav { display: none; }
   }
 </style>
+<script>
+  document.querySelectorAll('.docs-sidebar').forEach(wrap => {
+    const btn = wrap.querySelector('.sidebar-toggle');
+    btn?.addEventListener('click', () => {
+      const open = wrap.getAttribute('data-open') === 'true';
+      wrap.setAttribute('data-open', String(!open));
+      btn.setAttribute('aria-expanded', String(!open));
+    });
+  });
+</script>

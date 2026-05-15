@@ -1,46 +1,30 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import BlogList from '~/components/BlogList.astro';
-import BlogSidebar from '~/components/BlogSidebar.astro';
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft || import.meta.env.DEV))
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 
 const categories = Array.from(new Set(posts.map(p => p.data.category)));
-const currentHref = Astro.url.pathname;
 ---
 <BaseLayout title="Blog — nSealr" description="Release notes, research, tutorials, and news from the nSealr program.">
-  <div class="blog-shell container">
-    <BlogSidebar currentHref={currentHref} />
+  <section class="container">
+    <p class="eyebrow">// blog</p>
+    <h1>Notes on the program.</h1>
+    <p class="lead">Release notes, research, tutorials, and news from nSealr signers, companion, and specs.</p>
 
-    <main class="content">
-      <p class="eyebrow">// blog</p>
-      <h1>Notes on the program.</h1>
-      <p class="lead">Release notes, research, tutorials, and news from nSealr signers, companion, and specs.</p>
+    <div class="filters" role="navigation" aria-label="Categories">
+      <a href="/blog/" class="active">all</a>
+      {categories.map(c => <a href={`/blog/?cat=${c}`}>{c}</a>)}
+      <a class="rss" href="/blog/rss.xml">RSS</a>
+    </div>
 
-      <div class="filters" role="navigation" aria-label="Categories">
-        <a href="/blog/" class="active">all</a>
-        {categories.map(c => <a href={`/blog/?cat=${c}`}>{c}</a>)}
-        <a class="rss" href="/blog/rss.xml">RSS</a>
-      </div>
-
-      <BlogList posts={posts} />
-    </main>
-  </div>
+    <BlogList posts={posts} />
+  </section>
 </BaseLayout>
 <style>
-  .blog-shell {
-    display: grid; gap: clamp(20px, 3vw, 40px);
-    grid-template-columns: 240px minmax(0, 1fr);
-    align-items: start;
-    padding-block: 28px 60px;
-    max-width: 1180px;
-  }
-  @media (max-width: 960px) {
-    .blog-shell { grid-template-columns: 1fr; }
-  }
-  .content { min-width: 0; padding-top: 12px; }
+  .container { padding-block: 60px; max-width: 880px; }
   h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(28px, 4vw, 44px); margin: 8px 0 12px; }
   .lead { color: var(--fg-muted); font-size: 17px; max-width: 64ch; margin: 0 0 22px; }
   .filters { display: flex; gap: 12px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 12px; margin-bottom: 18px; }

@@ -21,13 +21,13 @@ const grouped = CATEGORY_ORDER.map(cat => ({
   items: posts.filter(p => p.data.category === cat),
 })).filter(g => g.items.length > 0);
 ---
-<details class="blog-sidebar" aria-label="Blog posts">
-  <summary>
+<aside class="blog-sidebar" data-open="false" aria-label="Blog posts">
+  <button class="sidebar-toggle" type="button" aria-expanded="false" aria-controls="blog-sidebar-nav">
     <span class="label">All posts</span>
     <span class="count">{posts.length}</span>
     <span class="chevron" aria-hidden="true">▾</span>
-  </summary>
-  <nav>
+  </button>
+  <nav id="blog-sidebar-nav">
     {grouped.map(group => (
       <section>
         <h3>{group.label}</h3>
@@ -50,33 +50,34 @@ const grouped = CATEGORY_ORDER.map(cat => ({
       <a href="/blog/rss.xml">RSS feed →</a>
     </section>
   </nav>
-</details>
+</aside>
 <style>
   .blog-sidebar {
     font-family: var(--font-mono); font-size: 13px;
     padding: 12px 0;
     border-right: 1px solid var(--border);
   }
-  .blog-sidebar summary {
-    list-style: none; cursor: pointer;
-    padding: 8px 12px;
+  .sidebar-toggle {
     display: none;
+    width: 100%;
     align-items: center; gap: 8px;
+    padding: 8px 12px;
     color: var(--fg-strong); font-weight: 600;
+    font-family: var(--font-mono); font-size: 13px;
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     background: var(--bg-elevated);
     margin: 0 0 8px;
+    cursor: pointer;
   }
-  .blog-sidebar summary::-webkit-details-marker { display: none; }
-  .blog-sidebar summary .count {
+  .sidebar-toggle .count {
     color: var(--fg-muted); font-size: 11px;
     border: 1px solid var(--border); padding: 1px 6px;
     border-radius: var(--radius-pill);
     margin-left: auto;
   }
-  .blog-sidebar summary .chevron { transition: transform 150ms; color: var(--accent-soft); }
-  .blog-sidebar[open] summary .chevron { transform: rotate(180deg); }
+  .sidebar-toggle .chevron { transition: transform 150ms; color: var(--accent-soft); }
+  .blog-sidebar[data-open='true'] .sidebar-toggle .chevron { transform: rotate(180deg); }
 
   .blog-sidebar nav { padding: 12px 0; }
   .blog-sidebar section { padding: 8px 16px; }
@@ -111,16 +112,9 @@ const grouped = CATEGORY_ORDER.map(cat => ({
     color: var(--fg-muted); font-size: 11px;
   }
 
-  /* Desktop: always-on sidebar */
-  @media (min-width: 961px) {
-    .blog-sidebar summary { display: none !important; }
-    .blog-sidebar > nav { display: block !important; }
-  }
-
-  /* Mobile: collapsible */
   @media (max-width: 960px) {
     .blog-sidebar { border-right: 0; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
-    .blog-sidebar summary { display: flex; }
+    .sidebar-toggle { display: flex; }
     .blog-sidebar nav {
       max-height: 50vh; overflow-y: auto;
       border: 1px solid var(--border);
@@ -128,5 +122,16 @@ const grouped = CATEGORY_ORDER.map(cat => ({
       background: var(--bg);
       padding: 4px 0;
     }
+    .blog-sidebar[data-open='false'] nav { display: none; }
   }
 </style>
+<script>
+  document.querySelectorAll('.blog-sidebar').forEach(wrap => {
+    const btn = wrap.querySelector('.sidebar-toggle');
+    btn?.addEventListener('click', () => {
+      const open = wrap.getAttribute('data-open') === 'true';
+      wrap.setAttribute('data-open', String(!open));
+      btn.setAttribute('aria-expanded', String(!open));
+    });
+  });
+</script>

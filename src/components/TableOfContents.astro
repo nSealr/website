@@ -5,19 +5,19 @@ const { headings } = Astro.props;
 const items = headings.filter(h => h.depth >= 2 && h.depth <= 3);
 ---
 {items.length > 0 && (
-  <details class="toc" open aria-label="On this page">
-    <summary>
+  <aside class="toc" data-open="false" aria-label="On this page">
+    <button class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-nav">
       <span class="label">On this page</span>
       <span class="chevron" aria-hidden="true">▾</span>
-    </summary>
-    <nav>
+    </button>
+    <nav id="toc-nav">
       <ul>
         {items.map(h => (
           <li class={`d-${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>
         ))}
       </ul>
     </nav>
-  </details>
+  </aside>
 )}
 <style>
   .toc {
@@ -25,27 +25,23 @@ const items = headings.filter(h => h.depth >= 2 && h.depth <= 3);
     font-family: var(--font-mono); font-size: 12px;
     padding: 24px 16px 24px 0;
   }
-  .toc summary {
-    list-style: none; cursor: pointer;
-    display: none; /* hidden on desktop */
+  .toc-toggle {
+    display: none;
+    width: 100%;
     align-items: center; justify-content: space-between;
     padding: 8px 12px;
-    color: var(--fg-strong); font-weight: 600; font-size: 13px;
+    color: var(--fg-strong); font-weight: 600;
+    font-family: var(--font-mono); font-size: 13px;
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     background: var(--bg-elevated);
     margin: 0 0 8px;
+    cursor: pointer;
   }
-  .toc summary::-webkit-details-marker { display: none; }
-  .toc summary .chevron { transition: transform 150ms; color: var(--accent-soft); }
-  .toc[open] summary .chevron { transform: rotate(180deg); }
+  .toc-toggle .chevron { transition: transform 150ms; color: var(--accent-soft); }
+  .toc[data-open='true'] .toc-toggle .chevron { transform: rotate(180deg); }
 
   .toc nav { padding-left: 0; }
-  .toc h3 {
-    /* legacy — kept if anyone slots in */
-    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
-    color: var(--fg-muted); margin: 0 0 8px;
-  }
   .toc ul {
     list-style: none; padding: 0; margin: 0;
     display: grid; gap: 4px;
@@ -59,13 +55,6 @@ const items = headings.filter(h => h.depth >= 2 && h.depth <= 3);
   }
   .toc a:hover { color: var(--accent-soft); }
 
-  /* Desktop: always-on, no summary */
-  @media (min-width: 961px) {
-    .toc summary { display: none !important; }
-    .toc > nav { display: block !important; }
-  }
-
-  /* Mobile: collapsible at end of article, not sticky */
   @media (max-width: 960px) {
     .toc {
       position: static; top: auto;
@@ -73,9 +62,18 @@ const items = headings.filter(h => h.depth >= 2 && h.depth <= 3);
       margin-top: 32px;
       border-top: 1px solid var(--border);
     }
-    .toc summary { display: flex; }
-    .toc nav {
-      padding-top: 8px;
-    }
+    .toc-toggle { display: flex; }
+    .toc nav { padding-top: 8px; }
+    .toc[data-open='false'] nav { display: none; }
   }
 </style>
+<script>
+  document.querySelectorAll('.toc').forEach(wrap => {
+    const btn = wrap.querySelector('.toc-toggle');
+    btn?.addEventListener('click', () => {
+      const open = wrap.getAttribute('data-open') === 'true';
+      wrap.setAttribute('data-open', String(!open));
+      btn.setAttribute('aria-expanded', String(!open));
+    });
+  });
+</script>
