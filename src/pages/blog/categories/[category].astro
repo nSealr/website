@@ -1,0 +1,43 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BlogList from '~/components/BlogList.astro';
+import { getCollection } from 'astro:content';
+
+const CATEGORY_LABEL: Record<string, string> = {
+  release: 'Releases',
+  research: 'Research',
+  tutorial: 'Tutorials',
+  news: 'News',
+};
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft || import.meta.env.DEV);
+  const cats = Array.from(new Set(posts.map(p => p.data.category)));
+  return cats.map(cat => ({
+    params: { category: cat },
+    props: {
+      category: cat,
+      posts: posts
+        .filter(p => p.data.category === cat)
+        .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()),
+    },
+  }));
+}
+
+const { category, posts } = Astro.props;
+const label = CATEGORY_LABEL[category] ?? category;
+---
+<BaseLayout title={`${label} — nSealr Blog`} description={`Posts in the ${label.toLowerCase()} category.`}>
+  <section class="container">
+    <p class="eyebrow">// blog · category</p>
+    <h1>{label}</h1>
+    <p class="lead">{posts.length} {posts.length === 1 ? 'post' : 'posts'} in this category.</p>
+    <BlogList posts={posts} />
+    <p style="margin-top:24px"><a href="/blog/">← all posts</a></p>
+  </section>
+</BaseLayout>
+<style>
+  .container { padding-block: 60px; max-width: 880px; }
+  h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(28px, 4vw, 40px); margin: 8px 0 12px; }
+  .lead { color: var(--fg-muted); font-size: 16px; margin: 0 0 22px; }
+</style>

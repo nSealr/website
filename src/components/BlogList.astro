@@ -21,7 +21,7 @@ const CATEGORY_COLOR: Record<string, string> = {
         <h3>{p.data.title}</h3>
         <p class="excerpt">{p.data.description}</p>
         {p.data.tags.length > 0 && (
-          <div class="tags">{p.data.tags.map(t => <TagPill tag={t} />)}</div>
+          <div class="tags">{p.data.tags.map(t => <TagPill tag={t} href={`/blog/tags/${t}/`} />)}</div>
         )}
       </a>
     </li>
