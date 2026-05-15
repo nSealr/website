@@ -26,8 +26,8 @@ const isActive = (p: string) => pathname === p || pathname.startsWith(p + '/');
       <a class={isActive('/docs') ? 'active' : ''} href="/docs/">Docs</a>
       <a class={isActive('/blog') ? 'active' : ''} href="/blog/">Blog</a>
       <a class={isActive('/security') ? 'active' : ''} href="/security/">Security</a>
-      <SearchTrigger />
       <a class="ext" href="https://github.com/nSealr" rel="noopener">GitHub ↗</a>
+      <SearchTrigger />
       <ThemeToggle />
     </nav>
   </div>
