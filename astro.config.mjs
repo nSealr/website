@@ -6,7 +6,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import remarkGfm from 'remark-gfm';
 
 export default defineConfig({
-  site: 'https://nsealr.vercel.app',
+  site: 'https://nsealr.com',
   output: 'static',
   trailingSlash: 'always',
   build: { format: 'directory', inlineStylesheets: 'auto' },

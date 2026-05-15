@@ -52,9 +52,8 @@ make ci           # check + build + validate_site.py + unittest + lint
 ## Deploy (Vercel)
 
 The project is Vercel-preset-aware. Connect the repo, framework =
-`astro`. Production = push to `main`; preview deploys per PR. Initial
-URL is `nsealr.vercel.app`; attach a custom domain when ready without
-code changes.
+`astro`. Production = push to `main`; preview deploys per PR. Custom domain
+target is `nsealr.com`.
 
 ## Authoring
 

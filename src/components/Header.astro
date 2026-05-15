@@ -1,12 +1,23 @@
 ---
+import { Image } from 'astro:assets';
 import ThemeToggle from './ThemeToggle.astro';
+import logo from '~/assets/nsealr-logo.png';
 const { pathname } = Astro.url;
 const isActive = (p: string) => pathname === p || pathname.startsWith(p + '/');
 ---
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="/">
-      <span class="mark" aria-hidden="true">ns</span>
+      <Image
+        class="mark"
+        src={logo}
+        alt=""
+        width={28}
+        height={28}
+        densities={[1, 2, 3]}
+        format="webp"
+        loading="eager"
+      />
       <span>nsealr</span>
     </a>
     <nav aria-label="Primary">
@@ -36,10 +47,10 @@ const isActive = (p: string) => pathname === p || pathname.startsWith(p + '/');
     color: var(--fg-strong); font-family: var(--font-mono); font-weight: 700;
     text-decoration: none; font-size: 15px;
   }
-  .brand .mark {
-    width: 26px; height: 26px; border: 1px solid var(--border-strong);
-    border-radius: var(--radius-sm); display: grid; place-items: center;
-    font-size: 11px; color: var(--accent-soft);
+  .brand :global(.mark) {
+    width: 28px; height: 28px;
+    border-radius: var(--radius-sm);
+    display: block;
   }
   nav {
     display: flex; align-items: center; gap: 22px;

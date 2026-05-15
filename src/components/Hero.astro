@@ -1,35 +1,56 @@
 ---
+import { Image } from 'astro:assets';
 import StatusPill from './StatusPill.astro';
+import logo from '~/assets/nsealr-logo.png';
 ---
 <section class="hero container">
-  <p class="eyebrow">// nsealr · v0 · stateless · pre-production</p>
-  <h1>Sign <em>Nostr</em><br />events offline.</h1>
-  <p class="lead">
-    A non-profit, open-source program for reproducible Nostr signing devices.
-    Companion software, five signer families, and open hardware references —
-    auditable instead of proprietary.
-  </p>
-  <div class="actions">
-    <a class="btn primary" href="/docs/">$ read the docs</a>
-    <a class="btn ghost" href="https://github.com/nSealr" rel="noopener">github ↗</a>
-  </div>
-  <div class="pills">
-    <StatusPill variant="ok">approval_digest</StatusPill>
-    <StatusPill variant="warn">signing_disabled</StatusPill>
-    <StatusPill variant="neutral">v0 spec</StatusPill>
-    <StatusPill variant="neutral">non-profit · open-source</StatusPill>
-  </div>
-  <pre class="snippet"><code>{`# verify a request — companion
+  <div class="copy">
+    <p class="eyebrow">// nsealr · v0 · stateless · pre-production</p>
+    <h1>Sign <em>Nostr</em><br />events offline.</h1>
+    <p class="lead">
+      A non-profit, open-source program for reproducible Nostr signing devices.
+      Companion software, five signer families, and open hardware references —
+      auditable instead of proprietary.
+    </p>
+    <div class="actions">
+      <a class="btn primary" href="/docs/">$ read the docs</a>
+      <a class="btn ghost" href="https://github.com/nSealr" rel="noopener">github ↗</a>
+    </div>
+    <div class="pills">
+      <StatusPill variant="ok">approval_digest</StatusPill>
+      <StatusPill variant="warn">signing_disabled</StatusPill>
+      <StatusPill variant="neutral">v0 spec</StatusPill>
+      <StatusPill variant="neutral">non-profit · open-source</StatusPill>
+    </div>
+    <pre class="snippet"><code>{`# verify a request — companion
 $ nsealr verify --request req.json
 ✓ approval_digest ok
 ! sign-event disabled in dev firmware`}</code></pre>
+  </div>
+  <figure class="logo-wrap" aria-hidden="false">
+    <Image
+      src={logo}
+      alt="nSealr seal mascot holding a sealed Nostr envelope"
+      width={520}
+      height={520}
+      densities={[1, 2]}
+      format="webp"
+      loading="eager"
+      decoding="async"
+    />
+  </figure>
 </section>
 
 <style>
-  .hero { padding-block: clamp(48px, 8vw, 110px) clamp(24px, 4vw, 56px); }
+  .hero {
+    padding-block: clamp(48px, 8vw, 110px) clamp(24px, 4vw, 56px);
+    display: grid; gap: clamp(24px, 4vw, 48px); align-items: center;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  }
+  .copy { min-width: 0; }
   .hero h1 {
     font-family: var(--font-mono); color: var(--fg-strong);
-    font-size: clamp(40px, 7vw, 78px); line-height: 0.96;
+    font-size: clamp(40px, 6.5vw, 72px); line-height: 0.96;
     letter-spacing: -0.02em; margin: 12px 0 16px;
   }
   .hero h1 em { color: var(--accent-soft); font-style: normal; }
@@ -52,5 +73,15 @@ $ nsealr verify --request req.json
     padding: 14px 16px; border-radius: var(--radius-md);
     font-size: 13px; line-height: 1.7; overflow-x: auto;
     color: var(--fg); font-family: var(--font-mono);
+  }
+  .logo-wrap { margin: 0; display: grid; place-items: center; }
+  .logo-wrap :global(img) {
+    width: 100%; max-width: 520px; height: auto;
+    border-radius: clamp(16px, 3vw, 28px);
+    box-shadow: 0 0 0 1px var(--border), 0 24px 60px -24px color-mix(in oklab, var(--accent) 60%, transparent);
+  }
+  @media (max-width: 880px) {
+    .hero { grid-template-columns: 1fr; }
+    .logo-wrap { order: -1; max-width: 320px; margin-inline: auto; }
   }
 </style>
