@@ -29,7 +29,7 @@ REQUIRED_DIRS = {
     "esp32": ["firmware", "boards", "docs", "scripts"],
     "smartcard": ["applet", "tools", "docs", "scripts"],
     "hardware": ["pcb", "bom", "enclosures", "docs", "scripts"],
-    "website": ["content", "public", "design", "docs", "scripts"],
+    "website": ["src/content", "public", "src/styles", "docs", "scripts"],
     "lab": ["wiki", "sources", "scripts", "docs"],
 }
 
