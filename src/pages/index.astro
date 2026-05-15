@@ -13,13 +13,22 @@ import SignerFamilyGrid from '~/components/SignerFamilyGrid.astro';
   <section class="container split">
     <div>
       <p class="eyebrow">// system</p>
-      <h2>One companion. Five signer families.</h2>
+      <h2>One companion. Five signer solutions.</h2>
       <p class="muted">
         The companion prepares requests, moves them over QR, file, stdio,
         serial, USB, or card transports, and verifies every successful
         response. The signer keeps or protects the private key and signs
         only through an explicit policy boundary.
       </p>
+      <p class="surfaces-label">Companion surfaces:</p>
+      <ul class="surfaces">
+        <li><code>nsealr</code> CLI</li>
+        <li>npm SDK</li>
+        <li>browser extension</li>
+        <li>local app</li>
+        <li>local service</li>
+        <li>NIP-46 bridge</li>
+      </ul>
       <p><a class="link-arrow" href="/system/">Read product shape →</a></p>
     </div>
     <SystemMap />
@@ -29,8 +38,10 @@ import SignerFamilyGrid from '~/components/SignerFamilyGrid.astro';
     <p class="eyebrow">// families</p>
     <h2>Pick the boundary that matches your trust model.</h2>
     <p class="muted">
-      Raspberry/Pi Stateless QR Vault · ESP32 Stateless QR Vault · ESP32 USB/NIP-46 Signer ·
-      JavaCard/NFC Smartcard Signer · Custom Nostr Hardware Wallet With Persistent Secret.
+      The five signer solutions: Raspberry/Pi Stateless QR Vault ·
+      ESP32 Stateless QR Vault · ESP32 USB/NIP-46 Signer ·
+      JavaCard/NFC Smartcard Signer · Custom Nostr Hardware Wallet With
+      Persistent Secret.
     </p>
     <SignerFamilyGrid />
   </section>
@@ -96,4 +107,13 @@ import SignerFamilyGrid from '~/components/SignerFamilyGrid.astro';
   .security-body { display: grid; gap: 14px; }
   .security-body .muted { max-width: 64ch; }
   .link-arrow { font-family: var(--font-mono); color: var(--accent-soft); font-size: 14px; }
+  .surfaces-label { font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.06em; margin: 16px 0 8px; }
+  .surfaces { list-style: none; padding: 0; margin: 0 0 18px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .surfaces li {
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--accent-soft); background: var(--accent-bg);
+    border: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+    padding: 3px 9px; border-radius: var(--radius-pill);
+  }
+  .surfaces li code { background: transparent; border: 0; padding: 0; color: inherit; font: inherit; }
 </style>

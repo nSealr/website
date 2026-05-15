@@ -4,17 +4,20 @@
   <svg viewBox="0 0 760 480" role="img" aria-labelledby="map-title map-desc">
     <title id="map-title">nSealr signer architecture</title>
     <desc id="map-desc">
-      Nostr clients send signing requests to the companion, which routes them to a
-      Raspberry/Pi stateless QR vault, ESP32 QR vault, ESP32 USB signer,
-      smartcard, or custom persistent-secret hardware wallet.
+      Nostr clients send signing requests to the companion, which routes them
+      to one of five signer solutions: Raspberry/Pi stateless QR vault,
+      ESP32 QR vault, ESP32 USB signer, smartcard, or custom
+      persistent-secret hardware wallet.
     </desc>
     <g class="links">
-      <path d="M164 210h124" />
-      <path d="M420 210h74v-118h48" />
-      <path d="M420 210h96v-30h26" />
-      <path d="M420 210h96v52h26" />
-      <path d="M420 210h96v134h26" />
-      <path d="M420 210h74v216h48" />
+      <!-- client → companion -->
+      <path d="M164 210 H288" />
+      <!-- companion (420,210) → 5 signer left-middles (542, y) with bezier control points to keep horizontal entry/exit -->
+      <path d="M420 210 C 481 210 481 92  542 92"  />
+      <path d="M420 210 C 481 210 481 180 542 180" />
+      <path d="M420 210 H542" />
+      <path d="M420 210 C 481 210 481 344 542 344" />
+      <path d="M420 210 C 481 210 481 426 542 426" />
     </g>
     <g class="node client">
       <rect x="32" y="154" width="132" height="112" rx="8" />
@@ -56,7 +59,12 @@
 <style>
   .system-map { margin: 0; padding-block: 12px; }
   svg { display: block; width: 100%; height: auto; }
-  .links path { fill: none; stroke: var(--border-strong); stroke-width: 2; }
+  .links path {
+    fill: none;
+    stroke: var(--border-strong);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
   .node rect { fill: var(--bg-elevated); stroke: var(--border-strong); stroke-width: 1.5; }
   .node text { font-family: var(--font-mono); fill: var(--fg-strong); font-size: 15px; font-weight: 600; text-anchor: middle; }
   .node.companion rect { stroke: var(--accent); }

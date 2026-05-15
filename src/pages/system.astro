@@ -6,16 +6,32 @@ import SignerFamilyGrid from '~/components/SignerFamilyGrid.astro';
 <BaseLayout title="System — nSealr" description="Product shape: one companion and five signer families for Nostr signing.">
   <section class="container">
     <p class="eyebrow">// system</p>
-    <h1>One companion. Five signer families.</h1>
+    <h1>One companion. Five signer solutions.</h1>
     <p class="lead">
-      The practical product is a shared companion plus five signer families,
+      The practical product is a shared companion plus five signer solutions,
       not five unrelated experiments. Every shared feature behaves the same
       across implementations because the <code>contract_id</code> in
       <code>nSealr/specs</code> defines it once.
     </p>
     <SystemMap />
-    <h2>Families</h2>
+    <h2>Solutions</h2>
     <SignerFamilyGrid />
+    <h2>Companion surfaces</h2>
+    <p class="muted">
+      The companion is a single TypeScript monorepo that ships multiple
+      access surfaces over the same secretless platform. Every surface
+      reuses the same validation, transport, and response-verification
+      logic.
+    </p>
+    <ul class="surfaces-list">
+      <li><strong><code>nsealr</code> CLI</strong> — request construction, transports, verification, audit export.</li>
+      <li><strong>npm SDK</strong> — embed the companion in any Nostr client or service.</li>
+      <li><strong>browser extension</strong> — NIP-07 surface backed by a signer.</li>
+      <li><strong>local app</strong> — desktop UI for routing and review.</li>
+      <li><strong>local service</strong> — background daemon for the extension and apps.</li>
+      <li><strong>NIP-46 bridge</strong> — converts already-decrypted NIP-46 payloads into standard nSealr signing requests.</li>
+    </ul>
+
     <h2>Boundaries</h2>
     <ul>
       <li><strong>Companion:</strong> secretless routing and verification infrastructure. Not trusted with keys.</li>
@@ -30,6 +46,7 @@ import SignerFamilyGrid from '~/components/SignerFamilyGrid.astro';
   .container { padding-block: 60px; }
   h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(32px, 4.5vw, 56px); line-height: 1; letter-spacing: -0.02em; margin: 8px 0 18px; }
   h2 { font-family: var(--font-mono); color: var(--fg-strong); font-size: 22px; margin: 36px 0 14px; }
-  .lead { color: var(--fg-muted); font-size: clamp(15px, 1.6vw, 18px); max-width: 64ch; }
+  .lead, .muted { color: var(--fg-muted); font-size: clamp(15px, 1.6vw, 18px); max-width: 64ch; }
   ul { display: grid; gap: 8px; max-width: 80ch; }
+  .surfaces-list strong code { background: var(--accent-bg); color: var(--accent-soft); padding: 1px 6px; border-radius: var(--radius-sm); border: 0; }
 </style>

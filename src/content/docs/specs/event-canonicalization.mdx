@@ -6,8 +6,6 @@ order: 1
 updatedAt: 2026-05-15
 ---
 
-# NIP-01 event canonicalization
-
 The signing input is the serialized canonical form of the event template
 (`[0, pubkey, created_at, kind, tags, content]`). The event id is the
 SHA-256 of that serialization; the signature is BIP-340 Schnorr over
