@@ -1,0 +1,56 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+const { pathname } = Astro.url;
+const isActive = (p: string) => pathname === p || pathname.startsWith(p + '/');
+---
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/">
+      <span class="mark" aria-hidden="true">ns</span>
+      <span>nsealr</span>
+    </a>
+    <nav aria-label="Primary">
+      <a class={isActive('/system') ? 'active' : ''} href="/system/">System</a>
+      <a class={isActive('/docs') ? 'active' : ''} href="/docs/">Docs</a>
+      <a class={isActive('/blog') ? 'active' : ''} href="/blog/">Blog</a>
+      <a class={isActive('/security') ? 'active' : ''} href="/security/">Security</a>
+      <a class="ext" href="https://github.com/nSealr" rel="noopener">GitHub ↗</a>
+      <ThemeToggle />
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky; top: 0; z-index: 50;
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in oklab, var(--bg) 88%, transparent);
+    backdrop-filter: saturate(140%) blur(8px);
+  }
+  .header-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px; gap: 16px;
+  }
+  .brand {
+    display: inline-flex; align-items: center; gap: 10px;
+    color: var(--fg-strong); font-family: var(--font-mono); font-weight: 700;
+    text-decoration: none; font-size: 15px;
+  }
+  .brand .mark {
+    width: 26px; height: 26px; border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm); display: grid; place-items: center;
+    font-size: 11px; color: var(--accent-soft);
+  }
+  nav {
+    display: flex; align-items: center; gap: 22px;
+    font-family: var(--font-mono); font-size: 13px;
+  }
+  nav a { color: var(--fg-muted); text-decoration: none; }
+  nav a:hover { color: var(--fg-strong); }
+  nav a.active { color: var(--accent-soft); }
+  nav a.ext { color: var(--fg-muted); }
+  @media (max-width: 720px) {
+    .header-inner { flex-direction: column; align-items: stretch; gap: 8px; padding-block: 10px; height: auto; }
+    nav { flex-wrap: wrap; gap: 14px; }
+  }
+</style>

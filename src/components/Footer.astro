@@ -1,0 +1,34 @@
+---
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <p class="brand-line"><span class="brand-mark">ns</span> nsealr — non-profit · open-source signer program</p>
+      <p class="muted">Pre-production research. No production security claim. MIT for code; CC0-1.0 for content.</p>
+    </div>
+    <nav aria-label="Repositories">
+      <a href="https://github.com/nSealr/specs">specs</a>
+      <a href="https://github.com/nSealr/companion">companion</a>
+      <a href="https://github.com/nSealr/raspberry">raspberry</a>
+      <a href="https://github.com/nSealr/esp32">esp32</a>
+      <a href="https://github.com/nSealr/smartcard">smartcard</a>
+      <a href="https://github.com/nSealr/hardware">hardware</a>
+      <a href="https://github.com/nSealr/lab">lab</a>
+      <a href="/blog/rss.xml">RSS</a>
+    </nav>
+    <p class="muted small">© {year} nSealr contributors.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 36px 0; }
+  .footer-inner { display: grid; gap: 18px; }
+  .brand-line { font-family: var(--font-mono); font-size: 14px; margin: 0 0 4px; }
+  .brand-mark { background: var(--accent-bg); color: var(--accent-soft); padding: 2px 6px; border-radius: var(--radius-sm); }
+  .muted { color: var(--fg-muted); margin: 0; font-size: 14px; }
+  .muted.small { font-size: 12px; }
+  nav { display: flex; flex-wrap: wrap; gap: 14px; font-family: var(--font-mono); font-size: 13px; }
+  nav a { color: var(--fg-muted); text-decoration: none; }
+  nav a:hover { color: var(--accent-soft); }
+</style>

@@ -1,0 +1,39 @@
+---
+---
+<button id="theme-toggle" type="button" aria-label="Toggle color theme" aria-pressed="false" class="theme-toggle">
+  <span class="sun" aria-hidden="true">☀</span>
+  <span class="moon" aria-hidden="true">☾</span>
+</button>
+<style>
+  .theme-toggle {
+    display: inline-grid; place-items: center;
+    width: 34px; height: 34px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    background: transparent; color: var(--fg);
+    cursor: pointer; position: relative;
+  }
+  .theme-toggle:hover { border-color: var(--accent); }
+  .theme-toggle .sun, .theme-toggle .moon {
+    position: absolute; transition: opacity 120ms, transform 120ms;
+    font-size: 15px; line-height: 1;
+  }
+  :global(html[data-theme='dark']) .theme-toggle .sun { opacity: 0; transform: rotate(-30deg); }
+  :global(html[data-theme='dark']) .theme-toggle .moon { opacity: 1; }
+  :global(html[data-theme='light']) .theme-toggle .sun { opacity: 1; }
+  :global(html[data-theme='light']) .theme-toggle .moon { opacity: 0; transform: rotate(30deg); }
+</style>
+<script>
+  const btn = document.getElementById('theme-toggle');
+  const sync = () => {
+    const t = document.documentElement.getAttribute('data-theme') || 'dark';
+    btn?.setAttribute('aria-pressed', String(t === 'light'));
+  };
+  sync();
+  btn?.addEventListener('click', () => {
+    const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch {}
+    sync();
+  });
+</script>
