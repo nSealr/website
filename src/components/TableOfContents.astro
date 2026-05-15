@@ -5,21 +5,77 @@ const { headings } = Astro.props;
 const items = headings.filter(h => h.depth >= 2 && h.depth <= 3);
 ---
 {items.length > 0 && (
-  <nav class="toc" aria-label="On this page">
-    <h3>On this page</h3>
-    <ul>
-      {items.map(h => (
-        <li class={`d-${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>
-      ))}
-    </ul>
-  </nav>
+  <details class="toc" open aria-label="On this page">
+    <summary>
+      <span class="label">On this page</span>
+      <span class="chevron" aria-hidden="true">▾</span>
+    </summary>
+    <nav>
+      <ul>
+        {items.map(h => (
+          <li class={`d-${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </details>
 )}
 <style>
-  .toc { position: sticky; top: 80px; font-family: var(--font-mono); font-size: 12px; padding: 24px 16px 24px 0; }
-  h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-muted); margin: 0 0 8px; }
-  ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; border-left: 1px solid var(--border); }
-  li { padding-left: 12px; }
-  li.d-3 { padding-left: 24px; opacity: 0.85; }
-  a { color: var(--fg-muted); text-decoration: none; display: block; padding: 2px 0; }
-  a:hover { color: var(--accent-soft); }
+  .toc {
+    position: sticky; top: 80px;
+    font-family: var(--font-mono); font-size: 12px;
+    padding: 24px 16px 24px 0;
+  }
+  .toc summary {
+    list-style: none; cursor: pointer;
+    display: none; /* hidden on desktop */
+    align-items: center; justify-content: space-between;
+    padding: 8px 12px;
+    color: var(--fg-strong); font-weight: 600; font-size: 13px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-elevated);
+    margin: 0 0 8px;
+  }
+  .toc summary::-webkit-details-marker { display: none; }
+  .toc summary .chevron { transition: transform 150ms; color: var(--accent-soft); }
+  .toc[open] summary .chevron { transform: rotate(180deg); }
+
+  .toc nav { padding-left: 0; }
+  .toc h3 {
+    /* legacy — kept if anyone slots in */
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--fg-muted); margin: 0 0 8px;
+  }
+  .toc ul {
+    list-style: none; padding: 0; margin: 0;
+    display: grid; gap: 4px;
+    border-left: 1px solid var(--border);
+  }
+  .toc li { padding-left: 12px; }
+  .toc li.d-3 { padding-left: 24px; opacity: 0.85; }
+  .toc a {
+    color: var(--fg-muted); text-decoration: none;
+    display: block; padding: 2px 0;
+  }
+  .toc a:hover { color: var(--accent-soft); }
+
+  /* Desktop: always-on, no summary */
+  @media (min-width: 961px) {
+    .toc summary { display: none !important; }
+    .toc > nav { display: block !important; }
+  }
+
+  /* Mobile: collapsible at end of article, not sticky */
+  @media (max-width: 960px) {
+    .toc {
+      position: static; top: auto;
+      padding: 16px 0 8px;
+      margin-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+    .toc summary { display: flex; }
+    .toc nav {
+      padding-top: 8px;
+    }
+  }
 </style>

@@ -4,7 +4,11 @@ interface Props { currentHref: string; }
 const { currentHref } = Astro.props;
 const nav = await getDocsNav();
 ---
-<aside class="docs-sidebar" aria-label="Documentation sections">
+<details class="docs-sidebar" aria-label="Documentation sections">
+  <summary>
+    <span class="label">Documentation</span>
+    <span class="chevron" aria-hidden="true">▾</span>
+  </summary>
   <nav>
     {nav.map(group => (
       <section>
@@ -19,16 +23,58 @@ const nav = await getDocsNav();
       </section>
     ))}
   </nav>
-</aside>
+</details>
 <style>
-  .docs-sidebar { font-family: var(--font-mono); font-size: 13px; padding: 24px 0; border-right: 1px solid var(--border); }
-  section { padding: 8px 16px; }
-  h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-muted); margin: 14px 0 6px; }
-  ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
-  a { color: var(--fg-muted); text-decoration: none; padding: 4px 8px; border-radius: var(--radius-sm); display: block; }
-  a:hover { color: var(--fg-strong); background: var(--bg-elevated); }
-  a.current { color: var(--accent-soft); background: var(--accent-bg); }
+  .docs-sidebar {
+    font-family: var(--font-mono); font-size: 13px;
+    padding: 12px 0;
+    border-right: 1px solid var(--border);
+  }
+  .docs-sidebar summary {
+    list-style: none; cursor: pointer;
+    padding: 8px 16px;
+    display: none; /* hidden on desktop */
+    align-items: center; justify-content: space-between;
+    color: var(--fg-strong); font-weight: 600;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-elevated);
+    margin: 0 0 8px;
+  }
+  .docs-sidebar summary::-webkit-details-marker { display: none; }
+  .docs-sidebar summary .chevron { transition: transform 150ms; color: var(--accent-soft); }
+  .docs-sidebar[open] summary .chevron { transform: rotate(180deg); }
+
+  .docs-sidebar nav { padding: 12px 0; }
+  .docs-sidebar section { padding: 8px 16px; }
+  .docs-sidebar h3 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--fg-muted); margin: 14px 0 6px;
+  }
+  .docs-sidebar ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
+  .docs-sidebar a {
+    color: var(--fg-muted); text-decoration: none;
+    padding: 4px 8px; border-radius: var(--radius-sm); display: block;
+  }
+  .docs-sidebar a:hover { color: var(--fg-strong); background: var(--bg-elevated); }
+  .docs-sidebar a.current { color: var(--accent-soft); background: var(--accent-bg); }
+
+  /* Desktop: always-on sidebar — summary hidden, nav forced visible */
+  @media (min-width: 961px) {
+    .docs-sidebar summary { display: none !important; }
+    .docs-sidebar > nav { display: block !important; }
+  }
+
+  /* Mobile: collapsible drawer */
   @media (max-width: 960px) {
-    .docs-sidebar { border-right: 0; border-bottom: 1px solid var(--border); }
+    .docs-sidebar { border-right: 0; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+    .docs-sidebar summary { display: flex; }
+    .docs-sidebar nav {
+      max-height: 50vh; overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg);
+      padding: 4px 0;
+    }
   }
 </style>

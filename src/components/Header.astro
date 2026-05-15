@@ -21,15 +21,22 @@ const isActive = (p: string) => pathname === p || pathname.startsWith(p + '/');
       />
       <span>nSealr</span>
     </a>
-    <nav aria-label="Primary">
+
+    <nav class="primary" id="primary-nav" aria-label="Primary">
       <a class={isActive('/system') ? 'active' : ''} href="/system/">System</a>
       <a class={isActive('/docs') ? 'active' : ''} href="/docs/">Docs</a>
       <a class={isActive('/blog') ? 'active' : ''} href="/blog/">Blog</a>
       <a class={isActive('/security') ? 'active' : ''} href="/security/">Security</a>
       <a class="ext" href="https://github.com/nSealr" rel="noopener">GitHub ↗</a>
+    </nav>
+
+    <div class="utils">
       <SearchTrigger />
       <ThemeToggle />
-    </nav>
+      <button id="nav-toggle" type="button" class="nav-toggle" aria-controls="primary-nav" aria-expanded="false" aria-label="Open menu">
+        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -41,30 +48,116 @@ const isActive = (p: string) => pathname === p || pathname.startsWith(p + '/');
     backdrop-filter: saturate(140%) blur(8px);
   }
   .header-inner {
-    display: flex; align-items: center; justify-content: space-between;
-    height: 60px; gap: 16px;
+    display: flex; align-items: center; gap: 16px;
+    height: 60px;
   }
   .brand {
     display: inline-flex; align-items: center; gap: 10px;
     color: var(--fg-strong); font-family: var(--font-mono); font-weight: 700;
     text-decoration: none; font-size: 15px;
+    flex-shrink: 0;
   }
   .brand :global(.mark) {
     width: 28px; height: 28px;
     border-radius: var(--radius-sm);
     display: block;
   }
-  nav {
+
+  /* primary nav grows in the middle on desktop */
+  nav.primary {
     display: flex; align-items: center; gap: 22px;
     font-family: var(--font-mono); font-size: 13px;
+    flex: 1;
+    justify-content: flex-end;
   }
-  nav a { color: var(--fg-muted); text-decoration: none; transition: color 120ms; }
-  nav a:hover { color: var(--fg-strong); }
-  nav a.active { color: var(--accent-soft); }
-  nav a.ext { color: var(--fg-muted); }
-  nav a.ext:hover { color: var(--accent-soft); }
+  nav.primary a {
+    color: var(--fg-muted); text-decoration: none;
+    transition: color 120ms;
+    white-space: nowrap;
+  }
+  nav.primary a:hover { color: var(--fg-strong); }
+  nav.primary a.active { color: var(--accent-soft); }
+  nav.primary a.ext { color: var(--fg-muted); }
+  nav.primary a.ext:hover { color: var(--accent-soft); }
+
+  /* search + theme + (mobile) hamburger pinned right */
+  .utils {
+    display: flex; align-items: center; gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .nav-toggle {
+    display: none;
+    width: 34px; height: 34px;
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    padding: 0;
+    align-items: center; justify-content: center;
+    flex-direction: column; gap: 4px;
+  }
+  .nav-toggle:hover { border-color: var(--accent); }
+  .nav-toggle .bar {
+    display: block; width: 14px; height: 2px;
+    background: var(--fg); border-radius: 1px;
+    transition: transform 120ms, opacity 120ms;
+  }
+  .nav-toggle[aria-expanded='true'] .bar:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .nav-toggle[aria-expanded='true'] .bar:nth-child(2) { opacity: 0; }
+  .nav-toggle[aria-expanded='true'] .bar:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
   @media (max-width: 720px) {
-    .header-inner { flex-direction: column; align-items: stretch; gap: 8px; padding-block: 10px; height: auto; }
-    nav { flex-wrap: wrap; gap: 14px; }
+    .header-inner { gap: 10px; padding-block: 0; }
+    .nav-toggle { display: inline-flex; }
+
+    nav.primary {
+      position: fixed;
+      top: 60px; left: 0; right: 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-2);
+      flex-direction: column; align-items: stretch;
+      gap: 0;
+      padding: 8px 0;
+      transform: translateY(-150%);
+      transition: transform 180ms ease-out;
+      max-height: calc(100vh - 60px);
+      overflow-y: auto;
+    }
+    nav.primary.open { transform: translateY(0); }
+    nav.primary a {
+      padding: 12px clamp(20px, 5vw, 48px);
+      border-bottom: 1px solid var(--border);
+      font-size: 15px;
+    }
+    nav.primary a:last-child { border-bottom: 0; }
   }
 </style>
+
+<script>
+  const btn = document.getElementById('nav-toggle');
+  const nav = document.getElementById('primary-nav');
+  if (btn && nav) {
+    btn.addEventListener('click', () => {
+      const open = nav.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(open));
+      btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    });
+    // Close on link click (mobile)
+    nav.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        nav.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      });
+    });
+    // Close on escape
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && nav.classList.contains('open')) {
+        nav.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.focus();
+      }
+    });
+  }
+</script>

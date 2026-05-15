@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
-import { getDocsNav, DOC_SECTION_LABEL } from '~/lib/docs-nav';
+import { getDocsNav } from '~/lib/docs-nav';
 
 const nav = await getDocsNav();
 const SECTION_DESC: Record<string, string> = {
@@ -10,6 +10,12 @@ const SECTION_DESC: Record<string, string> = {
   'specs': 'Reference for the protocol contracts: event canonicalization, QR envelopes, transports.',
   'security': 'Trust boundaries, threat model, and the safety contracts the project enforces today.',
 };
+
+// Card width grows with the number of articles in the section: heavy sections
+// (≥4 items) span two columns so their list does not collapse to a tiny column.
+function spanFor(count: number): 1 | 2 {
+  return count >= 4 ? 2 : 1;
+}
 ---
 <BaseLayout
   title="Docs — nSealr"
@@ -27,15 +33,23 @@ const SECTION_DESC: Record<string, string> = {
 
     <div class="grid">
       {nav.filter(g => g.items.length > 0).map(group => (
-        <article class="card">
+        <article class={`card span-${spanFor(group.items.length)}`}>
           <header>
-            <p class="eyebrow small">{group.section}</p>
+            <div class="head-line">
+              <span class="eyebrow">{group.section}</span>
+              <span class="count" aria-label={`${group.items.length} pages`}>{group.items.length} {group.items.length === 1 ? 'page' : 'pages'}</span>
+            </div>
             <h2>{group.label}</h2>
             <p class="muted">{SECTION_DESC[group.section]}</p>
           </header>
           <ul>
             {group.items.map(item => (
-              <li><a href={item.href}>{item.title}</a></li>
+              <li>
+                <a href={item.href}>
+                  <span class="title">{item.title}</span>
+                  <span class="arrow" aria-hidden="true">→</span>
+                </a>
+              </li>
             ))}
           </ul>
         </article>
@@ -45,28 +59,82 @@ const SECTION_DESC: Record<string, string> = {
 </BaseLayout>
 
 <style>
-  .container { padding-block: 60px; max-width: 1100px; }
+  .container { padding-block: 60px; max-width: 1180px; }
   h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(28px, 4vw, 44px); margin: 8px 0 14px; }
-  .lead { color: var(--fg-muted); font-size: 17px; max-width: 64ch; margin: 0 0 28px; }
+  .lead { color: var(--fg-muted); font-size: 17px; max-width: 64ch; margin: 0 0 36px; }
   .lead code { background: var(--accent-bg); color: var(--accent-soft); border: 0; padding: 1px 6px; border-radius: var(--radius-sm); }
-  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    grid-auto-flow: dense;
+  }
+  @media (max-width: 880px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
   .card {
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     background: var(--bg-elevated);
-    padding: 18px 20px;
-    display: flex; flex-direction: column; gap: 12px;
+    padding: 24px 26px;
+    display: flex; flex-direction: column; gap: 16px;
+    transition: border-color 120ms, transform 120ms;
   }
-  .card h2 { font-family: var(--font-mono); color: var(--fg-strong); font-size: 18px; margin: 4px 0 6px; }
-  .eyebrow.small { font-size: 11px; }
-  .muted { color: var(--fg-muted); margin: 0; font-size: 13px; }
-  ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
-  li a {
+  .card:hover { border-color: var(--border-strong); }
+  .card.span-2 { grid-column: span 2; }
+  @media (max-width: 880px) {
+    .card.span-2 { grid-column: span 1; }
+  }
+
+  .head-line {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    margin-bottom: 4px;
+  }
+  .head-line .eyebrow { font-size: 11px; }
+  .count {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--fg-muted);
+    border: 1px solid var(--border);
+    padding: 2px 8px; border-radius: var(--radius-pill);
+  }
+
+  .card h2 {
+    font-family: var(--font-mono); color: var(--fg-strong);
+    font-size: clamp(20px, 2.4vw, 26px); margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .card .muted { color: var(--fg-muted); margin: 0; font-size: 14px; max-width: 56ch; }
+
+  .card ul {
+    list-style: none; padding: 0; margin: 0;
+    display: grid; gap: 2px;
+  }
+  .card.span-2 ul {
+    /* two-column dense layout for the heavy section (signers) */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2px 16px;
+  }
+  @media (max-width: 720px) {
+    .card.span-2 ul { grid-template-columns: 1fr; }
+  }
+
+  .card li a {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
     font-family: var(--font-mono); font-size: 13px;
     color: var(--fg); text-decoration: none;
-    padding: 4px 0; border-bottom: 1px dashed var(--border);
-    display: block;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border);
   }
-  li a:hover { color: var(--accent-soft); border-color: var(--accent); }
-  li:last-child a { border-bottom: 0; }
+  .card li:last-child a { border-bottom: 0; }
+  .card li a:hover { color: var(--accent-soft); }
+  .card li a:hover .arrow { color: var(--accent); transform: translateX(2px); }
+  .card .arrow {
+    color: var(--accent-soft);
+    transition: transform 120ms, color 120ms;
+  }
+  .card .title {
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
 </style>
