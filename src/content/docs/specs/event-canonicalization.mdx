@@ -1,0 +1,19 @@
+---
+title: 'NIP-01 event canonicalization'
+description: 'How nSealr computes the canonical NIP-01 event id and the BIP-340 signing input.'
+section: 'specs'
+order: 1
+updatedAt: 2026-05-15
+---
+
+# NIP-01 event canonicalization
+
+The signing input is the serialized canonical form of the event template
+(`[0, pubkey, created_at, kind, tags, content]`). The event id is the
+SHA-256 of that serialization; the signature is BIP-340 Schnorr over
+secp256k1 with the signer public key.
+
+Test vectors live in
+[`nSealr/specs`](https://github.com/nSealr/specs) under `vectors/`. The
+companion verifies every signed response against the same fixtures
+before accepting device output.

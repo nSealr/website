@@ -1,0 +1,34 @@
+---
+title: 'Threat model'
+description: 'Adversaries, assets, and assumptions for nSealr signer families.'
+section: 'security'
+order: 2
+updatedAt: 2026-05-15
+status: 'draft'
+---
+
+# Threat model
+
+## Assets
+
+- The private key for each Nostr account on a signer.
+- The integrity of every signed event the user authorizes.
+- The user's ability to refuse a signing request.
+
+## Adversaries
+
+- A compromised host running the Nostr client.
+- A compromised companion (signing requests must still be reviewable on
+  the device where the hardware allows it).
+- A malicious accessory connected to the signer transport (USB, QR
+  camera, NFC field).
+- Supply-chain firmware tampering — addressed by the
+  `firmware-boot-hardening-v0` contract as a required gate for production
+  ESP32 USB/NIP-46 claims.
+
+## Assumptions
+
+- The user reads the review screen where one exists.
+- The user's local approval gesture is distinct from navigation.
+- Pre-production firmware has `sign_event` intentionally disabled until
+  hardening gates pass.

@@ -1,0 +1,21 @@
+---
+title: 'Using a signer'
+description: 'End-to-end flow: a Nostr client requests a signature, the companion routes it, and a signer reviews and signs.'
+section: 'getting-started'
+order: 2
+updatedAt: 2026-05-15
+---
+
+# Using a signer
+
+1. A Nostr client builds an event template and asks for a signature.
+2. The **companion** validates the request, normalizes it to the v0
+   contract, and routes it over the right transport (QR, USB serial,
+   APDU, or NIP-46 bridge).
+3. The **signer** displays the event for review where hardware allows it,
+   binds the local approval to `approval_digest`, and signs BIP-340.
+4. The companion **verifies the signed response** against shared fixtures
+   before handing it back to the client.
+
+The signer keeps or protects the private key. The companion never holds
+keys. The client never sees keys.

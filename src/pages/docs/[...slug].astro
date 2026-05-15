@@ -1,0 +1,47 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import DocsLayout from '~/layouts/DocsLayout.astro';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('docs');
+  const signers = await getCollection('signers');
+
+  const docPaths = docs.map(entry => ({
+    params: { slug: entry.id },
+    props: { kind: 'doc' as const, entry }
+  }));
+
+  const signerPaths = signers.map(entry => ({
+    params: { slug: `signers/${entry.id}` },
+    props: { kind: 'signer' as const, entry }
+  }));
+
+  return [...docPaths, ...signerPaths];
+}
+
+type Props =
+  | { kind: 'doc'; entry: CollectionEntry<'docs'> }
+  | { kind: 'signer'; entry: CollectionEntry<'signers'> };
+
+const props = Astro.props as Props;
+const { Content, headings } = await render(props.entry);
+
+const isDoc = props.kind === 'doc';
+const title = isDoc ? props.entry.data.title : props.entry.data.displayName;
+const description = isDoc ? props.entry.data.description : props.entry.data.tagline;
+const status = isDoc ? props.entry.data.status : 'stable';
+const updatedAt = isDoc ? props.entry.data.updatedAt : undefined;
+const editUrl = `https://github.com/nSealr/website/edit/main/website/src/content/${
+  isDoc ? 'docs/' + props.entry.id : 'signers/' + props.entry.id
+}.mdx`;
+---
+<DocsLayout
+  title={title}
+  description={description}
+  status={status}
+  updatedAt={updatedAt}
+  headings={headings}
+  editUrl={editUrl}
+>
+  <Content />
+</DocsLayout>

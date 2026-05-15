@@ -1,0 +1,35 @@
+---
+title: 'Overview'
+description: 'What nSealr is, who it is for, and why open hardware signing matters for Nostr.'
+section: 'getting-started'
+order: 1
+updatedAt: 2026-05-15
+---
+
+# Overview
+
+**nSealr** is a non-profit, open-source program for Nostr signing devices.
+It is not a closed hardware wallet product. The shared shape is one
+companion plus five signer families, with shared specs and build
+documentation in `nSealr/specs`, `nSealr/hardware`, and per-family
+firmware repos.
+
+## Why
+
+Private keys for Nostr accounts should not live in ordinary clients.
+Hardware signers raise the bar: secrets stay inside a device with an
+explicit trust boundary, signing requires explicit user review or
+explicit policy, and every successful response is verified by an
+untrusted companion before reaching a relay.
+
+## What this site is
+
+- **/system** — product shape and the five families.
+- **/docs** — guides, signer status pages, specs reference, security.
+- **/blog** — release notes, research, tutorials, news.
+- **/security** — trust boundaries and current safety contracts.
+
+## Pre-production
+
+No part of this program currently makes a production security claim. See
+[the security page](/security/) for the contracts the site enforces today.

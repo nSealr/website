@@ -1,0 +1,45 @@
+---
+title: 'Flash ESP32 firmware'
+description: 'Build and flash the development firmware for the ESP32-S3 signer line.'
+section: 'guides'
+order: 2
+updatedAt: 2026-05-15
+status: 'draft'
+---
+
+import Callout from '~/components/Callout.astro';
+
+# Flash ESP32 firmware
+
+<Callout variant="warn" title="signing_disabled">
+  The development firmware ships with real `sign_event` disabled until
+  hardening, display, button, and provisioning gates pass. Flashing it
+  on hardware does not unlock production signing.
+</Callout>
+
+## Targets
+
+- ESP32-S3 (display/button) for USB/NIP-46 line.
+- T-Display S3 Pro OV5640 candidate for the stateless QR vault line.
+
+## Build
+
+```sh
+git clone https://github.com/nSealr/esp32
+cd esp32
+make setup
+make build TARGET=esp32s3-tdisplay
+```
+
+## Flash
+
+```sh
+make flash TARGET=esp32s3-tdisplay PORT=/dev/cu.usbserial-XXXX
+```
+
+## Smoke evidence
+
+Once flashed, the companion can run **companion-to-device serial smoke**
+and **sign-event-disabled smoke** to confirm the firmware protocol is
+intact. See **firmware protocol evidence** and **Unicode fallback**
+tracking in [`nSealr/esp32`](https://github.com/nSealr/esp32).

@@ -1,0 +1,47 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import DocsSidebar from '~/components/DocsSidebar.astro';
+import TableOfContents from '~/components/TableOfContents.astro';
+import StatusPill from '~/components/StatusPill.astro';
+interface Heading { depth: number; slug: string; text: string; }
+interface Props {
+  title: string;
+  description: string;
+  status?: 'stable' | 'draft' | 'research';
+  updatedAt?: Date;
+  headings: Heading[];
+  editUrl?: string;
+}
+const { title, description, status = 'stable', updatedAt, headings, editUrl } = Astro.props;
+const currentHref = Astro.url.pathname;
+---
+<BaseLayout title={`${title} — nSealr Docs`} description={description}>
+  <div class="docs-shell container">
+    <DocsSidebar currentHref={currentHref} />
+    <article class="prose docs-article">
+      <header class="docs-header">
+        <h1>{title}</h1>
+        {status !== 'stable' && <StatusPill variant={status === 'draft' ? 'pending' : 'warn'}>{status}</StatusPill>}
+      </header>
+      <slot />
+      <footer class="docs-footer">
+        {updatedAt && <p class="muted">Last updated {updatedAt.toISOString().slice(0, 10)}</p>}
+        {editUrl && <p><a href={editUrl}>Edit this page on GitHub →</a></p>}
+      </footer>
+    </article>
+    <TableOfContents headings={headings} />
+  </div>
+</BaseLayout>
+<style>
+  .docs-shell {
+    display: grid; gap: 12px;
+    grid-template-columns: 240px minmax(0, 1fr) 220px;
+    align-items: start; padding-block: 28px;
+  }
+  .docs-article { padding: 24px 8px 60px; min-width: 0; }
+  .docs-header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .docs-footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--border); font-size: 14px; color: var(--fg-muted); }
+  @media (max-width: 960px) {
+    .docs-shell { grid-template-columns: 1fr; }
+  }
+</style>

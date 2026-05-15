@@ -1,0 +1,20 @@
+---
+title: 'Trust boundaries'
+description: 'Where keys live, who is trusted with what, and what each layer must not do.'
+section: 'security'
+order: 1
+updatedAt: 2026-05-15
+---
+
+# Trust boundaries
+
+| Layer       | Trusted with…                  | Not trusted with…                          |
+|-------------|--------------------------------|--------------------------------------------|
+| Client      | building requests              | private keys, approval decisions           |
+| Companion   | routing & response verification | private keys, policy execution            |
+| Signer      | private keys (per family boundary) | the universe outside its boundary      |
+| Smartcard   | persistent secret, APDU signing | trusted event review (display-less)       |
+
+The companion is never trusted with key custody. Display-less smartcards
+do not provide trusted event review by themselves — an external review
+acknowledgement is required.

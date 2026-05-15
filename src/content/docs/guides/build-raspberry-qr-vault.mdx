@@ -1,0 +1,52 @@
+---
+title: 'Build a Raspberry/Pi QR vault'
+description: 'Assemble and run the SeedSigner-style stateless QR vault for Nostr signing on a Pi Zero kit.'
+section: 'guides'
+order: 1
+updatedAt: 2026-05-15
+status: 'draft'
+---
+
+import Callout from '~/components/Callout.astro';
+
+# Build a Raspberry/Pi QR vault
+
+<Callout variant="warn" title="Pre-production">
+  This guide tracks the prototype build. Do not put production secrets
+  onto current hardware. Current maturity is in the
+  [signer family page](/docs/signers/raspberry-qr/).
+</Callout>
+
+## Bill of materials
+
+Follow the **Raspberry/Pi kit requirements** in
+[`nSealr/hardware`](https://github.com/nSealr/hardware): Pi Zero-class
+board, Pi/ZeroCam OV5647, Waveshare ST7789 240×240 LCD HAT, GPIO
+joystick/buttons, removable microSD.
+
+## OS profile
+
+Use the **Raspberry/Pi OS profile** described in `nSealr/hardware`:
+removable boot media, disabled or absent wireless, RAM-only session
+custody, no swap during signing, no remote access during signing, and no
+persistent signing-secret storage.
+
+## Software
+
+Clone and bootstrap:
+
+```sh
+git clone https://github.com/nSealr/raspberry
+cd raspberry
+make setup
+make ci
+```
+
+## Sign a fixture event
+
+```sh
+nsealr-rasp sign-fixture --request specs/vectors/requests/request-v0.json
+```
+
+The CLI computes the NIP-01 event id, signs BIP-340/secp256k1, and emits
+a `nsealr1:` QR response that the companion can verify.

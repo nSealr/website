@@ -1,0 +1,18 @@
+---
+title: 'QR envelope (nsealr1)'
+description: 'Static and animated QR envelopes for stateless signer transport.'
+section: 'specs'
+order: 2
+updatedAt: 2026-05-15
+---
+
+# QR envelope (`nsealr1`)
+
+Stateless QR vaults use two envelope variants:
+
+- **`nsealr1:`** — single static QR for short signing requests.
+- **`nsealr1a:`** — animated chunked QR with explicit bounds and integrity
+  checks, reassembled by the signer before request validation.
+
+Responses use the `qr-response-v0` contract: signed event or deterministic
+error, encoded for host verification without exposing secret material.
