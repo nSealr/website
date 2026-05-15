@@ -3,6 +3,12 @@ import { getDocsNav } from '~/lib/docs-nav';
 interface Props { currentHref: string; }
 const { currentHref } = Astro.props;
 const nav = await getDocsNav();
+
+// A section is "open" by default when it contains the current page; the
+// client-side script restores any user-toggled state from localStorage.
+function isActive(items: { href: string }[], current: string) {
+  return items.some(i => i.href === current);
+}
 ---
 <aside class="docs-sidebar" data-open="false" aria-label="Documentation sections">
   <button class="sidebar-toggle" type="button" aria-expanded="false" aria-controls="docs-sidebar-nav">
@@ -11,8 +17,12 @@ const nav = await getDocsNav();
   </button>
   <nav id="docs-sidebar-nav">
     {nav.map(group => (
-      <section>
-        <h3>{group.label}</h3>
+      <section data-section={group.section} data-default-open={isActive(group.items, currentHref) ? 'true' : 'false'}>
+        <button class="group-toggle" type="button" aria-expanded={isActive(group.items, currentHref) ? 'true' : 'false'}>
+          <span class="group-label">{group.label}</span>
+          <span class="group-count">{group.items.length}</span>
+          <span class="group-chev" aria-hidden="true">▾</span>
+        </button>
         <ul>
           {group.items.map(item => (
             <li>
@@ -29,7 +39,6 @@ const nav = await getDocsNav();
     font-family: var(--font-mono); font-size: 13px;
     padding: 12px 0;
     border-right: 1px solid var(--border);
-    /* On wide screens keep the tree visible while the article scrolls. */
     position: sticky;
     top: 76px;
     align-self: start;
@@ -37,7 +46,7 @@ const nav = await getDocsNav();
     overflow-y: auto;
   }
   .sidebar-toggle {
-    display: none; /* hidden on desktop */
+    display: none;
     width: 100%;
     align-items: center; justify-content: space-between;
     padding: 8px 12px;
@@ -52,21 +61,50 @@ const nav = await getDocsNav();
   .sidebar-toggle .chevron { transition: transform 150ms; color: var(--accent-soft); }
   .docs-sidebar[data-open='true'] .sidebar-toggle .chevron { transform: rotate(180deg); }
 
-  .docs-sidebar nav { padding: 12px 0; }
-  .docs-sidebar section { padding: 8px 16px; }
-  .docs-sidebar h3 {
-    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
-    color: var(--fg-muted); margin: 14px 0 6px;
+  .docs-sidebar nav { padding: 8px 0; }
+  .docs-sidebar section { padding: 2px 12px; }
+
+  .group-toggle {
+    display: flex; align-items: center; gap: 8px;
+    width: 100%;
+    background: transparent; border: 0; cursor: pointer;
+    padding: 8px 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--fg-muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    border-radius: var(--radius-sm);
   }
-  .docs-sidebar ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
+  .group-toggle:hover { background: var(--bg-elevated); color: var(--fg-strong); }
+  .group-toggle .group-label { flex: 1; text-align: left; }
+  .group-toggle .group-count {
+    font-size: 10px; color: var(--fg-muted); text-transform: none;
+    border: 1px solid var(--border); padding: 0 6px;
+    border-radius: var(--radius-pill); font-weight: 500;
+  }
+  .group-toggle .group-chev { transition: transform 150ms; color: var(--accent-soft); }
+  section[aria-collapsed='true'] .group-chev,
+  section:not([aria-collapsed]) .group-toggle[aria-expanded='false'] .group-chev { transform: rotate(-90deg); }
+
+  .docs-sidebar ul {
+    list-style: none; padding: 0; margin: 4px 0 6px;
+    display: grid; gap: 2px;
+    overflow: hidden;
+    max-height: 1000px; transition: max-height 200ms;
+  }
+  section[aria-collapsed='true'] ul { max-height: 0; margin: 0; }
+
   .docs-sidebar a {
     color: var(--fg-muted); text-decoration: none;
-    padding: 4px 8px; border-radius: var(--radius-sm); display: block;
+    padding: 4px 12px; border-radius: var(--radius-sm); display: block;
+    font-size: 13px; text-transform: none; letter-spacing: 0;
   }
   .docs-sidebar a:hover { color: var(--fg-strong); background: var(--bg-elevated); }
-  .docs-sidebar a.current { color: var(--accent-soft); background: var(--accent-bg); }
+  .docs-sidebar a.current {
+    color: var(--accent-soft); background: var(--accent-bg);
+    border-left: 2px solid var(--accent);
+    padding-left: 10px;
+  }
 
-  /* Mobile: collapsible drawer; toggle visible, nav hidden unless data-open='true' */
   @media (max-width: 960px) {
     .docs-sidebar {
       position: static; max-height: none; overflow: visible;
@@ -74,7 +112,7 @@ const nav = await getDocsNav();
     }
     .sidebar-toggle { display: flex; }
     .docs-sidebar nav {
-      max-height: 50vh; overflow-y: auto;
+      max-height: 60vh; overflow-y: auto;
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       background: var(--bg);
@@ -84,12 +122,46 @@ const nav = await getDocsNav();
   }
 </style>
 <script>
+  // Toggle the whole sidebar drawer (mobile only)
   document.querySelectorAll('.docs-sidebar').forEach(wrap => {
     const btn = wrap.querySelector('.sidebar-toggle');
     btn?.addEventListener('click', () => {
       const open = wrap.getAttribute('data-open') === 'true';
       wrap.setAttribute('data-open', String(!open));
       btn.setAttribute('aria-expanded', String(!open));
+    });
+  });
+
+  // Per-section collapse (desktop + mobile). Persist state per section name.
+  const KEY = 'nsealr-docs-sidebar-collapsed';
+  const collapsed = new Set<string>(JSON.parse(localStorage.getItem(KEY) || '[]'));
+
+  document.querySelectorAll('.docs-sidebar section[data-section]').forEach(section => {
+    const id = section.getAttribute('data-section')!;
+    const defaultOpen = section.getAttribute('data-default-open') === 'true';
+    // If user has not toggled before, fall back to: open if it contains current page, else collapsed.
+    const stored = localStorage.getItem(KEY);
+    let isCollapsed: boolean;
+    if (stored !== null) {
+      isCollapsed = collapsed.has(id);
+    } else {
+      isCollapsed = !defaultOpen;
+    }
+    if (isCollapsed) section.setAttribute('aria-collapsed', 'true');
+
+    const toggle = section.querySelector('.group-toggle')!;
+    toggle.setAttribute('aria-expanded', String(!isCollapsed));
+    toggle.addEventListener('click', () => {
+      const nowCollapsed = section.getAttribute('aria-collapsed') !== 'true';
+      if (nowCollapsed) {
+        section.setAttribute('aria-collapsed', 'true');
+        collapsed.add(id);
+      } else {
+        section.removeAttribute('aria-collapsed');
+        collapsed.delete(id);
+      }
+      toggle.setAttribute('aria-expanded', String(!nowCollapsed));
+      localStorage.setItem(KEY, JSON.stringify([...collapsed]));
     });
   });
 </script>

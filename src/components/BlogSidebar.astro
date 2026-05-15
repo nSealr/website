@@ -23,6 +23,7 @@ const grouped = CATEGORY_ORDER.map(cat => {
     label: CATEGORY_LABEL[cat],
     items: all.slice(0, ITEMS_PER_CATEGORY),
     overflow: Math.max(0, all.length - ITEMS_PER_CATEGORY),
+    isCurrent: all.some(p => `/blog/${p.id}/` === currentHref),
   };
 }).filter(g => g.items.length > 0);
 ---
@@ -37,8 +38,12 @@ const grouped = CATEGORY_ORDER.map(cat => {
       <a href="/blog/" class={currentHref === '/blog/' ? 'all-link current' : 'all-link'}>All posts ({posts.length})</a>
     </section>
     {grouped.map(group => (
-      <section>
-        <h3>{group.label}</h3>
+      <section data-section={group.category} data-default-open={group.isCurrent ? 'true' : 'false'}>
+        <button class="group-toggle" type="button" aria-expanded={group.isCurrent ? 'true' : 'false'}>
+          <span class="group-label">{group.label}</span>
+          <span class="group-count">{group.items.length + group.overflow}</span>
+          <span class="group-chev" aria-hidden="true">▾</span>
+        </button>
         <ul>
           {group.items.map(p => {
             const href = `/blog/${p.id}/`;
@@ -51,12 +56,14 @@ const grouped = CATEGORY_ORDER.map(cat => {
               </li>
             );
           })}
+          {group.overflow > 0 && (
+            <li class="more-row">
+              <a class="more" href={`/blog/categories/${group.category}/`}>
+                +{group.overflow} more in {group.label} →
+              </a>
+            </li>
+          )}
         </ul>
-        {group.overflow > 0 && (
-          <a class="more" href={`/blog/categories/${group.category}/`}>
-            +{group.overflow} more in {group.label} →
-          </a>
-        )}
       </section>
     ))}
     <section class="rss-row">
@@ -98,24 +105,47 @@ const grouped = CATEGORY_ORDER.map(cat => {
   .sidebar-toggle .chevron { transition: transform 150ms; color: var(--accent-soft); }
   .blog-sidebar[data-open='true'] .sidebar-toggle .chevron { transform: rotate(180deg); }
 
-  .blog-sidebar nav { padding: 12px 0; }
-  .blog-sidebar section { padding: 8px 16px; }
-  .blog-sidebar section.head-row { padding-bottom: 4px; }
+  .blog-sidebar nav { padding: 8px 0; }
+  .blog-sidebar section { padding: 2px 12px; }
+  .blog-sidebar section.head-row { padding: 4px 16px 8px; }
   .all-link {
     display: block; padding: 6px 8px;
     color: var(--fg-strong); text-decoration: none;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border);
-    font-weight: 600;
+    font-weight: 600; font-size: 12px;
   }
   .all-link.current { color: var(--accent-soft); border-color: var(--accent); background: var(--accent-bg); }
   .all-link:hover { border-color: var(--accent); color: var(--accent-soft); }
 
-  .blog-sidebar h3 {
-    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
-    color: var(--fg-muted); margin: 6px 0 8px;
+  .group-toggle {
+    display: flex; align-items: center; gap: 8px;
+    width: 100%;
+    background: transparent; border: 0; cursor: pointer;
+    padding: 8px 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--fg-muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    border-radius: var(--radius-sm);
   }
-  .blog-sidebar ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+  .group-toggle:hover { background: var(--bg-elevated); color: var(--fg-strong); }
+  .group-toggle .group-label { flex: 1; text-align: left; }
+  .group-toggle .group-count {
+    font-size: 10px; color: var(--fg-muted); text-transform: none;
+    border: 1px solid var(--border); padding: 0 6px;
+    border-radius: var(--radius-pill); font-weight: 500;
+  }
+  .group-toggle .group-chev { transition: transform 150ms; color: var(--accent-soft); }
+  section[aria-collapsed='true'] .group-chev { transform: rotate(-90deg); }
+
+  .blog-sidebar ul {
+    list-style: none; padding: 0; margin: 4px 0 6px;
+    display: grid; gap: 6px;
+    overflow: hidden;
+    max-height: 1500px; transition: max-height 200ms;
+  }
+  section[aria-collapsed='true'] ul { max-height: 0; margin: 0; }
+
   .blog-sidebar li a {
     display: grid; gap: 2px;
     color: var(--fg-muted); text-decoration: none;
@@ -137,13 +167,12 @@ const grouped = CATEGORY_ORDER.map(cat => {
     line-clamp: 2;
   }
   .blog-sidebar li time { color: var(--fg-muted); font-size: 11px; }
-
-  .blog-sidebar .more {
-    display: block; margin-top: 6px;
+  .more-row a.more {
+    display: block; padding: 4px 8px;
     color: var(--accent-soft); font-size: 11px;
-    text-decoration: none; padding: 4px 8px;
+    text-decoration: none; border-left: none;
   }
-  .blog-sidebar .more:hover { text-decoration: underline; }
+  .more-row a.more:hover { text-decoration: underline; }
 
   .blog-sidebar section.rss-row {
     padding-top: 16px; border-top: 1px dashed var(--border); margin-top: 12px;
@@ -159,7 +188,7 @@ const grouped = CATEGORY_ORDER.map(cat => {
     }
     .sidebar-toggle { display: flex; }
     .blog-sidebar nav {
-      max-height: 50vh; overflow-y: auto;
+      max-height: 60vh; overflow-y: auto;
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       background: var(--bg);
@@ -175,6 +204,37 @@ const grouped = CATEGORY_ORDER.map(cat => {
       const open = wrap.getAttribute('data-open') === 'true';
       wrap.setAttribute('data-open', String(!open));
       btn.setAttribute('aria-expanded', String(!open));
+    });
+  });
+
+  const KEY = 'nsealr-blog-sidebar-collapsed';
+  const collapsed = new Set<string>(JSON.parse(localStorage.getItem(KEY) || '[]'));
+
+  document.querySelectorAll('.blog-sidebar section[data-section]').forEach(section => {
+    const id = section.getAttribute('data-section')!;
+    const defaultOpen = section.getAttribute('data-default-open') === 'true';
+    const stored = localStorage.getItem(KEY);
+    let isCollapsed: boolean;
+    if (stored !== null) {
+      isCollapsed = collapsed.has(id);
+    } else {
+      isCollapsed = !defaultOpen;
+    }
+    if (isCollapsed) section.setAttribute('aria-collapsed', 'true');
+
+    const toggle = section.querySelector('.group-toggle')!;
+    toggle.setAttribute('aria-expanded', String(!isCollapsed));
+    toggle.addEventListener('click', () => {
+      const nowCollapsed = section.getAttribute('aria-collapsed') !== 'true';
+      if (nowCollapsed) {
+        section.setAttribute('aria-collapsed', 'true');
+        collapsed.add(id);
+      } else {
+        section.removeAttribute('aria-collapsed');
+        collapsed.delete(id);
+      }
+      toggle.setAttribute('aria-expanded', String(!nowCollapsed));
+      localStorage.setItem(KEY, JSON.stringify([...collapsed]));
     });
   });
 </script>

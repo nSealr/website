@@ -4,48 +4,80 @@ import Callout from '~/components/Callout.astro';
 ---
 <BaseLayout title="Security — nSealr" description="Trust boundaries, threat model overview, and known limits for nSealr signers.">
   <section class="container">
-    <p class="eyebrow">// security</p>
-    <h1>No production security claim yet.</h1>
-    <p class="lead">
-      nSealr is pre-production research and implementation work. The
-      website documents trust boundaries, test evidence, and known limits
-      before presenting any device as ready for real keys.
-    </p>
+    <header class="head">
+      <p class="eyebrow">// security</p>
+      <h1>No production security claim yet.</h1>
+      <p class="lead">
+        nSealr is pre-production research and implementation work. The
+        website documents trust boundaries, test evidence, and known limits
+        before presenting any device as ready for real keys.
+      </p>
+    </header>
 
-    <h2>Trust boundaries</h2>
-    <ul>
-      <li>Private keys must not be exposed to ordinary Nostr clients.</li>
-      <li>Sensitive signing should require explicit user review where hardware allows it.</li>
-      <li>The companion is not trusted with key custody.</li>
-      <li>Maturity differs by signer family — see each family page.</li>
-    </ul>
+    <div class="grid">
+      <article class="card">
+        <h2>Trust boundaries</h2>
+        <ul>
+          <li>Private keys must not be exposed to ordinary Nostr clients.</li>
+          <li>Sensitive signing should require explicit user review where hardware allows it.</li>
+          <li>The companion is not trusted with key custody.</li>
+          <li>Maturity differs by signer family — see each family page.</li>
+        </ul>
+        <p><a class="link-arrow" href="/docs/security/trust-boundaries/">Deep-dive →</a></p>
+      </article>
 
-    <h2>Current contracts</h2>
-    <p>The safety contracts the site enforces today include:</p>
-    <ul>
-      <li><code>approval_digest</code> — the local approval is bound to the exact reviewed material.</li>
-      <li><code>signing_disabled</code> — real signing is blocked on prototype firmware until hardening gates pass.</li>
-      <li><strong>NIP-46 bridge decisions</strong> via <code>nsealr nip46 decide</code> for already-decrypted payloads.</li>
-      <li><strong>request-bound capture checks</strong> in <code>nsealr serial-line exchange</code>.</li>
-      <li><strong>review detail pages</strong> for long content and tags without truncation.</li>
-      <li><strong>T-Display S3 review scenario smoke</strong>, <strong>companion-to-device serial smoke</strong>, <strong>sign-event-disabled smoke</strong>, <strong>firmware protocol evidence</strong>, and <strong>Unicode fallback</strong> tracking — disabled-signing development evidence, not production claims.</li>
-    </ul>
+      <article class="card">
+        <h2>Current contracts</h2>
+        <ul>
+          <li><code>approval_digest</code> — the local approval is bound to the exact reviewed material.</li>
+          <li><code>signing_disabled</code> — real signing is blocked on prototype firmware until hardening gates pass.</li>
+          <li><strong>NIP-46 bridge decisions</strong> via <code>nsealr nip46 decide</code> for already-decrypted payloads.</li>
+          <li><strong>request-bound capture checks</strong> in <code>nsealr serial-line exchange</code>.</li>
+          <li><strong>review detail pages</strong> for long content and tags without truncation.</li>
+          <li><strong>T-Display S3 review scenario smoke</strong>, <strong>companion-to-device serial smoke</strong>, <strong>sign-event-disabled smoke</strong>, <strong>firmware protocol evidence</strong>, and <strong>Unicode fallback</strong> tracking — disabled-signing development evidence, not production claims.</li>
+        </ul>
+      </article>
+
+      <article class="card span-2">
+        <h2>Threat model</h2>
+        <p class="muted">Adversaries, assets, and assumptions for nSealr signer families.</p>
+        <p><a class="link-arrow" href="/docs/security/threat-model/">Read the full threat model →</a></p>
+      </article>
+    </div>
 
     <Callout variant="warn" title="Pre-production">
-      Do not put production secrets onto current prototypes. Maturity per
-      family is in <a href="/docs/signers/raspberry-qr/">each family page</a>
-      and in the feature matrix.
+      Do not put production secrets onto current prototypes. Per-solution
+      maturity (capability matrix, contract IDs) is in
+      <a href="/docs/signers/raspberry-qr/">each family page</a>.
     </Callout>
-
-    <p><a class="link-arrow" href="/docs/security/threat-model/">Read the full threat model →</a></p>
   </section>
 </BaseLayout>
 <style>
   .container { padding-block: 60px; max-width: 1180px; }
-  .container > * { max-width: 880px; margin-inline: auto; }
+  .head { max-width: 880px; margin-bottom: 32px; }
   h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(28px, 4vw, 44px); line-height: 1.05; margin: 8px 0 16px; }
-  h2 { font-family: var(--font-mono); color: var(--fg-strong); font-size: 22px; margin: 32px 0 12px; }
-  ul { display: grid; gap: 8px; max-width: 80ch; }
+  h2 { font-family: var(--font-mono); color: var(--fg-strong); font-size: 20px; margin: 0 0 12px; }
   .lead { color: var(--fg-muted); max-width: 64ch; font-size: 17px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 720px) {
+    .grid { grid-template-columns: 1fr; }
+    .card.span-2 { grid-column: span 1; }
+  }
+  .card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-elevated);
+    padding: 20px 22px;
+  }
+  .card.span-2 { grid-column: span 2; }
+  .card ul { display: grid; gap: 8px; padding-left: 1em; margin: 0 0 12px; }
+  .card li { font-size: 14px; }
+  .card .muted { color: var(--fg-muted); margin: 0 0 12px; }
   .link-arrow { font-family: var(--font-mono); color: var(--accent-soft); font-size: 14px; }
 </style>

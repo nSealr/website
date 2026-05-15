@@ -6,7 +6,12 @@
 </button>
 <div id="search-modal" hidden>
   <div class="search-modal-inner" role="dialog" aria-modal="true" aria-label="Search">
-    <button id="search-close" type="button" aria-label="Close search">Esc</button>
+    <header class="search-head">
+      <span class="search-label">Search</span>
+      <button id="search-close" type="button" aria-label="Close search">
+        <span class="kbd">Esc</span>
+      </button>
+    </header>
     <div id="pagefind-search"></div>
   </div>
 </div>
@@ -37,17 +42,31 @@
     background: var(--bg-elevated);
     border: 1px solid var(--border-strong);
     border-radius: var(--radius-md);
-    padding: 16px;
+    padding: 0 16px 16px;
     box-shadow: var(--shadow-2);
-    position: relative;
+  }
+  .search-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0; margin: 0 0 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .search-label {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--fg-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
   }
   #search-close {
-    position: absolute; top: 10px; right: 10px;
     background: transparent; color: var(--fg-muted);
-    border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
-    padding: 3px 8px; font-family: var(--font-mono); font-size: 11px; cursor: pointer;
+    border: 0; padding: 0; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 4px;
   }
-  #search-close:hover { color: var(--fg-strong); border-color: var(--accent); }
+  #search-close .kbd {
+    font-family: var(--font-mono); font-size: 11px;
+    padding: 2px 8px;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
+    color: var(--fg-muted);
+  }
+  #search-close:hover .kbd { color: var(--accent-soft); border-color: var(--accent); }
   #pagefind-search { margin-top: 8px; min-height: 80px; }
   #pagefind-search :global(.pagefind-ui) {
     --pagefind-ui-primary: var(--accent);
