@@ -1,10 +1,24 @@
 ---
+import { Image } from 'astro:assets';
+import logo from '~/assets/nsealr-logo.png';
 const year = new Date().getFullYear();
 ---
 <footer class="site-footer">
   <div class="container footer-inner">
     <div>
-      <p class="brand-line"><span class="brand-mark">ns</span> nsealr — non-profit · open-source · five signer solutions</p>
+      <p class="brand-line">
+        <Image
+          class="brand-mark"
+          src={logo}
+          alt=""
+          width={22}
+          height={22}
+          densities={[1, 2, 3]}
+          format="webp"
+          loading="lazy"
+        />
+        nSealr — non-profit · open-source · five signer solutions
+      </p>
       <p class="muted">Pre-production research. No production security claim. MIT for code; CC0-1.0 for content.</p>
     </div>
     <nav aria-label="Repositories">
@@ -24,8 +38,16 @@ const year = new Date().getFullYear();
 <style>
   .site-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 36px 0; }
   .footer-inner { display: grid; gap: 18px; }
-  .brand-line { font-family: var(--font-mono); font-size: 14px; margin: 0 0 4px; }
-  .brand-mark { background: var(--accent-bg); color: var(--accent-soft); padding: 2px 6px; border-radius: var(--radius-sm); }
+  .brand-line {
+    font-family: var(--font-mono); font-size: 14px;
+    margin: 0 0 4px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .brand-line :global(.brand-mark) {
+    width: 22px; height: 22px;
+    border-radius: var(--radius-sm);
+    display: inline-block;
+  }
   .muted { color: var(--fg-muted); margin: 0; font-size: 14px; }
   .muted.small { font-size: 12px; }
   nav { display: flex; flex-wrap: wrap; gap: 14px; font-family: var(--font-mono); font-size: 13px; }
