@@ -41,7 +41,8 @@ import Callout from '~/components/Callout.astro';
   </section>
 </BaseLayout>
 <style>
-  .container { padding-block: 60px; max-width: 880px; }
+  .container { padding-block: 60px; max-width: 1180px; }
+  .container > * { max-width: 880px; margin-inline: auto; }
   h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(28px, 4vw, 44px); line-height: 1.05; margin: 8px 0 16px; }
   h2 { font-family: var(--font-mono); color: var(--fg-strong); font-size: 22px; margin: 32px 0 12px; }
   ul { display: grid; gap: 8px; max-width: 80ch; }

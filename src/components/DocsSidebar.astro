@@ -29,6 +29,12 @@ const nav = await getDocsNav();
     font-family: var(--font-mono); font-size: 13px;
     padding: 12px 0;
     border-right: 1px solid var(--border);
+    /* On wide screens keep the tree visible while the article scrolls. */
+    position: sticky;
+    top: 76px;
+    align-self: start;
+    max-height: calc(100vh - 96px);
+    overflow-y: auto;
   }
   .sidebar-toggle {
     display: none; /* hidden on desktop */
@@ -62,7 +68,10 @@ const nav = await getDocsNav();
 
   /* Mobile: collapsible drawer; toggle visible, nav hidden unless data-open='true' */
   @media (max-width: 960px) {
-    .docs-sidebar { border-right: 0; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+    .docs-sidebar {
+      position: static; max-height: none; overflow: visible;
+      border-right: 0; border-bottom: 1px solid var(--border); padding-bottom: 16px;
+    }
     .sidebar-toggle { display: flex; }
     .docs-sidebar nav {
       max-height: 50vh; overflow-y: auto;

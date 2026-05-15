@@ -70,6 +70,11 @@ const grouped = CATEGORY_ORDER.map(cat => {
     font-family: var(--font-mono); font-size: 13px;
     padding: 12px 0;
     border-right: 1px solid var(--border);
+    position: sticky;
+    top: 76px;
+    align-self: start;
+    max-height: calc(100vh - 96px);
+    overflow-y: auto;
   }
   .sidebar-toggle {
     display: none;
@@ -148,7 +153,10 @@ const grouped = CATEGORY_ORDER.map(cat => {
   .blog-sidebar section.rss-row a:hover { text-decoration: underline; }
 
   @media (max-width: 960px) {
-    .blog-sidebar { border-right: 0; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+    .blog-sidebar {
+      position: static; max-height: none; overflow: visible;
+      border-right: 0; border-bottom: 1px solid var(--border); padding-bottom: 16px;
+    }
     .sidebar-toggle { display: flex; }
     .blog-sidebar nav {
       max-height: 50vh; overflow-y: auto;

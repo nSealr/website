@@ -85,7 +85,8 @@ const hiddenTagsCount = Math.max(0, tags.length - TAG_CHIPS_LIMIT);
 </BaseLayout>
 
 <style>
-  .container { padding-block: 60px; max-width: 880px; }
+  .container { padding-block: 60px; max-width: 1180px; }
+  .container > * { max-width: 880px; margin-inline: auto; }
   h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(28px, 4vw, 44px); margin: 8px 0 12px; }
   .lead { color: var(--fg-muted); font-size: 17px; max-width: 64ch; margin: 0 0 22px; }
   .filter-block { margin-bottom: 16px; }
