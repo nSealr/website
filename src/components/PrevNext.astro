@@ -1,0 +1,78 @@
+---
+interface Link {
+  href: string;
+  title: string;
+  label?: string; // eyebrow shown above the title
+}
+interface Props {
+  prev?: Link;
+  next?: Link;
+}
+const { prev, next } = Astro.props;
+---
+{(prev || next) && (
+  <nav class="prevnext" aria-label="Pagination">
+    {prev ? (
+      <a class="cell prev" href={prev.href}>
+        <span class="dir" aria-hidden="true">←</span>
+        <span class="meta">
+          <span class="eyebrow">{prev.label ?? 'Previous'}</span>
+          <span class="title">{prev.title}</span>
+        </span>
+      </a>
+    ) : <span class="cell empty" aria-hidden="true"></span>}
+
+    {next ? (
+      <a class="cell next" href={next.href}>
+        <span class="meta">
+          <span class="eyebrow">{next.label ?? 'Next'}</span>
+          <span class="title">{next.title}</span>
+        </span>
+        <span class="dir" aria-hidden="true">→</span>
+      </a>
+    ) : <span class="cell empty" aria-hidden="true"></span>}
+  </nav>
+)}
+<style>
+  .prevnext {
+    display: grid; gap: 12px;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 40px;
+  }
+  .cell {
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none; color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    background: var(--bg-elevated);
+    transition: border-color 120ms, transform 120ms;
+    min-height: 64px;
+  }
+  .cell.empty { background: transparent; border-color: transparent; }
+  .cell:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .cell.next { justify-content: flex-end; text-align: right; }
+  .cell .meta { display: grid; gap: 2px; min-width: 0; }
+  .cell .eyebrow {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--fg-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .cell .title {
+    font-family: var(--font-mono); font-size: 14px;
+    color: var(--fg-strong); font-weight: 600;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    display: block;
+  }
+  .cell .dir {
+    color: var(--accent-soft); font-family: var(--font-mono);
+    font-size: 18px; flex-shrink: 0;
+    transition: transform 120ms;
+  }
+  .cell.prev:hover .dir { transform: translateX(-3px); }
+  .cell.next:hover .dir { transform: translateX(3px); }
+  @media (max-width: 560px) {
+    .prevnext { grid-template-columns: 1fr; }
+    .cell.empty { display: none; }
+  }
+</style>

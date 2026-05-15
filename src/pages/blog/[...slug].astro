@@ -3,11 +3,23 @@ import { getCollection, render } from 'astro:content';
 import BlogPostLayout from '~/layouts/BlogPostLayout.astro';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft || import.meta.env.DEV);
-  return posts.map(entry => ({ params: { slug: entry.id }, props: { entry } }));
+  const posts = (await getCollection('blog', ({ data }) => !data.draft || import.meta.env.DEV))
+    .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()); // newest first
+  return posts.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: {
+      entry,
+      newer: i > 0
+        ? { href: `/blog/${posts[i - 1].id}/`, title: posts[i - 1].data.title }
+        : undefined,
+      older: i < posts.length - 1
+        ? { href: `/blog/${posts[i + 1].id}/`, title: posts[i + 1].data.title }
+        : undefined,
+    },
+  }));
 }
 
-const { entry } = Astro.props;
+const { entry, older, newer } = Astro.props;
 const { Content, headings } = await render(entry);
 const ogImage = `/og/blog/${entry.id}.png`;
 ---
@@ -21,6 +33,8 @@ const ogImage = `/og/blog/${entry.id}.png`;
   authorIds={entry.data.authors.map(a => a.id)}
   ogImage={ogImage}
   headings={headings}
+  older={older}
+  newer={newer}
 >
   <Content />
 </BlogPostLayout>
