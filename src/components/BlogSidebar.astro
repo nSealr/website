@@ -183,34 +183,20 @@ const grouped = CATEGORY_ORDER.map(cat => {
     });
   });
 
-  const KEY = 'nsealr-blog-sidebar-collapsed';
-  const collapsed = new Set<string>(JSON.parse(localStorage.getItem(KEY) || '[]'));
-
+  // Default: only the category containing the current post is open.
+  // No persistence — every page load resets defaults so the active category
+  // is always visible.
   document.querySelectorAll('.blog-sidebar section[data-section]').forEach(section => {
-    const id = section.getAttribute('data-section')!;
     const defaultOpen = section.getAttribute('data-default-open') === 'true';
-    const stored = localStorage.getItem(KEY);
-    let isCollapsed: boolean;
-    if (stored !== null) {
-      isCollapsed = collapsed.has(id);
-    } else {
-      isCollapsed = !defaultOpen;
-    }
-    if (isCollapsed) section.setAttribute('aria-collapsed', 'true');
+    if (!defaultOpen) section.setAttribute('aria-collapsed', 'true');
 
     const toggle = section.querySelector('.group-toggle')!;
-    toggle.setAttribute('aria-expanded', String(!isCollapsed));
+    toggle.setAttribute('aria-expanded', String(defaultOpen));
     toggle.addEventListener('click', () => {
       const nowCollapsed = section.getAttribute('aria-collapsed') !== 'true';
-      if (nowCollapsed) {
-        section.setAttribute('aria-collapsed', 'true');
-        collapsed.add(id);
-      } else {
-        section.removeAttribute('aria-collapsed');
-        collapsed.delete(id);
-      }
+      if (nowCollapsed) section.setAttribute('aria-collapsed', 'true');
+      else section.removeAttribute('aria-collapsed');
       toggle.setAttribute('aria-expanded', String(!nowCollapsed));
-      localStorage.setItem(KEY, JSON.stringify([...collapsed]));
     });
   });
 </script>

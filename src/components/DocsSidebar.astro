@@ -132,36 +132,21 @@ function isActive(items: { href: string }[], current: string) {
     });
   });
 
-  // Per-section collapse (desktop + mobile). Persist state per section name.
-  const KEY = 'nsealr-docs-sidebar-collapsed';
-  const collapsed = new Set<string>(JSON.parse(localStorage.getItem(KEY) || '[]'));
-
+  // Per-section collapse (desktop + mobile).
+  // Default: only the section containing the current page is open.
+  // No persistence — every page load resets defaults so the active section
+  // is always visible.
   document.querySelectorAll('.docs-sidebar section[data-section]').forEach(section => {
-    const id = section.getAttribute('data-section')!;
     const defaultOpen = section.getAttribute('data-default-open') === 'true';
-    // If user has not toggled before, fall back to: open if it contains current page, else collapsed.
-    const stored = localStorage.getItem(KEY);
-    let isCollapsed: boolean;
-    if (stored !== null) {
-      isCollapsed = collapsed.has(id);
-    } else {
-      isCollapsed = !defaultOpen;
-    }
-    if (isCollapsed) section.setAttribute('aria-collapsed', 'true');
+    if (!defaultOpen) section.setAttribute('aria-collapsed', 'true');
 
     const toggle = section.querySelector('.group-toggle')!;
-    toggle.setAttribute('aria-expanded', String(!isCollapsed));
+    toggle.setAttribute('aria-expanded', String(defaultOpen));
     toggle.addEventListener('click', () => {
       const nowCollapsed = section.getAttribute('aria-collapsed') !== 'true';
-      if (nowCollapsed) {
-        section.setAttribute('aria-collapsed', 'true');
-        collapsed.add(id);
-      } else {
-        section.removeAttribute('aria-collapsed');
-        collapsed.delete(id);
-      }
+      if (nowCollapsed) section.setAttribute('aria-collapsed', 'true');
+      else section.removeAttribute('aria-collapsed');
       toggle.setAttribute('aria-expanded', String(!nowCollapsed));
-      localStorage.setItem(KEY, JSON.stringify([...collapsed]));
     });
   });
 </script>
