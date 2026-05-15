@@ -1,0 +1,35 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import SystemMap from '~/components/SystemMap.astro';
+import SignerFamilyGrid from '~/components/SignerFamilyGrid.astro';
+---
+<BaseLayout title="System — nSealr" description="Product shape: one companion and five signer families for Nostr signing.">
+  <section class="container">
+    <p class="eyebrow">// system</p>
+    <h1>One companion. Five signer families.</h1>
+    <p class="lead">
+      The practical product is a shared companion plus five signer families,
+      not five unrelated experiments. Every shared feature behaves the same
+      across implementations because the <code>contract_id</code> in
+      <code>nSealr/specs</code> defines it once.
+    </p>
+    <SystemMap />
+    <h2>Families</h2>
+    <SignerFamilyGrid />
+    <h2>Boundaries</h2>
+    <ul>
+      <li><strong>Companion:</strong> secretless routing and verification infrastructure. Not trusted with keys.</li>
+      <li><strong>QR vaults:</strong> stateless RAM-only session signers.</li>
+      <li><strong>USB/NIP-46:</strong> future persistent encrypted device-vault signer.</li>
+      <li><strong>Smartcards:</strong> display-less slot-backed custody — requires external review acknowledgement.</li>
+      <li><strong>Custom wallet:</strong> research for persistent-secret hardware wallets.</li>
+    </ul>
+  </section>
+</BaseLayout>
+<style>
+  .container { padding-block: 60px; }
+  h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(32px, 4.5vw, 56px); line-height: 1; letter-spacing: -0.02em; margin: 8px 0 18px; }
+  h2 { font-family: var(--font-mono); color: var(--fg-strong); font-size: 22px; margin: 36px 0 14px; }
+  .lead { color: var(--fg-muted); font-size: clamp(15px, 1.6vw, 18px); max-width: 64ch; }
+  ul { display: grid; gap: 8px; max-width: 80ch; }
+</style>

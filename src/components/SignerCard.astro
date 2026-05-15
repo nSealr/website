@@ -1,0 +1,39 @@
+---
+import StatusPill from './StatusPill.astro';
+interface Props {
+  family: string;
+  displayName: string;
+  tagline: string;
+  maturity: string;
+  href: string;
+}
+const { family, displayName, tagline, maturity, href } = Astro.props;
+const variant: 'ok' | 'pending' | 'neutral' =
+  maturity === 'alpha' || maturity === 'beta' ? 'ok'
+    : maturity === 'prototype' ? 'pending'
+    : 'neutral';
+---
+<a class="signer-card" href={href} data-family={family}>
+  <div class="head">
+    <span class="name">{displayName}</span>
+    <StatusPill variant={variant}>{maturity}</StatusPill>
+  </div>
+  <p class="tag">{tagline}</p>
+  <span class="arrow" aria-hidden="true">→</span>
+</a>
+<style>
+  .signer-card {
+    display: block; padding: 16px 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-elevated);
+    text-decoration: none; color: var(--fg);
+    transition: border-color 120ms, transform 120ms;
+    position: relative;
+  }
+  .signer-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+  .name { font-family: var(--font-mono); font-size: 13px; color: var(--fg-strong); font-weight: 700; line-height: 1.3; }
+  .tag { color: var(--fg-muted); font-size: 13px; margin: 0; }
+  .arrow { position: absolute; right: 18px; bottom: 14px; color: var(--accent-soft); font-family: var(--font-mono); }
+</style>

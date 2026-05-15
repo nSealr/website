@@ -1,0 +1,76 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Hero from '~/components/Hero.astro';
+import SystemMap from '~/components/SystemMap.astro';
+import SignerFamilyGrid from '~/components/SignerFamilyGrid.astro';
+---
+<BaseLayout
+  title="nSealr — open-source hardware signers for Nostr"
+  description="nSealr is a non-profit open-source hardware and software program for Nostr signing devices."
+>
+  <Hero />
+
+  <section class="container split">
+    <div>
+      <p class="eyebrow">// system</p>
+      <h2>One companion. Five signer families.</h2>
+      <p class="muted">
+        The companion prepares requests, moves them over QR, file, stdio,
+        serial, USB, or card transports, and verifies every successful
+        response. The signer keeps or protects the private key and signs
+        only through an explicit policy boundary.
+      </p>
+      <p><a class="link-arrow" href="/system/">Read product shape →</a></p>
+    </div>
+    <SystemMap />
+  </section>
+
+  <section class="container">
+    <p class="eyebrow">// families</p>
+    <h2>Pick the boundary that matches your trust model.</h2>
+    <p class="muted">
+      Raspberry/Pi Stateless QR Vault · ESP32 Stateless QR Vault · ESP32 USB/NIP-46 Signer ·
+      JavaCard/NFC Smartcard Signer · Custom Nostr Hardware Wallet With Persistent Secret.
+    </p>
+    <SignerFamilyGrid />
+  </section>
+
+  <section class="container status">
+    <p class="eyebrow">// status</p>
+    <h2>Current maturity is explicit.</h2>
+    <ul>
+      <li><strong>Specs:</strong> v0 request, response, QR envelope, fixtures, review-screen vectors, <em>review detail pages</em>, <code>approval_digest</code> contracts, and <em>NIP-46 bridge decisions</em>.</li>
+      <li><strong>Companion:</strong> CLI, verification, transports, QR, serial framing with <em>request-bound capture checks</em>, <code>nsealr serial-line exchange</code> for one-shot local USB-serial bring-up, <code>nsealr nip46 decide</code> for already-decrypted payload policy checks, and untrusted detail-page previews.</li>
+      <li><strong>Raspberry:</strong> desktop stateless QR vault simulation with NIP-06 signing, <code>approval_digest</code>-bound review, and hardware-neutral adapter boundaries for later Pi drivers.</li>
+      <li><strong>ESP32 QR:</strong> stateless QR vault host-core review flow and <em>T-Display S3 review scenario smoke</em> while the T-Display S3 Pro OV5640 hardware target remains pending.</li>
+      <li><strong>ESP32 USB/NIP-46:</strong> native USB scaffold with get_public_key, <code>signing_disabled</code>, <code>approval_digest</code>-gated approval core, <em>companion-to-device serial smoke</em>, <em>sign-event-disabled smoke</em>, <em>firmware protocol evidence</em>, and <em>Unicode fallback</em> tracking for disabled-signing development firmware.</li>
+      <li><strong>Smartcard:</strong> JavaCard/NFC Smartcard Signer research with APDU simulator plus <em>nsealr-smartcard CLI probes</em> for public-key and event-id signing research; <em>no trusted review or real-card compatibility claim</em> yet.</li>
+      <li><strong>Custom wallet:</strong> Custom Nostr Hardware Wallet With Persistent Secret research is limited to secure-element/root-of-trust and persistent-secret architecture until real hardware evidence exists.</li>
+      <li><strong>Hardware:</strong> checked requirements, BOM scaffold, and <em>Raspberry/Pi OS profile</em>, including <em>Raspberry/Pi kit requirements</em>, request-id and <code>approval_digest</code> review binding.</li>
+    </ul>
+  </section>
+
+  <section class="container security">
+    <p class="eyebrow">// security</p>
+    <h2>No production security claim yet.</h2>
+    <p class="muted">
+      nSealr is pre-production research and implementation work. The project
+      documents trust boundaries, test evidence, and known limits before
+      presenting any device as ready for real keys.
+    </p>
+    <p><a class="link-arrow" href="/security/">Read the trust model →</a></p>
+  </section>
+</BaseLayout>
+
+<style>
+  h2 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(24px, 3vw, 36px); line-height: 1.1; letter-spacing: -0.01em; margin: 6px 0 14px; }
+  .muted { color: var(--fg-muted); max-width: 64ch; }
+  section.container { padding-block: clamp(36px, 6vw, 80px); }
+  section.split { display: grid; gap: 28px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: center; }
+  @media (max-width: 820px) { section.split { grid-template-columns: 1fr; } }
+  .status ul { padding-left: 1em; display: grid; gap: 8px; max-width: 80ch; }
+  .status li { padding-left: 0; }
+  .status strong { font-family: var(--font-mono); color: var(--fg-strong); }
+  .status code, .status em { background: var(--accent-bg); color: var(--accent-soft); border-radius: var(--radius-sm); padding: 1px 6px; font-style: normal; }
+  .link-arrow { font-family: var(--font-mono); color: var(--accent-soft); font-size: 14px; }
+</style>

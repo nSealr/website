@@ -1,0 +1,56 @@
+---
+import StatusPill from './StatusPill.astro';
+---
+<section class="hero container">
+  <p class="eyebrow">// nsealr · v0 · stateless · pre-production</p>
+  <h1>Sign <em>Nostr</em><br />events offline.</h1>
+  <p class="lead">
+    A non-profit, open-source program for reproducible Nostr signing devices.
+    Companion software, five signer families, and open hardware references —
+    auditable instead of proprietary.
+  </p>
+  <div class="actions">
+    <a class="btn primary" href="/docs/">$ read the docs</a>
+    <a class="btn ghost" href="https://github.com/nSealr" rel="noopener">github ↗</a>
+  </div>
+  <div class="pills">
+    <StatusPill variant="ok">approval_digest</StatusPill>
+    <StatusPill variant="warn">signing_disabled</StatusPill>
+    <StatusPill variant="neutral">v0 spec</StatusPill>
+    <StatusPill variant="neutral">non-profit · open-source</StatusPill>
+  </div>
+  <pre class="snippet"><code>{`# verify a request — companion
+$ nsealr verify --request req.json
+✓ approval_digest ok
+! sign-event disabled in dev firmware`}</code></pre>
+</section>
+
+<style>
+  .hero { padding-block: clamp(48px, 8vw, 110px) clamp(24px, 4vw, 56px); }
+  .hero h1 {
+    font-family: var(--font-mono); color: var(--fg-strong);
+    font-size: clamp(40px, 7vw, 78px); line-height: 0.96;
+    letter-spacing: -0.02em; margin: 12px 0 16px;
+  }
+  .hero h1 em { color: var(--accent-soft); font-style: normal; }
+  .hero .lead { color: var(--fg-muted); font-size: clamp(15px, 1.6vw, 18px); max-width: 60ch; margin: 0 0 20px; }
+  .actions { display: flex; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 10px 16px;
+    font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+    border-radius: var(--radius-sm); text-decoration: none;
+    border: 1px solid transparent;
+  }
+  .btn.primary { background: var(--accent); color: white; }
+  .btn.primary:hover { background: var(--accent-soft); }
+  .btn.ghost { background: transparent; color: var(--fg-strong); border-color: var(--border-strong); }
+  .btn.ghost:hover { border-color: var(--accent); }
+  .pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
+  .snippet {
+    background: var(--bg-code); border: 1px solid var(--border);
+    border-left: 2px solid var(--accent);
+    padding: 14px 16px; border-radius: var(--radius-md);
+    font-size: 13px; line-height: 1.7; overflow-x: auto;
+    color: var(--fg); font-family: var(--font-mono);
+  }
+</style>

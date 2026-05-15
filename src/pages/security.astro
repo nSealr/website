@@ -1,0 +1,50 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Callout from '~/components/Callout.astro';
+---
+<BaseLayout title="Security — nSealr" description="Trust boundaries, threat model overview, and known limits for nSealr signers.">
+  <section class="container">
+    <p class="eyebrow">// security</p>
+    <h1>No production security claim yet.</h1>
+    <p class="lead">
+      nSealr is pre-production research and implementation work. The
+      website documents trust boundaries, test evidence, and known limits
+      before presenting any device as ready for real keys.
+    </p>
+
+    <h2>Trust boundaries</h2>
+    <ul>
+      <li>Private keys must not be exposed to ordinary Nostr clients.</li>
+      <li>Sensitive signing should require explicit user review where hardware allows it.</li>
+      <li>The companion is not trusted with key custody.</li>
+      <li>Maturity differs by signer family — see each family page.</li>
+    </ul>
+
+    <h2>Current contracts</h2>
+    <p>The safety contracts the site enforces today include:</p>
+    <ul>
+      <li><code>approval_digest</code> — the local approval is bound to the exact reviewed material.</li>
+      <li><code>signing_disabled</code> — real signing is blocked on prototype firmware until hardening gates pass.</li>
+      <li><strong>NIP-46 bridge decisions</strong> via <code>nsealr nip46 decide</code> for already-decrypted payloads.</li>
+      <li><strong>Request-bound capture checks</strong> in <code>nsealr serial-line exchange</code>.</li>
+      <li><strong>Review detail pages</strong> for long content and tags without truncation.</li>
+      <li><strong>T-Display S3 review scenario smoke</strong>, <strong>companion-to-device serial smoke</strong>, <strong>sign-event-disabled smoke</strong>, <strong>firmware protocol evidence</strong>, and <strong>Unicode fallback</strong> tracking — disabled-signing development evidence, not production claims.</li>
+    </ul>
+
+    <Callout variant="warn" title="Pre-production">
+      Do not put production secrets onto current prototypes. Maturity per
+      family is in <a href="/docs/signers/raspberry-qr/">each family page</a>
+      and in the feature matrix.
+    </Callout>
+
+    <p><a class="link-arrow" href="/docs/security/threat-model/">Read the full threat model →</a></p>
+  </section>
+</BaseLayout>
+<style>
+  .container { padding-block: 60px; max-width: 880px; }
+  h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(28px, 4vw, 44px); line-height: 1.05; margin: 8px 0 16px; }
+  h2 { font-family: var(--font-mono); color: var(--fg-strong); font-size: 22px; margin: 32px 0 12px; }
+  ul { display: grid; gap: 8px; max-width: 80ch; }
+  .lead { color: var(--fg-muted); max-width: 64ch; font-size: 17px; }
+  .link-arrow { font-family: var(--font-mono); color: var(--accent-soft); font-size: 14px; }
+</style>

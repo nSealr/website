@@ -1,0 +1,27 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+---
+<BaseLayout title="Contributing — nSealr" description="How to contribute to nSealr signers, companion, specs, and hardware.">
+  <section class="container">
+    <p class="eyebrow">// contributing</p>
+    <h1>Contribute to a signer family or the shared spec.</h1>
+    <ol>
+      <li>Pick the repo for the area you want to work on (see <a href="/about/">About</a>).</li>
+      <li>Read its <code>README.md</code> for build / test instructions.</li>
+      <li>Open issues and PRs that preserve the shared <code>contract_id</code> behavior in <a href="https://github.com/nSealr/specs">nSealr/specs</a> when a feature is present on more than one solution.</li>
+    </ol>
+    <h2>Ground rules</h2>
+    <ul>
+      <li>No production security claim before independent test evidence.</li>
+      <li>Shared features behave the same across signer families.</li>
+      <li>Display-less smartcards do not provide trusted event review by themselves.</li>
+      <li>TROPIC01 is not assumed to directly sign Nostr/BIP-340 until proven.</li>
+    </ul>
+  </section>
+</BaseLayout>
+<style>
+  .container { padding-block: 60px; max-width: 800px; }
+  h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(28px, 4vw, 40px); margin: 8px 0 16px; }
+  h2 { font-family: var(--font-mono); color: var(--fg-strong); font-size: 22px; margin: 32px 0 12px; }
+  ol, ul { display: grid; gap: 8px; max-width: 70ch; }
+</style>

@@ -1,0 +1,49 @@
+---
+import { getCollection } from 'astro:content';
+interface Props { family: string; }
+const { family } = Astro.props;
+const all = await getCollection('signers');
+const entry = all.find(s => s.data.family === family);
+if (!entry) throw new Error(`FeatureMatrix: unknown family "${family}"`);
+const STATUS_VARIANT: Record<string, 'ok' | 'warn' | 'pending' | 'neutral'> = {
+  implemented: 'ok', present: 'ok', partial: 'pending',
+  planned: 'pending', research: 'pending',
+  disabled_until_gates_pass: 'warn', disabled: 'warn', forbidden: 'warn', absent: 'warn',
+  not_applicable: 'neutral', target: 'neutral', required: 'neutral', optional: 'neutral'
+};
+---
+<div class="fm">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Feature</th>
+        <th scope="col">Target</th>
+        <th scope="col">Current</th>
+        <th scope="col">Contract</th>
+      </tr>
+    </thead>
+    <tbody>
+      {entry.data.capabilities.map(c => (
+        <tr>
+          <th scope="row"><code>{c.id}</code></th>
+          <td><span class={`b b-${STATUS_VARIANT[c.target] ?? 'neutral'}`}>{c.target}</span></td>
+          <td><span class={`b b-${STATUS_VARIANT[c.current] ?? 'neutral'}`}>{c.current}</span></td>
+          <td>{c.contractId ? <code>{c.contractId}</code> : <span class="muted">—</span>}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<style>
+  .fm { overflow-x: auto; margin: 1.4em 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: var(--font-mono); }
+  th, td { padding: 6px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+  thead th { background: var(--bg-elevated); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg-muted); }
+  code { background: transparent; border: 0; padding: 0; font-size: 12px; color: var(--fg); }
+  .b { display: inline-block; padding: 1px 7px; border-radius: var(--radius-pill); border: 1px solid; font-size: 11px; }
+  .b-ok { color: var(--ok); border-color: color-mix(in oklab, var(--ok) 40%, transparent); background: var(--ok-bg); }
+  .b-warn { color: var(--warn); border-color: color-mix(in oklab, var(--warn) 40%, transparent); background: var(--warn-bg); }
+  .b-pending { color: var(--pending); border-color: color-mix(in oklab, var(--pending) 40%, transparent); background: var(--pending-bg); }
+  .b-neutral { color: var(--fg-muted); border-color: var(--border); background: transparent; }
+  .muted { color: var(--fg-muted); }
+</style>
