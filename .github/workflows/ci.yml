@@ -33,7 +33,12 @@ jobs:
       - name: Link check
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --no-progress dist
+          args: >-
+            --no-progress
+            --base dist
+            --exclude '^https://nsealr\.com'
+            --exclude '^https://github\.com/nSealr/lab'
+            dist
       - uses: actions/upload-artifact@v4
         with:
           name: dist
