@@ -8,7 +8,10 @@ html {
   text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
+
+body { overflow-x: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

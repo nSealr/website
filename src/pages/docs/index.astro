@@ -66,12 +66,12 @@ function spanFor(count: number): 1 | 2 {
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
     gap: 18px;
     grid-auto-flow: dense;
   }
-  @media (max-width: 880px) {
-    .grid { grid-template-columns: 1fr; }
+  @media (min-width: 880px) {
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 
   .card {
