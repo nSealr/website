@@ -1,43 +1,90 @@
 ---
 ---
-<button id="theme-toggle" type="button" class="theme-toggle" aria-label="Toggle color theme" aria-pressed="false">
-  <span class="theme-toggle__sun" aria-hidden="true">☀</span>
-  <span class="theme-toggle__moon" aria-hidden="true">☾</span>
-</button>
+<div class="theme-toggle" role="group" aria-label="Color theme">
+  <button type="button" class="theme-toggle__btn" data-theme-value="light" aria-label="Light theme">
+    <span aria-hidden="true">☀</span>
+  </button>
+  <button type="button" class="theme-toggle__btn" data-theme-value="system" aria-label="System theme">
+    <span aria-hidden="true">⊙</span>
+  </button>
+  <button type="button" class="theme-toggle__btn" data-theme-value="dark" aria-label="Dark theme">
+    <span aria-hidden="true">☾</span>
+  </button>
+</div>
 <style>
   .theme-toggle {
-    display: inline-grid; place-items: center;
-    width: 34px; height: 34px;
+    display: inline-flex;
+    align-items: center;
     border: 1px solid var(--border-strong);
     border-radius: var(--radius-md);
     background: transparent;
-    color: var(--fg);
+    padding: 2px;
+  }
+  .theme-toggle__btn {
+    display: inline-grid;
+    place-items: center;
+    width: 26px; height: 26px;
+    background: transparent;
+    border: 0;
+    color: var(--fg-muted);
     cursor: pointer;
-    position: relative;
-  }
-  .theme-toggle:hover { border-color: var(--accent); }
-  .theme-toggle__sun, .theme-toggle__moon {
-    position: absolute;
-    transition: opacity var(--tx-fast), transform var(--tx-fast);
-    font-size: var(--text-lg);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-md);
     line-height: 1;
+    transition: background var(--tx-fast), color var(--tx-fast);
   }
-  :global(html[data-theme='dark']) .theme-toggle__sun { opacity: 0; transform: rotate(-30deg); }
-  :global(html[data-theme='dark']) .theme-toggle__moon { opacity: 1; }
-  :global(html[data-theme='light']) .theme-toggle__sun { opacity: 1; }
-  :global(html[data-theme='light']) .theme-toggle__moon { opacity: 0; transform: rotate(30deg); }
+  .theme-toggle__btn:hover { color: var(--fg-strong); }
+  .theme-toggle__btn[aria-pressed='true'] {
+    background: var(--accent-bg);
+    color: var(--accent-soft);
+  }
 </style>
 <script>
-  const btn = document.getElementById('theme-toggle');
-  const sync = () => {
-    const t = document.documentElement.getAttribute('data-theme') || 'dark';
-    btn?.setAttribute('aria-pressed', String(t === 'light'));
-  };
-  sync();
-  btn?.addEventListener('click', () => {
-    const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', next);
-    try { localStorage.setItem('theme', next); } catch {}
-    sync();
+  type ThemePref = 'light' | 'dark' | 'system';
+
+  function getStoredPref(): ThemePref {
+    try {
+      const s = localStorage.getItem('theme');
+      if (s === 'light' || s === 'dark') return s;
+    } catch {}
+    return 'system';
+  }
+
+  function applyPref(pref: ThemePref) {
+    let effective: 'light' | 'dark';
+    if (pref === 'system') {
+      effective = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    } else {
+      effective = pref;
+    }
+    document.documentElement.setAttribute('data-theme', effective);
+
+    try {
+      if (pref === 'system') localStorage.removeItem('theme');
+      else localStorage.setItem('theme', pref);
+    } catch {}
+  }
+
+  function syncButtons() {
+    const pref = getStoredPref();
+    document.querySelectorAll<HTMLButtonElement>('.theme-toggle__btn').forEach(btn => {
+      const v = btn.getAttribute('data-theme-value');
+      btn.setAttribute('aria-pressed', String(v === pref));
+    });
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('.theme-toggle__btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const v = btn.getAttribute('data-theme-value') as ThemePref;
+      applyPref(v);
+      syncButtons();
+    });
   });
+
+  // Reflect OS changes while user is on 'system'.
+  matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+    if (getStoredPref() === 'system') applyPref('system');
+  });
+
+  syncButtons();
 </script>
