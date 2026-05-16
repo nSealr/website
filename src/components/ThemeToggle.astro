@@ -1,48 +1,53 @@
 ---
 ---
-<div class="theme-toggle" role="group" aria-label="Color theme">
-  <button type="button" class="theme-toggle__btn" data-theme-value="light" aria-label="Light theme">
-    <span aria-hidden="true">☀</span>
-  </button>
-  <button type="button" class="theme-toggle__btn" data-theme-value="system" aria-label="System theme">
-    <span aria-hidden="true">⊙</span>
-  </button>
-  <button type="button" class="theme-toggle__btn" data-theme-value="dark" aria-label="Dark theme">
-    <span aria-hidden="true">☾</span>
-  </button>
-</div>
+<button
+  id="theme-toggle"
+  type="button"
+  class="theme-toggle"
+  aria-label="Toggle color theme"
+  title="Theme: system"
+>
+  <span class="theme-toggle__icon theme-toggle__icon--system" aria-hidden="true">⊙</span>
+  <span class="theme-toggle__icon theme-toggle__icon--light" aria-hidden="true">☀</span>
+  <span class="theme-toggle__icon theme-toggle__icon--dark" aria-hidden="true">☾</span>
+</button>
 <style>
   .theme-toggle {
-    display: inline-flex;
-    align-items: center;
+    width: 34px; height: 34px;
+    display: inline-grid;
+    place-items: center;
     border: 1px solid var(--border-strong);
     border-radius: var(--radius-md);
     background: transparent;
-    padding: 2px;
-  }
-  .theme-toggle__btn {
-    display: inline-grid;
-    place-items: center;
-    width: 26px; height: 26px;
-    background: transparent;
-    border: 0;
-    color: var(--fg-muted);
+    color: var(--fg);
     cursor: pointer;
-    border-radius: var(--radius-sm);
-    font-size: var(--text-md);
-    line-height: 1;
-    transition: background var(--tx-fast), color var(--tx-fast);
+    padding: 0;
+    position: relative;
+    transition: border-color var(--tx-fast);
   }
-  .theme-toggle__btn:hover { color: var(--fg-strong); }
-  .theme-toggle__btn[aria-pressed='true'] {
-    background: var(--accent-bg);
-    color: var(--accent-soft);
+  .theme-toggle:hover { border-color: var(--accent); }
+  .theme-toggle__icon {
+    position: absolute;
+    font-size: var(--text-lg);
+    line-height: 1;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity var(--tx-fast), transform var(--tx-fast);
+  }
+  .theme-toggle[data-pref='system'] .theme-toggle__icon--system,
+  .theme-toggle[data-pref='light']  .theme-toggle__icon--light,
+  .theme-toggle[data-pref='dark']   .theme-toggle__icon--dark {
+    opacity: 1;
+    transform: scale(1);
   }
 </style>
 <script>
-  type ThemePref = 'light' | 'dark' | 'system';
+  type ThemePref = 'system' | 'light' | 'dark';
+  const ORDER: ThemePref[] = ['system', 'light', 'dark'];
 
-  function getStoredPref(): ThemePref {
+  const btn = document.getElementById('theme-toggle');
+
+  function readPref(): ThemePref {
     try {
       const s = localStorage.getItem('theme');
       if (s === 'light' || s === 'dark') return s;
@@ -63,28 +68,22 @@
       if (pref === 'system') localStorage.removeItem('theme');
       else localStorage.setItem('theme', pref);
     } catch {}
+
+    btn?.setAttribute('data-pref', pref);
+    btn?.setAttribute('title', `Theme: ${pref}`);
   }
 
-  function syncButtons() {
-    const pref = getStoredPref();
-    document.querySelectorAll<HTMLButtonElement>('.theme-toggle__btn').forEach(btn => {
-      const v = btn.getAttribute('data-theme-value');
-      btn.setAttribute('aria-pressed', String(v === pref));
-    });
-  }
+  // Initial sync (theme-init.ts has already painted; we just label the button).
+  applyPref(readPref());
 
-  document.querySelectorAll<HTMLButtonElement>('.theme-toggle__btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const v = btn.getAttribute('data-theme-value') as ThemePref;
-      applyPref(v);
-      syncButtons();
-    });
+  btn?.addEventListener('click', () => {
+    const cur = readPref();
+    const next = ORDER[(ORDER.indexOf(cur) + 1) % ORDER.length];
+    applyPref(next);
   });
 
-  // Reflect OS changes while user is on 'system'.
+  // Track OS preference while user is on 'system'.
   matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
-    if (getStoredPref() === 'system') applyPref('system');
+    if (readPref() === 'system') applyPref('system');
   });
-
-  syncButtons();
 </script>
