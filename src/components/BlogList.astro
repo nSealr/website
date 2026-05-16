@@ -1,57 +1,93 @@
 ---
 import TagPill from './TagPill.astro';
 import type { CollectionEntry } from 'astro:content';
+
 interface Props { posts: CollectionEntry<'blog'>[]; }
 const { posts } = Astro.props;
+
 const CATEGORY_COLOR: Record<string, string> = {
   release: 'var(--ok)',
   research: 'var(--accent-soft)',
   tutorial: 'var(--pending)',
   news: 'var(--fg-muted)',
 };
+
+function fmt(d: Date) { return d.toISOString().slice(0, 10); }
 ---
 <ul class="post-list">
   {posts.map(p => (
     <li class="post-card">
-      <div class="meta">
-        <a class="cat" style={`--cat: ${CATEGORY_COLOR[p.data.category]}`} href={`/blog/categories/${p.data.category}/`}>{p.data.category}</a>
-        <time datetime={p.data.publishedAt.toISOString()}>{p.data.publishedAt.toISOString().slice(0,10)}</time>
+      <div class="post-card__meta">
+        <a
+          class="post-card__cat"
+          style={`--cat: ${CATEGORY_COLOR[p.data.category]}`}
+          href={`/blog/categories/${p.data.category}/`}
+        >{p.data.category}</a>
+        <time datetime={p.data.publishedAt.toISOString()}>{fmt(p.data.publishedAt)}</time>
       </div>
-      <h3><a href={`/blog/${p.id}/`}>{p.data.title}</a></h3>
-      <p class="excerpt">{p.data.description}</p>
+      <h3 class="post-card__title">
+        <a href={`/blog/${p.id}/`}>{p.data.title}</a>
+      </h3>
+      <p class="post-card__excerpt">{p.data.description}</p>
       {p.data.tags.length > 0 && (
-        <div class="tags">{p.data.tags.map(t => <TagPill tag={t} href={`/blog/tags/${t}/`} />)}</div>
+        <div class="post-card__tags">
+          {p.data.tags.map(t => <TagPill tag={t} href={`/blog/tags/${t}/`} />)}
+        </div>
       )}
     </li>
   ))}
 </ul>
 <style>
   .post-list {
-    list-style: none; padding: 0; margin: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
-    gap: 16px;
+    gap: var(--space-8);
   }
   .post-card {
-    display: block; padding: 18px 20px;
+    display: block;
+    padding: var(--space-8) var(--space-10);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     background: var(--bg-elevated);
     color: var(--fg);
-    transition: border-color 120ms;
+    transition: border-color var(--tx-fast);
   }
   .post-card:hover { border-color: var(--accent); }
-  .meta { display: flex; gap: 12px; font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); margin-bottom: 6px; align-items: center; }
-  .meta .cat {
-    color: var(--cat); text-transform: lowercase;
+
+  .post-card__meta {
+    display: flex;
+    gap: var(--space-6);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--fg-muted);
+    margin-bottom: var(--space-3);
+    align-items: center;
+  }
+  .post-card__cat {
+    color: var(--cat);
+    text-transform: lowercase;
     text-decoration: none;
     border: 1px solid color-mix(in oklab, var(--cat) 35%, transparent);
-    padding: 1px 8px; border-radius: var(--radius-pill);
+    padding: 1px var(--space-4);
+    border-radius: var(--radius-pill);
   }
-  .meta .cat:hover { background: color-mix(in oklab, var(--cat) 12%, transparent); }
-  h3 { font-family: var(--font-mono); margin: 0 0 6px; font-size: 18px; }
-  h3 a { color: var(--fg-strong); text-decoration: none; }
-  h3 a:hover { color: var(--accent-soft); }
-  .excerpt { margin: 0 0 10px; color: var(--fg-muted); font-size: 14px; }
-  .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .post-card__cat:hover { background: color-mix(in oklab, var(--cat) 12%, transparent); text-decoration: none; }
+
+  .post-card__title {
+    font-family: var(--font-mono);
+    margin: 0 0 var(--space-3);
+    font-size: var(--text-2xl);
+  }
+  .post-card__title a { color: var(--fg-strong); text-decoration: none; }
+  .post-card__title a:hover { color: var(--accent-soft); }
+
+  .post-card__excerpt {
+    margin: 0 0 var(--space-5);
+    color: var(--fg-muted);
+    font-size: var(--text-base);
+  }
+  .post-card__tags { display: flex; gap: var(--space-3); flex-wrap: wrap; }
 </style>

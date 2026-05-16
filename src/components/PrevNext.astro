@@ -2,80 +2,92 @@
 interface Link {
   href: string;
   title: string;
-  label?: string; // eyebrow shown above the title
+  label?: string;
 }
 interface Props {
   prev?: Link;
   next?: Link;
 }
 const { prev, next } = Astro.props;
-const layout = prev && next ? 'both' : prev ? 'prev-only' : next ? 'next-only' : null;
+const layout = prev && next ? 'both' : prev ? 'prev' : next ? 'next' : null;
 ---
 {layout && (
-  <nav class={`prevnext layout-${layout}`} aria-label="Pagination">
+  <nav class={`prevnext prevnext--${layout}`} aria-label="Pagination">
     {prev && (
-      <a class="cell prev" href={prev.href}>
-        <span class="dir" aria-hidden="true">←</span>
-        <span class="meta">
-          <span class="eyebrow">{prev.label ?? 'Previous'}</span>
-          <span class="title">{prev.title}</span>
+      <a class="prevnext__cell prevnext__cell--prev" href={prev.href}>
+        <span class="prevnext__dir" aria-hidden="true">←</span>
+        <span class="prevnext__meta">
+          <span class="prevnext__label">{prev.label ?? 'Previous'}</span>
+          <span class="prevnext__title">{prev.title}</span>
         </span>
       </a>
     )}
     {next && (
-      <a class="cell next" href={next.href}>
-        <span class="meta">
-          <span class="eyebrow">{next.label ?? 'Next'}</span>
-          <span class="title">{next.title}</span>
+      <a class="prevnext__cell prevnext__cell--next" href={next.href}>
+        <span class="prevnext__meta">
+          <span class="prevnext__label">{next.label ?? 'Next'}</span>
+          <span class="prevnext__title">{next.title}</span>
         </span>
-        <span class="dir" aria-hidden="true">→</span>
+        <span class="prevnext__dir" aria-hidden="true">→</span>
       </a>
     )}
   </nav>
 )}
 <style>
   .prevnext {
-    display: grid; gap: 12px;
-    margin-top: 40px;
+    display: grid;
+    gap: var(--space-6);
+    margin-top: var(--space-20);
   }
-  .prevnext.layout-both { grid-template-columns: 1fr 1fr; }
-  .prevnext.layout-prev-only { grid-template-columns: minmax(0, 360px); justify-content: start; }
-  .prevnext.layout-next-only { grid-template-columns: minmax(0, 360px); justify-content: end; }
+  .prevnext--both { grid-template-columns: 1fr 1fr; }
+  .prevnext--prev { grid-template-columns: minmax(0, 360px); justify-content: start; }
+  .prevnext--next { grid-template-columns: minmax(0, 360px); justify-content: end; }
 
-  .cell {
-    display: flex; align-items: center; gap: 12px;
-    text-decoration: none; color: var(--fg);
+  .prevnext__cell {
+    display: flex; align-items: center; gap: var(--space-6);
+    text-decoration: none;
+    color: var(--fg);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
-    padding: 14px 16px;
+    padding: var(--space-7) var(--space-8);
     background: var(--bg-elevated);
-    transition: border-color 120ms, transform 120ms;
+    transition: border-color var(--tx-fast), transform var(--tx-fast);
     min-height: 64px;
   }
-  .cell:hover { border-color: var(--accent); transform: translateY(-1px); }
-  .cell.next { justify-content: flex-end; text-align: right; }
-  .cell .meta { display: grid; gap: 2px; min-width: 0; }
-  .cell .eyebrow {
-    font-family: var(--font-mono); font-size: 11px;
+  .prevnext__cell:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .prevnext__cell--next { justify-content: flex-end; text-align: right; }
+
+  .prevnext__meta { display: grid; gap: var(--space-1); min-width: 0; }
+  .prevnext__label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
     color: var(--fg-muted);
-    text-transform: uppercase; letter-spacing: 0.06em;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
   }
-  .cell .title {
-    font-family: var(--font-mono); font-size: 14px;
-    color: var(--fg-strong); font-weight: 600;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  .prevnext__title {
+    font-family: var(--font-mono);
+    font-size: var(--text-base);
+    color: var(--fg-strong);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     display: block;
   }
-  .cell .dir {
-    color: var(--accent-soft); font-family: var(--font-mono);
-    font-size: 18px; flex-shrink: 0;
-    transition: transform 120ms;
+  .prevnext__dir {
+    color: var(--accent-soft);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xl);
+    flex-shrink: 0;
+    transition: transform var(--tx-fast);
   }
-  .cell.prev:hover .dir { transform: translateX(-3px); }
-  .cell.next:hover .dir { transform: translateX(3px); }
+  .prevnext__cell--prev:hover .prevnext__dir { transform: translateX(-3px); }
+  .prevnext__cell--next:hover .prevnext__dir { transform: translateX(3px); }
+
   @media (max-width: 560px) {
-    .prevnext.layout-both { grid-template-columns: 1fr; }
-    .prevnext.layout-prev-only,
-    .prevnext.layout-next-only { grid-template-columns: 1fr; justify-content: stretch; }
+    .prevnext--both,
+    .prevnext--prev,
+    .prevnext--next { grid-template-columns: 1fr; justify-content: stretch; }
   }
 </style>

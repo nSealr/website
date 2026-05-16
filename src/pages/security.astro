@@ -1,12 +1,19 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import Callout from '~/components/Callout.astro';
+
+const TRUST_BOUNDARIES = [
+  'Private keys must not be exposed to ordinary Nostr clients.',
+  'Sensitive signing should require explicit user review where hardware allows it.',
+  'The companion is not trusted with key custody.',
+  'Maturity differs by signer family — see each family page.',
+];
 ---
 <BaseLayout title="Security — nSealr" description="Trust boundaries, threat model overview, and known limits for nSealr signers.">
-  <section class="container">
-    <header class="head">
+  <section class="container page">
+    <header class="page__head">
       <p class="eyebrow">// security</p>
-      <h1>No production security claim yet.</h1>
+      <h1 class="page__title">No production security claim yet.</h1>
       <p class="lead">
         nSealr is pre-production research and implementation work. The
         website documents trust boundaries, test evidence, and known limits
@@ -14,21 +21,18 @@ import Callout from '~/components/Callout.astro';
       </p>
     </header>
 
-    <div class="grid">
-      <article class="card">
-        <h2>Trust boundaries</h2>
-        <ul>
-          <li>Private keys must not be exposed to ordinary Nostr clients.</li>
-          <li>Sensitive signing should require explicit user review where hardware allows it.</li>
-          <li>The companion is not trusted with key custody.</li>
-          <li>Maturity differs by signer family — see each family page.</li>
+    <div class="card-grid">
+      <article class="surface card">
+        <h2 class="card__title">Trust boundaries</h2>
+        <ul class="card__list">
+          {TRUST_BOUNDARIES.map(t => <li>{t}</li>)}
         </ul>
         <p><a class="link-arrow" href="/docs/security/trust-boundaries/">Deep-dive →</a></p>
       </article>
 
-      <article class="card">
-        <h2>Current contracts</h2>
-        <ul>
+      <article class="surface card">
+        <h2 class="card__title">Current contracts</h2>
+        <ul class="card__list">
           <li><code>approval_digest</code> — the local approval is bound to the exact reviewed material.</li>
           <li><code>signing_disabled</code> — real signing is blocked on prototype firmware until hardening gates pass.</li>
           <li><strong>NIP-46 bridge decisions</strong> via <code>nsealr nip46 decide</code> for already-decrypted payloads.</li>
@@ -38,8 +42,8 @@ import Callout from '~/components/Callout.astro';
         </ul>
       </article>
 
-      <article class="card span-2">
-        <h2>Threat model</h2>
+      <article class="surface card card--wide">
+        <h2 class="card__title">Threat model</h2>
         <p class="muted">Adversaries, assets, and assumptions for nSealr signer families.</p>
         <p><a class="link-arrow" href="/docs/security/threat-model/">Read the full threat model →</a></p>
       </article>
@@ -52,34 +56,39 @@ import Callout from '~/components/Callout.astro';
     </Callout>
   </section>
 </BaseLayout>
-<style>
-  .container { padding-block: 60px; max-width: 1180px; }
-  .head { max-width: 880px; margin-bottom: 32px; }
-  h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(28px, 4vw, 44px); line-height: 1.05; margin: 8px 0 16px; }
-  h2 { font-family: var(--font-mono); color: var(--fg-strong); font-size: 20px; margin: 0 0 12px; }
-  .lead { color: var(--fg-muted); max-width: 64ch; font-size: 17px; }
 
-  .grid {
+<style>
+  .page { padding-block: var(--space-20); }
+  .page__head { max-width: 880px; margin-bottom: var(--space-16); }
+  .page__title {
+    font-family: var(--font-mono);
+    color: var(--fg-strong);
+    font-size: var(--text-h1);
+    line-height: 1.05;
+    margin: var(--space-4) 0 var(--space-8);
+  }
+  .lead { font-size: var(--text-xl); }
+
+  .card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
-    gap: 16px;
-    margin-bottom: 32px;
+    gap: var(--space-8);
+    margin-bottom: var(--space-16);
   }
   @media (min-width: 720px) {
-    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
-  @media (max-width: 720px) {
-    .card.span-2 { grid-column: span 1; }
+
+  .card { padding: var(--space-10) var(--space-12); }
+  .card--wide { grid-column: span 2; }
+  @media (max-width: 720px) { .card--wide { grid-column: span 1; } }
+
+  .card__title {
+    font-family: var(--font-mono);
+    color: var(--fg-strong);
+    font-size: var(--text-2xl);
+    margin: 0 0 var(--space-6);
   }
-  .card {
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    background: var(--bg-elevated);
-    padding: 20px 22px;
-  }
-  .card.span-2 { grid-column: span 2; }
-  .card ul { display: grid; gap: 8px; padding-left: 1em; margin: 0 0 12px; }
-  .card li { font-size: 14px; }
-  .card .muted { color: var(--fg-muted); margin: 0 0 12px; }
-  .link-arrow { font-family: var(--font-mono); color: var(--accent-soft); font-size: 14px; }
+  .card__list { display: grid; gap: var(--space-4); padding-left: 1em; margin: 0 0 var(--space-6); }
+  .card__list li { font-size: var(--text-base); }
 </style>

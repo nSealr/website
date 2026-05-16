@@ -11,7 +11,6 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   const allPosts = (await getCollection('blog', ({ data }) => !data.draft || import.meta.env.DEV))
     .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 
-  // Collect aggregate filter data once and pass via props to every page.
   const categoryCounts = new Map<string, number>();
   const tagCounts = new Map<string, number>();
   for (const p of allPosts) {
@@ -34,39 +33,38 @@ const { page, categories, tags, totalPosts } = Astro.props as {
   totalPosts: number;
 };
 const visibleTags = tags.slice(0, TAG_CHIPS_LIMIT);
-const hiddenTagsCount = Math.max(0, tags.length - TAG_CHIPS_LIMIT);
 ---
 <BaseLayout
   title={page.currentPage === 1 ? 'Blog — nSealr' : `Blog · page ${page.currentPage} — nSealr`}
   description="Release notes, research, tutorials, and news from the nSealr program."
 >
-  <section class="container">
+  <section class="container page">
     <p class="eyebrow">// blog</p>
-    <h1>Blog.</h1>
+    <h1 class="page__title">Blog.</h1>
     <p class="lead">Release notes, research, tutorials, and news from nSealr signers, companion, and specs.</p>
 
     {page.currentPage === 1 && (
       <>
-        <div class="filter-block">
-          <p class="filter-label">Filter by category</p>
-          <div class="filters">
-            <a href="/blog/" class="active">all <span class="n">{totalPosts}</span></a>
+        <section class="filter-block">
+          <p class="eyebrow-small">Filter by category</p>
+          <div class="filter-block__chips">
+            <a class="chip is-active" href="/blog/">all <span class="n">{totalPosts}</span></a>
             {categories.map(([c, n]) => (
-              <a href={`/blog/categories/${c}/`}>{c} <span class="n">{n}</span></a>
+              <a class="chip" href={`/blog/categories/${c}/`}>{c} <span class="n">{n}</span></a>
             ))}
           </div>
-        </div>
+        </section>
 
         {tags.length > 0 && (
-          <div class="filter-block">
-            <p class="filter-label">Filter by tag</p>
-            <div class="filters">
+          <section class="filter-block">
+            <p class="eyebrow-small">Filter by tag</p>
+            <div class="filter-block__chips">
               {visibleTags.map(([t, n]) => (
-                <a href={`/blog/tags/${t}/`}>#{t} <span class="n">{n}</span></a>
+                <a class="chip" href={`/blog/tags/${t}/`}>#{t} <span class="n">{n}</span></a>
               ))}
-              <a class="see-more" href="/blog/tags/">See all tags →</a>
+              <a class="chip filter-block__see-all" href="/blog/tags/">See all tags →</a>
             </div>
-          </div>
+          </section>
         )}
       </>
     )}
@@ -83,34 +81,30 @@ const hiddenTagsCount = Math.max(0, tags.length - TAG_CHIPS_LIMIT);
 </BaseLayout>
 
 <style>
-  .container { padding-block: 60px; max-width: 1180px; }
-  .container > .eyebrow,
-  .container > h1,
-  .container > .lead,
-  .container > .filter-block,
-  .container > .rss-row { max-width: 880px; }
-  h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(28px, 4vw, 44px); margin: 8px 0 12px; }
-  .lead { color: var(--fg-muted); font-size: 17px; max-width: 64ch; margin: 0 0 22px; }
-  .filter-block { margin-bottom: 16px; }
-  .filter-label {
-    font-family: var(--font-mono); font-size: 11px;
-    color: var(--fg-muted);
-    text-transform: uppercase; letter-spacing: 0.06em;
-    margin: 0 0 6px;
+  .page { padding-block: var(--space-20); }
+  .page > .eyebrow,
+  .page > .page__title,
+  .page > .lead,
+  .page > .filter-block,
+  .page > .rss-row { max-width: 880px; }
+
+  .page__title {
+    font-family: var(--font-mono);
+    color: var(--fg-strong);
+    font-size: var(--text-h1);
+    margin: var(--space-4) 0 var(--space-6);
   }
-  .filters { display: flex; gap: 8px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 12px; }
-  .filters a {
-    display: inline-flex; align-items: center; gap: 6px;
-    color: var(--fg-muted); border: 1px solid var(--border);
-    padding: 4px 10px; border-radius: var(--radius-pill);
-    text-decoration: none;
-    transition: color 120ms, border-color 120ms;
+  .lead { font-size: var(--text-xl); margin: 0 0 var(--space-12); }
+
+  .filter-block { margin-bottom: var(--space-8); }
+  .filter-block .eyebrow-small { margin: 0 0 var(--space-3); }
+  .filter-block__chips { display: flex; gap: var(--space-4); flex-wrap: wrap; }
+  .filter-block__see-all { color: var(--accent-soft); border-style: dashed; }
+
+  .rss-row {
+    margin-top: var(--space-14);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
   }
-  .filters a:hover { color: var(--accent-soft); border-color: var(--accent); }
-  .filters a.active { color: var(--accent-soft); border-color: var(--accent); background: var(--accent-bg); }
-  .filters a .n { color: var(--fg-muted); font-size: 10px; }
-  .filters a:hover .n, .filters a.active .n { color: var(--accent-soft); }
-  .filters a.see-more { color: var(--accent-soft); border-style: dashed; }
-  .rss-row { margin-top: 28px; font-family: var(--font-mono); font-size: 12px; }
   .rss-row a { color: var(--accent-soft); }
 </style>

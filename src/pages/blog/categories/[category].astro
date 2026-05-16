@@ -28,17 +28,24 @@ const { category, posts } = Astro.props;
 const label = CATEGORY_LABEL[category] ?? category;
 ---
 <BaseLayout title={`${label} — nSealr Blog`} description={`Posts in the ${label.toLowerCase()} category.`}>
-  <section class="container">
+  <section class="container page">
     <p class="eyebrow">// blog · category</p>
-    <h1>{label}</h1>
+    <h1 class="page__title">{label}</h1>
     <p class="lead">{posts.length} {posts.length === 1 ? 'post' : 'posts'} in this category.</p>
     <BlogList posts={posts} />
-    <p style="margin-top:24px"><a href="/blog/">← all posts</a></p>
+    <p class="page__back"><a href="/blog/">← all posts</a></p>
   </section>
 </BaseLayout>
+
 <style>
-  .container { padding-block: 60px; max-width: 1180px; }
-  .container > .eyebrow, .container > h1, .container > .lead { max-width: 880px; }
-  h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(28px, 4vw, 40px); margin: 8px 0 12px; }
-  .lead { color: var(--fg-muted); font-size: 16px; margin: 0 0 22px; }
+  .page { padding-block: var(--space-20); }
+  .page > .eyebrow, .page > .page__title, .page > .lead, .page > .page__back { max-width: 880px; }
+  .page__title {
+    font-family: var(--font-mono);
+    color: var(--fg-strong);
+    font-size: clamp(28px, 4vw, 40px);
+    margin: var(--space-4) 0 var(--space-6);
+  }
+  .lead { font-size: var(--text-lg); margin: 0 0 var(--space-12); }
+  .page__back { margin-top: var(--space-12); font-family: var(--font-mono); font-size: var(--text-sm); }
 </style>

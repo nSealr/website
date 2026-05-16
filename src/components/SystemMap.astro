@@ -1,57 +1,53 @@
 ---
 ---
 <figure class="system-map" aria-label="nSealr system map">
-  <svg viewBox="0 0 760 420" role="img" aria-labelledby="map-title map-desc">
-    <title id="map-title">nSealr signer architecture</title>
-    <desc id="map-desc">
+  <svg viewBox="0 0 760 420" role="img" aria-labelledby="system-map-title system-map-desc">
+    <title id="system-map-title">nSealr signer architecture</title>
+    <desc id="system-map-desc">
       Nostr clients send signing requests to the companion, which routes them
       to one of five signer solutions: Raspberry/Pi stateless QR vault,
       ESP32 QR vault, ESP32 USB signer, smartcard, or custom
       persistent-secret hardware wallet.
     </desc>
-    <g class="links">
-      <!-- client → companion -->
+    <g class="system-map__links">
       <path d="M164 210 H288" />
-      <!-- companion right-middle (420,210) → each signer left-middle (542, y).
-           Signer centres are evenly spaced and symmetric around y=210:
-           50, 130, 210, 290, 370. The middle path is a straight line. -->
       <path d="M420 210 C 481 210 481 50  542 50"  />
       <path d="M420 210 C 481 210 481 130 542 130" />
       <path d="M420 210 H542" />
       <path d="M420 210 C 481 210 481 290 542 290" />
       <path d="M420 210 C 481 210 481 370 542 370" />
     </g>
-    <g class="node client">
+    <g class="system-map__node system-map__node--client">
       <rect x="32" y="154" width="132" height="112" rx="8" />
       <text x="98" y="200">Nostr</text>
       <text x="98" y="226">Client</text>
     </g>
-    <g class="node companion">
+    <g class="system-map__node system-map__node--companion">
       <rect x="288" y="122" width="132" height="176" rx="8" />
       <text x="354" y="200">Companion</text>
       <text x="354" y="226">Verifier</text>
     </g>
-    <g class="node signer s1">
+    <g class="system-map__node system-map__node--signer">
       <rect x="542" y="18" width="170" height="64" rx="8" />
       <text x="627" y="44">Raspberry</text>
       <text x="627" y="66">QR Vault</text>
     </g>
-    <g class="node signer s2">
+    <g class="system-map__node system-map__node--signer">
       <rect x="542" y="98" width="170" height="64" rx="8" />
       <text x="627" y="124">ESP32</text>
       <text x="627" y="146">QR Vault</text>
     </g>
-    <g class="node signer s3">
+    <g class="system-map__node system-map__node--signer">
       <rect x="542" y="178" width="170" height="64" rx="8" />
       <text x="627" y="204">ESP32</text>
       <text x="627" y="226">USB / NIP-46</text>
     </g>
-    <g class="node signer s4">
+    <g class="system-map__node system-map__node--signer">
       <rect x="542" y="258" width="170" height="64" rx="8" />
       <text x="627" y="284">Smartcard</text>
       <text x="627" y="306">APDU</text>
     </g>
-    <g class="node signer s5">
+    <g class="system-map__node system-map__node--signer">
       <rect x="542" y="338" width="170" height="64" rx="8" />
       <text x="627" y="364">Custom</text>
       <text x="627" y="386">Wallet</text>
@@ -59,17 +55,27 @@
   </svg>
 </figure>
 <style>
-  .system-map { margin: 0; padding-block: 12px; max-width: 100%; overflow: hidden; }
+  .system-map { margin: 0; padding-block: var(--space-6); max-width: 100%; overflow: hidden; }
   svg { display: block; width: 100%; height: auto; max-width: 100%; }
-  .links path {
+  .system-map__links path {
     fill: none;
     stroke: var(--border-strong);
     stroke-width: 2;
     stroke-linecap: round;
   }
-  .node rect { fill: var(--bg-elevated); stroke: var(--border-strong); stroke-width: 1.5; }
-  .node text { font-family: var(--font-mono); fill: var(--fg-strong); font-size: 15px; font-weight: 600; text-anchor: middle; }
-  .node.companion rect { stroke: var(--accent); }
-  .node.signer rect { stroke: var(--accent-soft); }
-  .node.client rect { stroke: var(--ok); }
+  .system-map__node rect {
+    fill: var(--bg-elevated);
+    stroke: var(--border-strong);
+    stroke-width: 1.5;
+  }
+  .system-map__node text {
+    font-family: var(--font-mono);
+    fill: var(--fg-strong);
+    font-size: 15px;
+    font-weight: 600;
+    text-anchor: middle;
+  }
+  .system-map__node--companion rect { stroke: var(--accent); }
+  .system-map__node--signer rect { stroke: var(--accent-soft); }
+  .system-map__node--client rect { stroke: var(--ok); }
 </style>

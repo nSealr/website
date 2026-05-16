@@ -27,35 +27,39 @@ const grouped = CATEGORY_ORDER.map(cat => {
   };
 }).filter(g => g.items.length > 0);
 ---
-<aside class="blog-sidebar" data-open="false" aria-label="Blog posts">
-  <button class="sidebar-toggle" type="button" aria-expanded="false" aria-controls="blog-sidebar-nav">
-    <span class="label">Blog</span>
-    <span class="count">{posts.length}</span>
-    <span class="chevron" aria-hidden="true">▾</span>
+<aside class="sidebar sidebar--blog" data-open="false" aria-label="Blog posts">
+  <button class="sidebar__toggle" type="button" aria-expanded="false" aria-controls="blog-sidebar-nav">
+    <span class="sidebar__toggle-label">Blog</span>
+    <span class="sidebar__count">{posts.length}</span>
+    <span class="sidebar__chev" aria-hidden="true">▾</span>
   </button>
-  <nav id="blog-sidebar-nav">
+  <nav id="blog-sidebar-nav" class="sidebar__nav">
     {grouped.map(group => (
-      <section data-section={group.category} data-default-open={group.isCurrent ? 'true' : 'false'}>
-        <button class="group-toggle" type="button" aria-expanded={group.isCurrent ? 'true' : 'false'}>
-          <span class="group-label">{group.label}</span>
-          <span class="group-count">{group.items.length + group.overflow}</span>
-          <span class="group-chev" aria-hidden="true">▾</span>
+      <section
+        class="sidebar__group"
+        data-section={group.category}
+        data-default-open={group.isCurrent ? 'true' : 'false'}
+      >
+        <button class="sidebar__group-toggle" type="button" aria-expanded={group.isCurrent ? 'true' : 'false'}>
+          <span class="sidebar__group-label">{group.label}</span>
+          <span class="sidebar__group-count">{group.items.length + group.overflow}</span>
+          <span class="sidebar__group-chev" aria-hidden="true">▾</span>
         </button>
-        <ul>
+        <ul class="sidebar__list">
           {group.items.map(p => {
             const href = `/blog/${p.id}/`;
             return (
               <li>
-                <a href={href} class={href === currentHref ? 'current' : ''}>
-                  <span class="title">{p.data.title}</span>
+                <a class={`sidebar__post${href === currentHref ? ' is-current' : ''}`} href={href}>
+                  <span class="sidebar__post-title">{p.data.title}</span>
                   <time datetime={p.data.publishedAt.toISOString()}>{p.data.publishedAt.toISOString().slice(0, 10)}</time>
                 </a>
               </li>
             );
           })}
           {group.overflow > 0 && (
-            <li class="more-row">
-              <a class="more" href={`/blog/categories/${group.category}/`}>
+            <li>
+              <a class="sidebar__more" href={`/blog/categories/${group.category}/`}>
                 +{group.overflow} more in {group.label} →
               </a>
             </li>
@@ -66,116 +70,155 @@ const grouped = CATEGORY_ORDER.map(cat => {
   </nav>
 </aside>
 <style>
-  .blog-sidebar {
-    font-family: var(--font-mono); font-size: 13px;
-    padding: 12px 0;
+  .sidebar {
+    font-family: var(--font-mono);
+    font-size: var(--text-md);
+    padding: var(--space-6) 0;
     border-right: 1px solid var(--border);
     position: sticky;
-    top: 76px;
+    top: var(--sticky-top);
     align-self: start;
-    max-height: calc(100vh - 96px);
+    max-height: calc(100vh - var(--header-height) - var(--space-12));
     overflow-y: auto;
   }
-  .sidebar-toggle {
+  .sidebar__toggle {
     display: none;
     width: 100%;
-    align-items: center; gap: 8px;
-    padding: 8px 12px;
-    color: var(--fg-strong); font-weight: 600;
-    font-family: var(--font-mono); font-size: 13px;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-6);
+    color: var(--fg-strong);
+    font-weight: 600;
+    font-family: var(--font-mono);
+    font-size: var(--text-md);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     background: var(--bg-elevated);
-    margin: 0 0 8px;
+    margin: 0 0 var(--space-4);
     cursor: pointer;
   }
-  .sidebar-toggle .count {
-    color: var(--fg-muted); font-size: 11px;
-    border: 1px solid var(--border); padding: 1px 6px;
+  .sidebar__count {
+    color: var(--fg-muted);
+    font-size: var(--text-xs);
+    border: 1px solid var(--border);
+    padding: 1px var(--space-3);
     border-radius: var(--radius-pill);
     margin-left: auto;
   }
-  .sidebar-toggle .chevron { transition: transform 150ms; color: var(--accent-soft); }
-  .blog-sidebar[data-open='true'] .sidebar-toggle .chevron { transform: rotate(180deg); }
+  .sidebar__chev { transition: transform 150ms; color: var(--accent-soft); }
+  .sidebar[data-open='true'] .sidebar__chev { transform: rotate(180deg); }
 
-  .blog-sidebar nav { padding: 8px 0; }
-  .blog-sidebar section { padding: 2px 12px; }
+  .sidebar__nav { padding: var(--space-4) 0; }
+  .sidebar__group { padding: var(--space-1) var(--space-6); }
 
-  .group-toggle {
-    display: flex; align-items: center; gap: 8px;
+  .sidebar__group-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
     width: 100%;
-    background: transparent; border: 0; cursor: pointer;
-    padding: 8px 6px;
-    font-family: var(--font-mono); font-size: 11px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: var(--space-4) var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
     color: var(--fg-muted);
-    text-transform: uppercase; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     border-radius: var(--radius-sm);
   }
-  .group-toggle:hover { background: var(--bg-elevated); color: var(--fg-strong); }
-  .group-toggle .group-label { flex: 1; text-align: left; }
-  .group-toggle .group-count {
-    font-size: 10px; color: var(--fg-muted); text-transform: none;
-    border: 1px solid var(--border); padding: 0 6px;
-    border-radius: var(--radius-pill); font-weight: 500;
+  .sidebar__group-toggle:hover { background: var(--bg-elevated); color: var(--fg-strong); }
+  .sidebar__group-label { flex: 1; text-align: left; }
+  .sidebar__group-count {
+    font-size: var(--text-xxs);
+    color: var(--fg-muted);
+    text-transform: none;
+    border: 1px solid var(--border);
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-pill);
+    font-weight: 500;
   }
-  .group-toggle .group-chev { transition: transform 150ms; color: var(--accent-soft); }
-  section[aria-collapsed='true'] .group-chev { transform: rotate(-90deg); }
+  .sidebar__group-chev { transition: transform 150ms; color: var(--accent-soft); }
+  .sidebar__group[aria-collapsed='true'] .sidebar__group-chev { transform: rotate(-90deg); }
 
-  .blog-sidebar ul {
-    list-style: none; padding: 0; margin: 4px 0 6px;
-    display: grid; gap: 6px;
+  .sidebar__list {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-2) 0 var(--space-3);
+    display: grid;
+    gap: var(--space-3);
     overflow: hidden;
-    max-height: 1500px; transition: max-height 200ms;
+    max-height: 1500px;
+    transition: max-height var(--tx-base);
   }
-  section[aria-collapsed='true'] ul { max-height: 0; margin: 0; }
+  .sidebar__group[aria-collapsed='true'] .sidebar__list { max-height: 0; margin: 0; }
 
-  .blog-sidebar li a {
-    display: grid; gap: 2px;
-    color: var(--fg-muted); text-decoration: none;
-    padding: 6px 8px; border-radius: var(--radius-sm);
+  .sidebar__post {
+    display: grid;
+    gap: var(--space-1);
+    color: var(--fg-muted);
+    text-decoration: none;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-sm);
     border-left: 2px solid transparent;
   }
-  .blog-sidebar li a:hover {
-    color: var(--fg-strong); background: var(--bg-elevated);
+  .sidebar__post:hover {
+    color: var(--fg-strong);
+    background: var(--bg-elevated);
     border-left-color: var(--border-strong);
+    text-decoration: none;
   }
-  .blog-sidebar li a.current {
-    color: var(--accent-soft); background: var(--accent-bg);
+  .sidebar__post.is-current {
+    color: var(--accent-soft);
+    background: var(--accent-bg);
     border-left-color: var(--accent);
   }
-  .blog-sidebar li .title {
-    color: inherit; font-weight: 600;
-    overflow: hidden; text-overflow: ellipsis;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  .sidebar__post-title {
+    color: inherit;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     line-clamp: 2;
   }
-  .blog-sidebar li time { color: var(--fg-muted); font-size: 11px; }
-  .more-row a.more {
-    display: block; padding: 4px 8px;
-    color: var(--accent-soft); font-size: 11px;
-    text-decoration: none; border-left: none;
+  .sidebar__post time { color: var(--fg-muted); font-size: var(--text-xs); }
+
+  .sidebar__more {
+    display: block;
+    padding: var(--space-2) var(--space-4);
+    color: var(--accent-soft);
+    font-size: var(--text-xs);
+    text-decoration: none;
+    border-left: none;
   }
-  .more-row a.more:hover { text-decoration: underline; }
+  .sidebar__more:hover { text-decoration: underline; }
 
   @media (max-width: 960px) {
-    .blog-sidebar {
-      position: static; max-height: none; overflow: visible;
-      border-right: 0; border-bottom: 1px solid var(--border); padding-bottom: 16px;
+    .sidebar {
+      position: static;
+      max-height: none;
+      overflow: visible;
+      border-right: 0;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: var(--space-8);
     }
-    .sidebar-toggle { display: flex; }
-    .blog-sidebar nav {
-      max-height: 60vh; overflow-y: auto;
+    .sidebar__toggle { display: flex; }
+    .sidebar__nav {
+      max-height: 60vh;
+      overflow-y: auto;
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       background: var(--bg);
-      padding: 4px 0;
+      padding: var(--space-2) 0;
     }
-    .blog-sidebar[data-open='false'] nav { display: none; }
+    .sidebar[data-open='false'] .sidebar__nav { display: none; }
   }
 </style>
 <script>
-  document.querySelectorAll('.blog-sidebar').forEach(wrap => {
-    const btn = wrap.querySelector('.sidebar-toggle');
+  document.querySelectorAll('.sidebar--blog').forEach(wrap => {
+    const btn = wrap.querySelector('.sidebar__toggle');
     btn?.addEventListener('click', () => {
       const open = wrap.getAttribute('data-open') === 'true';
       wrap.setAttribute('data-open', String(!open));
@@ -183,14 +226,11 @@ const grouped = CATEGORY_ORDER.map(cat => {
     });
   });
 
-  // Default: only the category containing the current post is open.
-  // No persistence — every page load resets defaults so the active category
-  // is always visible.
-  document.querySelectorAll('.blog-sidebar section[data-section]').forEach(section => {
+  document.querySelectorAll('.sidebar--blog .sidebar__group[data-section]').forEach(section => {
     const defaultOpen = section.getAttribute('data-default-open') === 'true';
     if (!defaultOpen) section.setAttribute('aria-collapsed', 'true');
 
-    const toggle = section.querySelector('.group-toggle')!;
+    const toggle = section.querySelector('.sidebar__group-toggle')!;
     toggle.setAttribute('aria-expanded', String(defaultOpen));
     toggle.addEventListener('click', () => {
       const nowCollapsed = section.getAttribute('aria-collapsed') !== 'true';

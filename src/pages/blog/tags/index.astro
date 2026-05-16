@@ -7,7 +7,6 @@ const counts = new Map<string, number>();
 for (const p of posts) for (const t of p.data.tags) counts.set(t, (counts.get(t) ?? 0) + 1);
 const tags = Array.from(counts.entries()).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 
-// Bucket tags by first letter for a clean A→Z layout once the list grows.
 const alphabetic = Array.from(counts.entries()).sort((a, b) => a[0].localeCompare(b[0]));
 const groups = new Map<string, [string, number][]>();
 for (const [tag, n] of alphabetic) {
@@ -17,55 +16,67 @@ for (const [tag, n] of alphabetic) {
 }
 ---
 <BaseLayout title="All tags — nSealr Blog" description="Every tag used in the nSealr blog.">
-  <section class="container">
+  <section class="container page">
     <p class="eyebrow">// blog · tags</p>
-    <h1>All tags</h1>
+    <h1 class="page__title">All tags</h1>
     <p class="lead">{tags.length} tags across {posts.length} posts. Most-used first, then alphabetical.</p>
 
-    <h2>Most used</h2>
-    <div class="cloud">
+    <h2 class="page__h2">Most used</h2>
+    <div class="cluster">
       {tags.slice(0, 24).map(([t, n]) => (
-        <a href={`/blog/tags/${t}/`}>#{t} <span class="n">{n}</span></a>
+        <a class="chip" href={`/blog/tags/${t}/`}>#{t} <span class="n">{n}</span></a>
       ))}
     </div>
 
-    <h2>A→Z</h2>
+    <h2 class="page__h2">A→Z</h2>
     {Array.from(groups.entries()).map(([letter, items]) => (
-      <section class="alpha">
-        <h3>{letter}</h3>
-        <div class="cloud">
+      <section class="alpha-group">
+        <h3 class="alpha-group__letter">{letter}</h3>
+        <div class="cluster">
           {items.map(([t, n]) => (
-            <a href={`/blog/tags/${t}/`}>#{t} <span class="n">{n}</span></a>
+            <a class="chip" href={`/blog/tags/${t}/`}>#{t} <span class="n">{n}</span></a>
           ))}
         </div>
       </section>
     ))}
 
-    <p style="margin-top:36px"><a href="/blog/">← back to blog</a></p>
+    <p class="page__back"><a href="/blog/">← back to blog</a></p>
   </section>
 </BaseLayout>
 
 <style>
-  .container { padding-block: 60px; max-width: 1180px; }
-  .container > .eyebrow, .container > h1, .container > .lead, .container > h2 { max-width: 880px; }
-  h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: clamp(28px, 4vw, 40px); margin: 8px 0 12px; }
-  h2 { font-family: var(--font-mono); color: var(--fg-strong); font-size: 18px; margin: 32px 0 12px; }
-  .lead { color: var(--fg-muted); font-size: 16px; margin: 0 0 12px; }
-  .alpha { margin-top: 16px; }
-  .alpha h3 {
-    font-family: var(--font-mono); color: var(--fg-muted);
-    font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em;
-    margin: 12px 0 6px;
+  .page { padding-block: var(--space-20); }
+  .page > .eyebrow,
+  .page > .page__title,
+  .page > .lead,
+  .page > .page__h2,
+  .page > .cluster,
+  .page > .alpha-group,
+  .page > .page__back { max-width: 880px; }
+
+  .page__title {
+    font-family: var(--font-mono);
+    color: var(--fg-strong);
+    font-size: clamp(28px, 4vw, 40px);
+    margin: var(--space-4) 0 var(--space-6);
   }
-  .cloud { display: flex; gap: 8px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 13px; }
-  .cloud a {
-    display: inline-flex; align-items: center; gap: 6px;
-    color: var(--fg); border: 1px solid var(--border);
-    padding: 4px 10px; border-radius: var(--radius-pill);
-    text-decoration: none;
-    transition: color 120ms, border-color 120ms;
+  .page__h2 {
+    font-family: var(--font-mono);
+    color: var(--fg-strong);
+    font-size: var(--text-2xl);
+    margin: var(--space-16) 0 var(--space-6);
   }
-  .cloud a:hover { color: var(--accent-soft); border-color: var(--accent); }
-  .cloud a .n { color: var(--fg-muted); font-size: 11px; }
-  .cloud a:hover .n { color: var(--accent-soft); }
+  .lead { font-size: var(--text-lg); margin: 0 0 var(--space-6); }
+
+  .alpha-group { margin-top: var(--space-8); }
+  .alpha-group__letter {
+    font-family: var(--font-mono);
+    color: var(--fg-muted);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: var(--space-6) 0 var(--space-3);
+  }
+
+  .page__back { margin-top: var(--space-16); font-family: var(--font-mono); font-size: var(--text-sm); }
 </style>

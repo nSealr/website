@@ -4,30 +4,31 @@ import StatusPill from './StatusPill.astro';
 import logo from '~/assets/nsealr-logo.png';
 ---
 <section class="hero container">
-  <div class="copy">
+  <div class="hero__copy">
     <p class="eyebrow">// nsealr · v0 · stateless · pre-production</p>
-    <h1>Sign <em>Nostr</em><br />events offline.</h1>
+    <h1 class="hero__title">Sign <em>Nostr</em><br />events offline.</h1>
     <p class="lead">
       A non-profit, open-source program for reproducible Nostr signing devices.
       Companion software, five signer solutions, and open hardware references —
       auditable instead of proprietary.
     </p>
-    <div class="actions">
-      <a class="btn primary" href="/docs/">$ read the docs</a>
-      <a class="btn ghost" href="https://github.com/nSealr" rel="noopener">github ↗</a>
+    <div class="hero__actions">
+      <a class="btn btn--primary" href="/docs/">$ read the docs</a>
+      <a class="btn btn--ghost" href="https://github.com/nSealr" rel="noopener">github ↗</a>
     </div>
-    <div class="pills">
+    <div class="hero__pills">
       <StatusPill variant="ok">approval_digest</StatusPill>
       <StatusPill variant="warn">signing_disabled</StatusPill>
       <StatusPill variant="neutral">v0 spec</StatusPill>
       <StatusPill variant="neutral">non-profit · open-source</StatusPill>
     </div>
-    <pre class="snippet"><code>{`# verify a request — companion
+    <pre class="hero__snippet"><code>{`# verify a request — companion
 $ nsealr verify --request req.json
 ✓ approval_digest ok
 ! sign-event disabled in dev firmware`}</code></pre>
   </div>
-  <figure class="logo-wrap" aria-hidden="false">
+
+  <figure class="hero__visual">
     <Image
       src={logo}
       alt="nSealr seal mascot holding a sealed Nostr envelope"
@@ -43,45 +44,88 @@ $ nsealr verify --request req.json
 
 <style>
   .hero {
-    padding-block: clamp(48px, 8vw, 110px) clamp(24px, 4vw, 56px);
-    display: grid; gap: clamp(24px, 4vw, 48px); align-items: center;
+    padding-block: clamp(var(--space-24), 8vw, var(--space-48)) clamp(var(--space-12), 4vw, var(--space-28));
+    display: grid;
+    gap: clamp(var(--space-12), 4vw, var(--space-24));
+    align-items: center;
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
   }
-  .copy { min-width: 0; }
-  .hero h1 {
-    font-family: var(--font-mono); color: var(--fg-strong);
-    font-size: clamp(40px, 6.5vw, 72px); line-height: 0.96;
-    letter-spacing: -0.02em; margin: 12px 0 16px;
+  .hero__copy { min-width: 0; }
+
+  .hero__title {
+    font-family: var(--font-mono);
+    color: var(--fg-strong);
+    font-size: var(--text-hero);
+    line-height: 0.96;
+    letter-spacing: -0.02em;
+    margin: var(--space-6) 0 var(--space-8);
   }
-  .hero h1 em { color: var(--accent-soft); font-style: normal; }
-  .hero .lead { color: var(--fg-muted); font-size: clamp(15px, 1.6vw, 18px); max-width: 60ch; margin: 0 0 20px; }
-  .actions { display: flex; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
+  .hero__title em { color: var(--accent-soft); font-style: normal; }
+
+  .hero__actions {
+    display: flex;
+    gap: var(--space-5);
+    margin: var(--space-10) 0 var(--space-12);
+    flex-wrap: wrap;
+  }
+
   .btn {
-    display: inline-block; padding: 10px 16px;
-    font-family: var(--font-mono); font-size: 13px; font-weight: 600;
-    border-radius: var(--radius-sm); text-decoration: none;
+    display: inline-block;
+    padding: var(--space-5) var(--space-8);
+    font-family: var(--font-mono);
+    font-size: var(--text-md);
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
     border: 1px solid transparent;
   }
-  .btn.primary { background: var(--accent); color: white; }
-  .btn.primary:hover { background: var(--accent-soft); }
-  .btn.ghost { background: transparent; color: var(--fg-strong); border-color: var(--border-strong); }
-  .btn.ghost:hover { border-color: var(--accent); }
-  .pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
-  .snippet {
-    background: var(--bg-code); border: 1px solid var(--border);
+  .btn:hover { text-decoration: none; }
+  .btn--primary { background: var(--accent); color: white; }
+  .btn--primary:hover { background: var(--accent-soft); }
+  .btn--ghost { background: transparent; color: var(--fg-strong); border-color: var(--border-strong); }
+  .btn--ghost:hover { border-color: var(--accent); }
+
+  .hero__pills {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-12);
+  }
+
+  .hero__snippet {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
     border-left: 2px solid var(--accent);
-    padding: 14px 16px; border-radius: var(--radius-md);
-    font-size: 13px; line-height: 1.7; overflow-x: auto;
-    color: var(--fg); font-family: var(--font-mono);
+    padding: var(--space-7) var(--space-8);
+    border-radius: var(--radius-md);
+    font-size: var(--text-md);
+    line-height: 1.7;
+    overflow-x: auto;
+    color: var(--fg);
+    font-family: var(--font-mono);
   }
-  .logo-wrap { margin: 0; display: grid; place-items: center; }
-  .logo-wrap :global(img) {
-    width: 100%; max-width: 520px; height: auto;
-    border-radius: clamp(16px, 3vw, 28px);
-    box-shadow: 0 0 0 1px var(--border), 0 24px 60px -24px color-mix(in oklab, var(--accent) 60%, transparent);
+
+  .hero__visual {
+    margin: 0;
+    display: grid;
+    place-items: center;
   }
+  .hero__visual :global(img) {
+    width: 100%;
+    max-width: 520px;
+    height: auto;
+    border-radius: clamp(var(--space-8), 3vw, var(--space-14));
+    box-shadow:
+      0 0 0 1px var(--border),
+      0 24px 60px -24px color-mix(in oklab, var(--accent) 60%, transparent);
+  }
+
   @media (max-width: 880px) {
     .hero { grid-template-columns: 1fr; }
-    .logo-wrap { order: -1; max-width: 320px; margin-inline: auto; }
+    .hero__visual {
+      order: -1;
+      max-width: 320px;
+      margin-inline: auto;
+    }
   }
 </style>

@@ -2,16 +2,22 @@
 import BaseLayout from '~/layouts/BaseLayout.astro';
 ---
 <BaseLayout title="404 — nSealr" description="Not found." noindex={true}>
-  <section class="container">
+  <section class="container not-found">
     <p class="eyebrow">// 404</p>
-    <h1>404 — not found.</h1>
+    <h1 class="not-found__title">404 — not found.</h1>
     <p class="muted">The page you requested does not exist (yet).</p>
     <p><a class="link-arrow" href="/">← back home</a></p>
   </section>
 </BaseLayout>
 <style>
-  .container { padding-block: 120px; text-align: center; }
-  h1 { font-family: var(--font-mono); color: var(--fg-strong); font-size: 36px; margin: 8px 0 12px; }
-  .muted { color: var(--fg-muted); }
-  .link-arrow { font-family: var(--font-mono); color: var(--accent-soft); }
+  .not-found {
+    padding-block: var(--space-48);
+    text-align: center;
+  }
+  .not-found__title {
+    font-family: var(--font-mono);
+    color: var(--fg-strong);
+    font-size: var(--text-h2);
+    margin: var(--space-4) 0 var(--space-6);
+  }
 </style>

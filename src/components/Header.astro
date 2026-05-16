@@ -3,14 +3,24 @@ import { Image } from 'astro:assets';
 import ThemeToggle from './ThemeToggle.astro';
 import SearchTrigger from './SearchTrigger.astro';
 import logo from '~/assets/nsealr-logo.png';
+
 const { pathname } = Astro.url;
 const isActive = (p: string) => pathname === p || pathname.startsWith(p + '/');
+
+interface NavLink { href: string; label: string; external?: boolean; }
+const navLinks: NavLink[] = [
+  { href: '/system/', label: 'System' },
+  { href: '/docs/', label: 'Docs' },
+  { href: '/blog/', label: 'Blog' },
+  { href: '/security/', label: 'Security' },
+  { href: 'https://github.com/nSealr', label: 'GitHub ↗', external: true },
+];
 ---
 <header class="site-header">
-  <div class="container header-inner">
+  <div class="container site-header__inner">
     <a class="brand" href="/">
       <Image
-        class="mark"
+        class="brand__mark"
         src={logo}
         alt=""
         width={28}
@@ -19,22 +29,34 @@ const isActive = (p: string) => pathname === p || pathname.startsWith(p + '/');
         format="webp"
         loading="eager"
       />
-      <span>nSealr</span>
+      <span class="brand__name">nSealr</span>
     </a>
 
-    <nav class="primary" id="primary-nav" aria-label="Primary">
-      <a class={isActive('/system') ? 'active' : ''} href="/system/">System</a>
-      <a class={isActive('/docs') ? 'active' : ''} href="/docs/">Docs</a>
-      <a class={isActive('/blog') ? 'active' : ''} href="/blog/">Blog</a>
-      <a class={isActive('/security') ? 'active' : ''} href="/security/">Security</a>
-      <a class="ext" href="https://github.com/nSealr" rel="noopener">GitHub ↗</a>
+    <nav class="primary-nav" id="primary-nav" aria-label="Primary">
+      {navLinks.map(link => (
+        link.external
+          ? <a class="primary-nav__link primary-nav__link--ext" href={link.href} rel="noopener">{link.label}</a>
+          : <a
+              class={`primary-nav__link${isActive(link.href) ? ' is-active' : ''}`}
+              href={link.href}
+            >{link.label}</a>
+      ))}
     </nav>
 
-    <div class="utils">
+    <div class="site-header__utils">
       <SearchTrigger />
       <ThemeToggle />
-      <button id="nav-toggle" type="button" class="nav-toggle" aria-controls="primary-nav" aria-expanded="false" aria-label="Open menu">
-        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+      <button
+        id="nav-toggle"
+        type="button"
+        class="nav-toggle"
+        aria-controls="primary-nav"
+        aria-expanded="false"
+        aria-label="Open menu"
+      >
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
       </button>
     </div>
   </div>
@@ -47,43 +69,48 @@ const isActive = (p: string) => pathname === p || pathname.startsWith(p + '/');
     background: color-mix(in oklab, var(--bg) 88%, transparent);
     backdrop-filter: saturate(140%) blur(8px);
   }
-  .header-inner {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 16px;
-    height: 60px;
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
+    height: var(--header-height);
   }
+
   .brand {
-    display: inline-flex; align-items: center; gap: 10px;
-    color: var(--fg-strong); font-family: var(--font-mono); font-weight: 700;
-    text-decoration: none; font-size: 15px;
+    display: inline-flex; align-items: center; gap: var(--space-5);
+    color: var(--fg-strong);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: var(--text-base);
+    text-decoration: none;
     flex-shrink: 0;
   }
-  .brand :global(.mark) {
+  .brand__mark {
     width: 28px; height: 28px;
     border-radius: var(--radius-sm);
     display: block;
   }
 
-  /* primary nav grows in the middle on desktop */
-  nav.primary {
-    display: flex; align-items: center; gap: 22px;
-    font-family: var(--font-mono); font-size: 13px;
+  .primary-nav {
+    display: flex; align-items: center; gap: var(--space-12);
+    font-family: var(--font-mono);
+    font-size: var(--text-md);
     flex: 1;
     justify-content: flex-end;
   }
-  nav.primary a {
-    color: var(--fg-muted); text-decoration: none;
-    transition: color 120ms;
+  .primary-nav__link {
+    color: var(--fg-muted);
+    text-decoration: none;
+    transition: color var(--tx-fast);
     white-space: nowrap;
   }
-  nav.primary a:hover { color: var(--fg-strong); }
-  nav.primary a.active { color: var(--accent-soft); }
-  nav.primary a.ext { color: var(--fg-muted); }
-  nav.primary a.ext:hover { color: var(--accent-soft); }
+  .primary-nav__link:hover { color: var(--fg-strong); }
+  .primary-nav__link.is-active { color: var(--accent-soft); }
+  .primary-nav__link--ext:hover { color: var(--accent-soft); }
 
-  /* search + theme + (mobile) hamburger pinned right */
-  .utils {
-    display: flex; align-items: center; gap: 10px;
+  .site-header__utils {
+    display: flex; align-items: center; gap: var(--space-5);
     flex-shrink: 0;
   }
 
@@ -96,43 +123,43 @@ const isActive = (p: string) => pathname === p || pathname.startsWith(p + '/');
     cursor: pointer;
     padding: 0;
     align-items: center; justify-content: center;
-    flex-direction: column; gap: 4px;
+    flex-direction: column; gap: var(--space-2);
   }
   .nav-toggle:hover { border-color: var(--accent); }
-  .nav-toggle .bar {
+  .nav-toggle__bar {
     display: block; width: 14px; height: 2px;
     background: var(--fg); border-radius: 1px;
-    transition: transform 120ms, opacity 120ms;
+    transition: transform var(--tx-fast), opacity var(--tx-fast);
   }
-  .nav-toggle[aria-expanded='true'] .bar:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-  .nav-toggle[aria-expanded='true'] .bar:nth-child(2) { opacity: 0; }
-  .nav-toggle[aria-expanded='true'] .bar:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+  .nav-toggle[aria-expanded='true'] .nav-toggle__bar:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .nav-toggle[aria-expanded='true'] .nav-toggle__bar:nth-child(2) { opacity: 0; }
+  .nav-toggle[aria-expanded='true'] .nav-toggle__bar:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
   @media (max-width: 720px) {
-    .header-inner { gap: 10px; padding-block: 0; }
+    .site-header__inner { gap: var(--space-5); }
     .nav-toggle { display: inline-flex; }
 
-    nav.primary {
+    .primary-nav {
       position: fixed;
-      top: 60px; left: 0; right: 0;
+      top: var(--header-height); left: 0; right: 0;
       background: var(--bg);
       border-bottom: 1px solid var(--border);
       box-shadow: var(--shadow-2);
       flex-direction: column; align-items: stretch;
       gap: 0;
-      padding: 8px 0;
+      padding: var(--space-4) 0;
       transform: translateY(-150%);
       transition: transform 180ms ease-out;
-      max-height: calc(100vh - 60px);
+      max-height: calc(100vh - var(--header-height));
       overflow-y: auto;
     }
-    nav.primary.open { transform: translateY(0); }
-    nav.primary a {
-      padding: 12px clamp(20px, 5vw, 48px);
+    .primary-nav.is-open { transform: translateY(0); }
+    .primary-nav__link {
+      padding: var(--space-6) var(--gutter);
       border-bottom: 1px solid var(--border);
-      font-size: 15px;
+      font-size: var(--text-lg);
     }
-    nav.primary a:last-child { border-bottom: 0; }
+    .primary-nav__link:last-child { border-bottom: 0; }
   }
 </style>
 
@@ -141,21 +168,19 @@ const isActive = (p: string) => pathname === p || pathname.startsWith(p + '/');
   const nav = document.getElementById('primary-nav');
   if (btn && nav) {
     btn.addEventListener('click', () => {
-      const open = nav.classList.toggle('open');
+      const open = nav.classList.toggle('is-open');
       btn.setAttribute('aria-expanded', String(open));
       btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     });
-    // Close on link click (mobile)
     nav.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', () => {
-        nav.classList.remove('open');
+        nav.classList.remove('is-open');
         btn.setAttribute('aria-expanded', 'false');
       });
     });
-    // Close on escape
     document.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && nav.classList.contains('open')) {
-        nav.classList.remove('open');
+      if (e.key === 'Escape' && nav.classList.contains('is-open')) {
+        nav.classList.remove('is-open');
         btn.setAttribute('aria-expanded', 'false');
         btn.focus();
       }

@@ -1,14 +1,26 @@
 ---
 import { Image } from 'astro:assets';
 import logo from '~/assets/nsealr-logo.png';
+
 const year = new Date().getFullYear();
+
+const repos = [
+  { href: 'https://github.com/nSealr/specs', label: 'specs' },
+  { href: 'https://github.com/nSealr/companion', label: 'companion' },
+  { href: 'https://github.com/nSealr/raspberry', label: 'raspberry' },
+  { href: 'https://github.com/nSealr/esp32', label: 'esp32' },
+  { href: 'https://github.com/nSealr/smartcard', label: 'smartcard' },
+  { href: 'https://github.com/nSealr/hardware', label: 'hardware' },
+  { href: 'https://github.com/nSealr/lab', label: 'lab' },
+  { href: '/blog/rss.xml', label: 'RSS' },
+];
 ---
 <footer class="site-footer">
-  <div class="container footer-inner">
-    <div>
-      <p class="brand-line">
+  <div class="container site-footer__inner">
+    <div class="site-footer__brand">
+      <p class="site-footer__line">
         <Image
-          class="brand-mark"
+          class="site-footer__mark"
           src={logo}
           alt=""
           width={22}
@@ -19,38 +31,46 @@ const year = new Date().getFullYear();
         />
         nSealr — non-profit · open-source · five signer solutions
       </p>
-      <p class="muted">Pre-production research. No production security claim. MIT for code; CC0-1.0 for content.</p>
+      <p class="muted">
+        Pre-production research. No production security claim. MIT for code; CC0-1.0 for content.
+      </p>
     </div>
-    <nav aria-label="Repositories">
-      <a href="https://github.com/nSealr/specs">specs</a>
-      <a href="https://github.com/nSealr/companion">companion</a>
-      <a href="https://github.com/nSealr/raspberry">raspberry</a>
-      <a href="https://github.com/nSealr/esp32">esp32</a>
-      <a href="https://github.com/nSealr/smartcard">smartcard</a>
-      <a href="https://github.com/nSealr/hardware">hardware</a>
-      <a href="https://github.com/nSealr/lab">lab</a>
-      <a href="/blog/rss.xml">RSS</a>
+
+    <nav class="site-footer__repos" aria-label="Repositories">
+      {repos.map(r => <a href={r.href}>{r.label}</a>)}
     </nav>
-    <p class="muted small">© {year} nSealr contributors.</p>
+
+    <p class="muted site-footer__copy">© {year} nSealr contributors.</p>
   </div>
 </footer>
 
 <style>
-  .site-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 36px 0; }
-  .footer-inner { display: grid; gap: 18px; }
-  .brand-line {
-    font-family: var(--font-mono); font-size: 14px;
-    margin: 0 0 4px;
-    display: inline-flex; align-items: center; gap: 8px;
+  .site-footer {
+    border-top: 1px solid var(--border);
+    margin-top: var(--space-40);
+    padding: var(--space-16) 0;
   }
-  .brand-line :global(.brand-mark) {
+  .site-footer__inner { display: grid; gap: var(--space-10); }
+
+  .site-footer__line {
+    font-family: var(--font-mono);
+    font-size: var(--text-base);
+    margin: 0 0 var(--space-2);
+    display: inline-flex; align-items: center; gap: var(--space-4);
+  }
+  .site-footer__mark {
     width: 22px; height: 22px;
     border-radius: var(--radius-sm);
     display: inline-block;
   }
-  .muted { color: var(--fg-muted); margin: 0; font-size: 14px; }
-  .muted.small { font-size: 12px; }
-  nav { display: flex; flex-wrap: wrap; gap: 14px; font-family: var(--font-mono); font-size: 13px; }
-  nav a { color: var(--fg-muted); text-decoration: none; }
-  nav a:hover { color: var(--accent-soft); }
+  .muted { color: var(--fg-muted); margin: 0; font-size: var(--text-base); }
+
+  .site-footer__repos {
+    display: flex; flex-wrap: wrap; gap: var(--space-7);
+    font-family: var(--font-mono); font-size: var(--text-md);
+  }
+  .site-footer__repos a { color: var(--fg-muted); text-decoration: none; }
+  .site-footer__repos a:hover { color: var(--accent-soft); }
+
+  .site-footer__copy { font-size: var(--text-sm); }
 </style>

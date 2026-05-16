@@ -1,17 +1,17 @@
+/* Reset + global element defaults */
+
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
   color-scheme: dark light;
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: var(--text-lg);
   line-height: 1.55;
   text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
   overflow-x: hidden;
 }
-
-body { overflow-x: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -25,7 +25,11 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 }
+
+/* When the search modal is open, lock background scroll. */
+body.is-modal-open { overflow: hidden; }
 
 main { flex: 1; }
 
@@ -34,7 +38,11 @@ a {
   text-decoration: none;
   text-decoration-skip-ink: auto;
 }
-a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
 
 :focus-visible {
   outline: 2px solid var(--accent-soft);
@@ -44,33 +52,122 @@ a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-under
 
 ::selection { background: var(--accent); color: white; }
 
-code, kbd, samp, pre { font-family: var(--font-mono); font-size: 0.92em; }
+code, kbd, samp, pre {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
 :not(pre) > code {
   background: var(--bg-elevated);
-  padding: 1px 6px;
+  padding: 1px var(--space-3);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
 }
 
 img, svg, video { max-width: 100%; height: auto; display: block; }
 
+
+/* Layout primitives */
+
 .container {
   max-width: var(--container-max);
   margin-inline: auto;
-  padding-inline: clamp(20px, 5vw, 48px);
+  padding-inline: var(--gutter);
 }
+
+.stack { display: flex; flex-direction: column; gap: var(--space-8); }
+.stack-sm { display: flex; flex-direction: column; gap: var(--space-4); }
+.stack-lg { display: flex; flex-direction: column; gap: var(--space-16); }
+
+.cluster { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+.cluster-sm { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+
+/* Typography primitives */
 
 .eyebrow {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--text-sm);
   color: var(--accent-soft);
   letter-spacing: 0.06em;
   text-transform: lowercase;
+  margin: 0;
 }
+
+.eyebrow-small {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--fg-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.muted { color: var(--fg-muted); }
+
+.lead {
+  color: var(--fg-muted);
+  font-size: var(--text-xl);
+  max-width: 64ch;
+}
+
+.text-mono { font-family: var(--font-mono); }
+
+
+/* Surface primitives */
+
+.surface {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.surface-interactive {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--tx-fast), transform var(--tx-fast);
+}
+.surface-interactive:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+
+/* Pills + chips */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+  border: 1px solid var(--border);
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  transition: color var(--tx-fast), border-color var(--tx-fast);
+}
+.chip:hover { color: var(--accent-soft); border-color: var(--accent); text-decoration: none; }
+.chip.is-active { color: var(--accent-soft); border-color: var(--accent); background: var(--accent-bg); }
+.chip .n { color: var(--fg-muted); font-size: var(--text-xxs); }
+.chip:hover .n, .chip.is-active .n { color: var(--accent-soft); }
+
+
+/* Skip-link for keyboard users */
 
 .skip-link {
   position: absolute; left: -9999px;
   background: var(--accent); color: white;
-  padding: 8px 14px; border-radius: var(--radius-sm);
+  padding: var(--space-4) var(--space-7);
+  border-radius: var(--radius-sm);
 }
-.skip-link:focus { left: 12px; top: 12px; z-index: 1000; }
+.skip-link:focus { left: var(--space-6); top: var(--space-6); z-index: 1000; }
+
+
+/* Arrow-link inline (eg. "Read the docs →") */
+
+.link-arrow {
+  font-family: var(--font-mono);
+  color: var(--accent-soft);
+  font-size: var(--text-base);
+}

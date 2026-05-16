@@ -8,11 +8,17 @@ const { tag, href } = Astro.props;
 <style>
   .tag-pill {
     display: inline-block;
-    font-family: var(--font-mono); font-size: 11px;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
     color: var(--fg-muted);
     border: 1px solid var(--border);
-    padding: 2px 8px; border-radius: var(--radius-pill);
+    padding: var(--space-1) var(--space-4);
+    border-radius: var(--radius-pill);
     text-decoration: none;
   }
-  a.tag-pill:hover { color: var(--accent-soft); border-color: var(--accent); }
+  a.tag-pill:hover {
+    color: var(--accent-soft);
+    border-color: var(--accent);
+    text-decoration: none;
+  }
 </style>

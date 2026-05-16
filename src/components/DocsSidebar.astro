@@ -1,32 +1,42 @@
 ---
 import { getDocsNav } from '~/lib/docs-nav';
+
 interface Props { currentHref: string; }
 const { currentHref } = Astro.props;
-const nav = await getDocsNav();
 
-// A section is "open" by default when it contains the current page; the
-// client-side script restores any user-toggled state from localStorage.
-function isActive(items: { href: string }[], current: string) {
+const nav = await getDocsNav();
+function containsCurrent(items: { href: string }[], current: string) {
   return items.some(i => i.href === current);
 }
 ---
-<aside class="docs-sidebar" data-open="false" aria-label="Documentation sections">
-  <button class="sidebar-toggle" type="button" aria-expanded="false" aria-controls="docs-sidebar-nav">
-    <span class="label">Documentation</span>
-    <span class="chevron" aria-hidden="true">▾</span>
+<aside class="sidebar sidebar--docs" data-open="false" aria-label="Documentation sections">
+  <button class="sidebar__toggle" type="button" aria-expanded="false" aria-controls="docs-sidebar-nav">
+    <span class="sidebar__toggle-label">Documentation</span>
+    <span class="sidebar__chev" aria-hidden="true">▾</span>
   </button>
-  <nav id="docs-sidebar-nav">
+  <nav id="docs-sidebar-nav" class="sidebar__nav">
     {nav.map(group => (
-      <section data-section={group.section} data-default-open={isActive(group.items, currentHref) ? 'true' : 'false'}>
-        <button class="group-toggle" type="button" aria-expanded={isActive(group.items, currentHref) ? 'true' : 'false'}>
-          <span class="group-label">{group.label}</span>
-          <span class="group-count">{group.items.length}</span>
-          <span class="group-chev" aria-hidden="true">▾</span>
+      <section
+        class="sidebar__group"
+        data-section={group.section}
+        data-default-open={containsCurrent(group.items, currentHref) ? 'true' : 'false'}
+      >
+        <button
+          class="sidebar__group-toggle"
+          type="button"
+          aria-expanded={containsCurrent(group.items, currentHref) ? 'true' : 'false'}
+        >
+          <span class="sidebar__group-label">{group.label}</span>
+          <span class="sidebar__group-count">{group.items.length}</span>
+          <span class="sidebar__group-chev" aria-hidden="true">▾</span>
         </button>
-        <ul>
+        <ul class="sidebar__list">
           {group.items.map(item => (
             <li>
-              <a href={item.href} class={item.href === currentHref ? 'current' : ''}>{item.title}</a>
+              <a
+                class={`sidebar__link${item.href === currentHref ? ' is-current' : ''}`}
+                href={item.href}
+              >{item.title}</a>
             </li>
           ))}
         </ul>
@@ -35,96 +45,123 @@ function isActive(items: { href: string }[], current: string) {
   </nav>
 </aside>
 <style>
-  .docs-sidebar {
-    font-family: var(--font-mono); font-size: 13px;
-    padding: 12px 0;
+  .sidebar {
+    font-family: var(--font-mono);
+    font-size: var(--text-md);
+    padding: var(--space-6) 0;
     border-right: 1px solid var(--border);
     position: sticky;
-    top: 76px;
+    top: var(--sticky-top);
     align-self: start;
-    max-height: calc(100vh - 96px);
+    max-height: calc(100vh - var(--header-height) - var(--space-12));
     overflow-y: auto;
   }
-  .sidebar-toggle {
+  .sidebar__toggle {
     display: none;
     width: 100%;
-    align-items: center; justify-content: space-between;
-    padding: 8px 12px;
-    color: var(--fg-strong); font-weight: 600;
-    font-family: var(--font-mono); font-size: 13px;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-6);
+    color: var(--fg-strong);
+    font-weight: 600;
+    font-family: var(--font-mono);
+    font-size: var(--text-md);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     background: var(--bg-elevated);
-    margin: 0 0 8px;
+    margin: 0 0 var(--space-4);
     cursor: pointer;
   }
-  .sidebar-toggle .chevron { transition: transform 150ms; color: var(--accent-soft); }
-  .docs-sidebar[data-open='true'] .sidebar-toggle .chevron { transform: rotate(180deg); }
+  .sidebar__chev { transition: transform 150ms; color: var(--accent-soft); }
+  .sidebar[data-open='true'] .sidebar__chev { transform: rotate(180deg); }
 
-  .docs-sidebar nav { padding: 8px 0; }
-  .docs-sidebar section { padding: 2px 12px; }
+  .sidebar__nav { padding: var(--space-4) 0; }
+  .sidebar__group { padding: var(--space-1) var(--space-6); }
 
-  .group-toggle {
-    display: flex; align-items: center; gap: 8px;
+  .sidebar__group-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
     width: 100%;
-    background: transparent; border: 0; cursor: pointer;
-    padding: 8px 6px;
-    font-family: var(--font-mono); font-size: 11px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: var(--space-4) var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
     color: var(--fg-muted);
-    text-transform: uppercase; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     border-radius: var(--radius-sm);
   }
-  .group-toggle:hover { background: var(--bg-elevated); color: var(--fg-strong); }
-  .group-toggle .group-label { flex: 1; text-align: left; }
-  .group-toggle .group-count {
-    font-size: 10px; color: var(--fg-muted); text-transform: none;
-    border: 1px solid var(--border); padding: 0 6px;
-    border-radius: var(--radius-pill); font-weight: 500;
+  .sidebar__group-toggle:hover { background: var(--bg-elevated); color: var(--fg-strong); }
+  .sidebar__group-label { flex: 1; text-align: left; }
+  .sidebar__group-count {
+    font-size: var(--text-xxs);
+    color: var(--fg-muted);
+    text-transform: none;
+    border: 1px solid var(--border);
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-pill);
+    font-weight: 500;
   }
-  .group-toggle .group-chev { transition: transform 150ms; color: var(--accent-soft); }
-  section[aria-collapsed='true'] .group-chev,
-  section:not([aria-collapsed]) .group-toggle[aria-expanded='false'] .group-chev { transform: rotate(-90deg); }
+  .sidebar__group-chev { transition: transform 150ms; color: var(--accent-soft); }
+  .sidebar__group[aria-collapsed='true'] .sidebar__group-chev { transform: rotate(-90deg); }
 
-  .docs-sidebar ul {
-    list-style: none; padding: 0; margin: 4px 0 6px;
-    display: grid; gap: 2px;
+  .sidebar__list {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-2) 0 var(--space-3);
+    display: grid;
+    gap: var(--space-1);
     overflow: hidden;
-    max-height: 1000px; transition: max-height 200ms;
+    max-height: 1000px;
+    transition: max-height var(--tx-base);
   }
-  section[aria-collapsed='true'] ul { max-height: 0; margin: 0; }
+  .sidebar__group[aria-collapsed='true'] .sidebar__list { max-height: 0; margin: 0; }
 
-  .docs-sidebar a {
-    color: var(--fg-muted); text-decoration: none;
-    padding: 4px 12px; border-radius: var(--radius-sm); display: block;
-    font-size: 13px; text-transform: none; letter-spacing: 0;
+  .sidebar__link {
+    color: var(--fg-muted);
+    text-decoration: none;
+    padding: var(--space-2) var(--space-6);
+    border-radius: var(--radius-sm);
+    display: block;
+    font-size: var(--text-md);
+    text-transform: none;
+    letter-spacing: 0;
   }
-  .docs-sidebar a:hover { color: var(--fg-strong); background: var(--bg-elevated); }
-  .docs-sidebar a.current {
-    color: var(--accent-soft); background: var(--accent-bg);
+  .sidebar__link:hover { color: var(--fg-strong); background: var(--bg-elevated); text-decoration: none; }
+  .sidebar__link.is-current {
+    color: var(--accent-soft);
+    background: var(--accent-bg);
     border-left: 2px solid var(--accent);
-    padding-left: 10px;
+    padding-left: var(--space-5);
   }
 
   @media (max-width: 960px) {
-    .docs-sidebar {
-      position: static; max-height: none; overflow: visible;
-      border-right: 0; border-bottom: 1px solid var(--border); padding-bottom: 16px;
+    .sidebar {
+      position: static;
+      max-height: none;
+      overflow: visible;
+      border-right: 0;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: var(--space-8);
     }
-    .sidebar-toggle { display: flex; }
-    .docs-sidebar nav {
-      max-height: 60vh; overflow-y: auto;
+    .sidebar__toggle { display: flex; }
+    .sidebar__nav {
+      max-height: 60vh;
+      overflow-y: auto;
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       background: var(--bg);
-      padding: 4px 0;
+      padding: var(--space-2) 0;
     }
-    .docs-sidebar[data-open='false'] nav { display: none; }
+    .sidebar[data-open='false'] .sidebar__nav { display: none; }
   }
 </style>
 <script>
-  // Toggle the whole sidebar drawer (mobile only)
-  document.querySelectorAll('.docs-sidebar').forEach(wrap => {
-    const btn = wrap.querySelector('.sidebar-toggle');
+  document.querySelectorAll('.sidebar--docs').forEach(wrap => {
+    const btn = wrap.querySelector('.sidebar__toggle');
     btn?.addEventListener('click', () => {
       const open = wrap.getAttribute('data-open') === 'true';
       wrap.setAttribute('data-open', String(!open));
@@ -132,15 +169,11 @@ function isActive(items: { href: string }[], current: string) {
     });
   });
 
-  // Per-section collapse (desktop + mobile).
-  // Default: only the section containing the current page is open.
-  // No persistence — every page load resets defaults so the active section
-  // is always visible.
-  document.querySelectorAll('.docs-sidebar section[data-section]').forEach(section => {
+  document.querySelectorAll('.sidebar--docs .sidebar__group[data-section]').forEach(section => {
     const defaultOpen = section.getAttribute('data-default-open') === 'true';
     if (!defaultOpen) section.setAttribute('aria-collapsed', 'true');
 
-    const toggle = section.querySelector('.group-toggle')!;
+    const toggle = section.querySelector('.sidebar__group-toggle')!;
     toggle.setAttribute('aria-expanded', String(defaultOpen));
     toggle.addEventListener('click', () => {
       const nowCollapsed = section.getAttribute('aria-collapsed') !== 'true';

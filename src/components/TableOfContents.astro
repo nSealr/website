@@ -6,14 +6,16 @@ const items = headings.filter(h => h.depth >= 2 && h.depth <= 3);
 ---
 {items.length > 0 && (
   <aside class="toc" data-open="false" aria-label="On this page">
-    <button class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-nav">
-      <span class="label">On this page</span>
-      <span class="chevron" aria-hidden="true">▾</span>
+    <button class="toc__toggle" type="button" aria-expanded="false" aria-controls="toc-nav">
+      <span class="toc__toggle-label">On this page</span>
+      <span class="toc__chev" aria-hidden="true">▾</span>
     </button>
-    <nav id="toc-nav">
-      <ul>
+    <nav id="toc-nav" class="toc__nav">
+      <ul class="toc__list">
         {items.map(h => (
-          <li class={`d-${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>
+          <li class={`toc__item toc__item--d${h.depth}`}>
+            <a class="toc__link" href={`#${h.slug}`}>{h.text}</a>
+          </li>
         ))}
       </ul>
     </nav>
@@ -21,55 +23,66 @@ const items = headings.filter(h => h.depth >= 2 && h.depth <= 3);
 )}
 <style>
   .toc {
-    position: sticky; top: 80px;
-    font-family: var(--font-mono); font-size: 12px;
-    padding: 24px 16px 24px 0;
+    position: sticky;
+    top: var(--sticky-top);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    padding: var(--space-12) var(--space-8) var(--space-12) 0;
   }
-  .toc-toggle {
+  .toc__toggle {
     display: none;
     width: 100%;
-    align-items: center; justify-content: space-between;
-    padding: 8px 12px;
-    color: var(--fg-strong); font-weight: 600;
-    font-family: var(--font-mono); font-size: 13px;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-6);
+    color: var(--fg-strong);
+    font-weight: 600;
+    font-family: var(--font-mono);
+    font-size: var(--text-md);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     background: var(--bg-elevated);
-    margin: 0 0 8px;
+    margin: 0 0 var(--space-4);
     cursor: pointer;
   }
-  .toc-toggle .chevron { transition: transform 150ms; color: var(--accent-soft); }
-  .toc[data-open='true'] .toc-toggle .chevron { transform: rotate(180deg); }
+  .toc__chev { transition: transform 150ms; color: var(--accent-soft); }
+  .toc[data-open='true'] .toc__chev { transform: rotate(180deg); }
 
-  .toc nav { padding-left: 0; }
-  .toc ul {
-    list-style: none; padding: 0; margin: 0;
-    display: grid; gap: 4px;
+  .toc__nav { padding-left: 0; }
+  .toc__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-2);
     border-left: 1px solid var(--border);
   }
-  .toc li { padding-left: 12px; }
-  .toc li.d-3 { padding-left: 24px; opacity: 0.85; }
-  .toc a {
-    color: var(--fg-muted); text-decoration: none;
-    display: block; padding: 2px 0;
+  .toc__item { padding-left: var(--space-6); }
+  .toc__item--d3 { padding-left: var(--space-12); opacity: 0.85; }
+  .toc__link {
+    color: var(--fg-muted);
+    text-decoration: none;
+    display: block;
+    padding: var(--space-1) 0;
   }
-  .toc a:hover { color: var(--accent-soft); }
+  .toc__link:hover { color: var(--accent-soft); }
 
   @media (max-width: 960px) {
     .toc {
-      position: static; top: auto;
-      padding: 16px 0 8px;
-      margin-top: 32px;
+      position: static;
+      top: auto;
+      padding: var(--space-8) 0 var(--space-4);
+      margin-top: var(--space-16);
       border-top: 1px solid var(--border);
     }
-    .toc-toggle { display: flex; }
-    .toc nav { padding-top: 8px; }
-    .toc[data-open='false'] nav { display: none; }
+    .toc__toggle { display: flex; }
+    .toc__nav { padding-top: var(--space-4); }
+    .toc[data-open='false'] .toc__nav { display: none; }
   }
 </style>
 <script>
   document.querySelectorAll('.toc').forEach(wrap => {
-    const btn = wrap.querySelector('.toc-toggle');
+    const btn = wrap.querySelector('.toc__toggle');
     btn?.addEventListener('click', () => {
       const open = wrap.getAttribute('data-open') === 'true';
       wrap.setAttribute('data-open', String(!open));

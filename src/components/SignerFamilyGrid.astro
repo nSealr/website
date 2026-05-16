@@ -1,9 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
 import SignerCard from './SignerCard.astro';
-const signers = (await getCollection('signers')).sort((a, b) => a.data.order - b.data.order);
+const signers = (await getCollection('signers'))
+  .sort((a, b) => a.data.order - b.data.order);
 ---
-<div class="grid">
+<div class="signer-grid">
   {signers.map(s => (
     <SignerCard
       family={s.data.family}
@@ -15,8 +16,9 @@ const signers = (await getCollection('signers')).sort((a, b) => a.data.order - b
   ))}
 </div>
 <style>
-  .grid {
-    display: grid; gap: 12px;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  .signer-grid {
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
   }
 </style>

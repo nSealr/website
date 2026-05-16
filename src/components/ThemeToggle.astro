@@ -1,8 +1,8 @@
 ---
 ---
-<button id="theme-toggle" type="button" aria-label="Toggle color theme" aria-pressed="false" class="theme-toggle">
-  <span class="sun" aria-hidden="true">☀</span>
-  <span class="moon" aria-hidden="true">☾</span>
+<button id="theme-toggle" type="button" class="theme-toggle" aria-label="Toggle color theme" aria-pressed="false">
+  <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+  <span class="theme-toggle__moon" aria-hidden="true">☾</span>
 </button>
 <style>
   .theme-toggle {
@@ -10,18 +10,22 @@
     width: 34px; height: 34px;
     border: 1px solid var(--border-strong);
     border-radius: var(--radius-md);
-    background: transparent; color: var(--fg);
-    cursor: pointer; position: relative;
+    background: transparent;
+    color: var(--fg);
+    cursor: pointer;
+    position: relative;
   }
   .theme-toggle:hover { border-color: var(--accent); }
-  .theme-toggle .sun, .theme-toggle .moon {
-    position: absolute; transition: opacity 120ms, transform 120ms;
-    font-size: 15px; line-height: 1;
+  .theme-toggle__sun, .theme-toggle__moon {
+    position: absolute;
+    transition: opacity var(--tx-fast), transform var(--tx-fast);
+    font-size: var(--text-lg);
+    line-height: 1;
   }
-  :global(html[data-theme='dark']) .theme-toggle .sun { opacity: 0; transform: rotate(-30deg); }
-  :global(html[data-theme='dark']) .theme-toggle .moon { opacity: 1; }
-  :global(html[data-theme='light']) .theme-toggle .sun { opacity: 1; }
-  :global(html[data-theme='light']) .theme-toggle .moon { opacity: 0; transform: rotate(30deg); }
+  :global(html[data-theme='dark']) .theme-toggle__sun { opacity: 0; transform: rotate(-30deg); }
+  :global(html[data-theme='dark']) .theme-toggle__moon { opacity: 1; }
+  :global(html[data-theme='light']) .theme-toggle__sun { opacity: 1; }
+  :global(html[data-theme='light']) .theme-toggle__moon { opacity: 0; transform: rotate(30deg); }
 </style>
 <script>
   const btn = document.getElementById('theme-toggle');

@@ -2,23 +2,35 @@
 type Variant = 'ok' | 'warn' | 'pending' | 'neutral' | 'disabled';
 interface Props { variant?: Variant; label?: string; }
 const { variant = 'neutral', label } = Astro.props;
-const symbol = variant === 'ok' ? '✓' : variant === 'warn' ? '!' : variant === 'disabled' ? '⊘' : variant === 'pending' ? '◔' : '•';
+
+const SYMBOL: Record<Variant, string> = {
+  ok: '✓',
+  warn: '!',
+  disabled: '⊘',
+  pending: '◔',
+  neutral: '•',
+};
 ---
-<span class={`pill pill-${variant}`}>
-  <span aria-hidden="true">{symbol}</span>
+<span class={`status-pill status-pill--${variant}`}>
+  <span aria-hidden="true">{SYMBOL[variant]}</span>
   <slot>{label}</slot>
 </span>
 <style>
-  .pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-family: var(--font-mono); font-size: 11px; font-weight: 600;
-    padding: 3px 9px; border-radius: var(--radius-pill);
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    padding: var(--space-1) var(--space-5);
+    border-radius: var(--radius-pill);
     border: 1px solid;
     line-height: 1.4;
   }
-  .pill-ok       { color: var(--ok);       background: var(--ok-bg);       border-color: color-mix(in oklab, var(--ok) 40%, transparent); }
-  .pill-warn     { color: var(--warn);     background: var(--warn-bg);     border-color: color-mix(in oklab, var(--warn) 40%, transparent); }
-  .pill-disabled { color: var(--warn);     background: var(--warn-bg);     border-color: color-mix(in oklab, var(--warn) 40%, transparent); }
-  .pill-pending  { color: var(--pending);  background: var(--pending-bg);  border-color: color-mix(in oklab, var(--pending) 40%, transparent); }
-  .pill-neutral  { color: var(--accent-soft); background: var(--accent-bg); border-color: color-mix(in oklab, var(--accent) 40%, transparent); }
+  .status-pill--ok       { color: var(--ok);          background: var(--ok-bg);      border-color: color-mix(in oklab, var(--ok) 40%, transparent); }
+  .status-pill--warn,
+  .status-pill--disabled { color: var(--warn);        background: var(--warn-bg);    border-color: color-mix(in oklab, var(--warn) 40%, transparent); }
+  .status-pill--pending  { color: var(--pending);     background: var(--pending-bg); border-color: color-mix(in oklab, var(--pending) 40%, transparent); }
+  .status-pill--neutral  { color: var(--accent-soft); background: var(--accent-bg);  border-color: color-mix(in oklab, var(--accent) 40%, transparent); }
 </style>
