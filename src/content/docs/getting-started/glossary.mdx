@@ -1,0 +1,120 @@
+---
+title: 'Glossary'
+description: 'Quick reference for the terms and contract names that show up across nSealr docs, specs, and firmware.'
+section: 'getting-started'
+order: 3
+updatedAt: 2026-05-16
+---
+
+A short reference for the terms and `contract_id`s used across nSealr
+docs, specs, and firmware. Definitive contracts live in
+[`nSealr/specs`](https://github.com/nSealr/specs).
+
+## Core concepts
+
+**Companion**
+: Host-side, secretless software that routes signing requests and
+  verifies responses. Ships as CLI, SDK, browser extension, local
+  app, local service, and NIP-46 bridge.
+
+**Signer**
+: The device that holds (or unlocks) the private key. Five solutions:
+  Raspberry/Pi QR vault, ESP32 QR vault, ESP32 USB/NIP-46, smartcard,
+  custom hardware wallet.
+
+**Solution**
+: The unit at which feature parity is contracted. A solution may
+  implement more or fewer features, but each shared feature must
+  behave the same across solutions through its `contract_id`.
+
+**Stateless vault**
+: A signer whose secret material lives **only in RAM** for the current
+  session — Raspberry/Pi QR vault and ESP32 QR vault.
+
+**Persistent-secret signer**
+: A signer that keeps long-lived secret material across power cycles —
+  ESP32 USB/NIP-46, smartcard, custom HW wallet.
+
+## Safety contracts
+
+These names recur across docs and firmware logs:
+
+**`approval_digest`** — `approval-digest-v0`
+: Deterministic hash over the canonical material the user reviewed
+  (signer pubkey, event kind, `created_at`, content, tags, request id,
+  review context). The local approval gesture is bound to this digest;
+  the signer refuses to emit a signature whose underlying serialization
+  does not reproduce it.
+
+**`signing_disabled`**
+: Real `sign_event` is intentionally blocked on development firmware
+  until camera, display, button, provisioning, and secure-boot gates
+  pass independently. Disabled-signing firmware can still exercise
+  review and approval flows for evidence collection.
+
+**Review detail pages** — `review-detail-pages-v0`
+: Long content and tags are exposed through deterministic detail pages
+  (or an equivalent scroll model) — no truncation, no hidden fields, no
+  ambiguous wrapped items.
+
+**Physical approval** — `physical-approval-v0`
+: A real signing decision requires an intentional local approval
+  gesture **distinct from** navigation, paging, connection, or request
+  receipt.
+
+**External review acknowledgement** — `external-review-acknowledgement-v0`
+: For display-less custody (smartcards), an external reviewer
+  acknowledges what is being signed **before** the APDU reaches the card.
+
+**Manual-only policy** — `manual-only-approval-policy-v0`
+: The implementation never signs automatically; every `sign_event`
+  decision requires local review and physical approval. Default for
+  QR vault solutions.
+
+**Scoped policy automation** — `scoped-policy-automation-v0`
+: Optional, explicit, revocable automation by account / route / method
+  / kind / client / time. Off by default; denied or unknown cases return
+  deterministic non-signing decisions.
+
+## Transports
+
+**`nsealr1:` / `nsealr1a:`** — `qr-envelope-static-v0` / `qr-envelope-animated-v0`
+: Static and animated QR envelopes for stateless QR vault solutions.
+
+**Serial / USB transport** — `serial-usb-transport-v0`
+: Bounded USB or serial frames with checksums and deterministic parse
+  errors before request validation.
+
+**NIP-46 decrypted bridge** — `nip46-decrypted-bridge-v0`
+: Companion-side conversion of already-decrypted NIP-46 payloads into
+  standard nSealr signing requests. The bridge does not implement relay
+  sessions or encryption.
+
+**Smartcard APDU** — `smartcard-apdu-v0`
+: Versioned short APDUs with deterministic status words. No trusted
+  review claim from the card alone.
+
+## Smoke evidence (development)
+
+These names show up in firmware test logs:
+
+**T-Display S3 review scenario smoke**
+: Confirms host-core review frames render correctly on the T-Display S3
+  development board. Development evidence, **not** a production
+  trusted-display claim.
+
+**Companion-to-device serial smoke**
+: One-shot serial bring-up between the companion and ESP32 firmware.
+
+**Sign-event-disabled smoke**
+: Round-trip exercise of the signing flow with `sign_event` disabled —
+  the device refuses to emit a signature but every other contract
+  fires.
+
+**Firmware protocol evidence**
+: Recorded protocol exchanges that demonstrate the implementation
+  matches the spec contracts.
+
+**Unicode fallback**
+: Codepoint fallback for constrained bitmap displays — used when the
+  device font cannot render a character in the canonical material.

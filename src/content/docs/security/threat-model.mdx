@@ -1,32 +1,57 @@
 ---
 title: 'Threat model'
-description: 'Adversaries, assets, and assumptions for nSealr signer families.'
+description: 'Adversaries, assets, and assumptions for nSealr signer families — what is in scope today and what is not.'
 section: 'security'
 order: 2
-updatedAt: 2026-05-15
+updatedAt: 2026-05-16
 status: 'draft'
 ---
 
+A signer is interesting because of who could attack it and how. This
+page sketches the adversary model the contracts try to address.
+
 ## Assets
 
-- The private key for each Nostr account on a signer.
-- The integrity of every signed event the user authorizes.
-- The user's ability to refuse a signing request.
+- **Private keys** for every Nostr account on a signer.
+- **The integrity of every signed event** the user authorizes — the
+  bytes the user reviewed must be the bytes that get signed.
+- **The user's ability to refuse a signing request** — no path that
+  signs without a deliberate gesture.
 
 ## Adversaries
 
-- A compromised host running the Nostr client.
-- A compromised companion (signing requests must still be reviewable on
-  the device where the hardware allows it).
-- A malicious accessory connected to the signer transport (USB, QR
-  camera, NFC field).
-- Supply-chain firmware tampering — addressed by the
-  `firmware-boot-hardening-v0` contract as a required gate for production
-  ESP32 USB/NIP-46 claims.
+| Adversary                           | What they can do                                        | What the design says |
+|-------------------------------------|----------------------------------------------------------|----------------------|
+| Compromised host (client/companion) | Lie about the event template; race the user's screen     | `approval_digest` makes the device refuse drift between review and signature |
+| Hostile accessory on the transport  | Replay frames, inject malformed data                     | `serial-usb-transport-v0` / `qr-envelope-*` frames have explicit bounds and checksums |
+| Malicious NIP-46 relay              | Send unauthorized requests                               | `nip46-decrypted-bridge-v0` requires the companion to convert decrypted payloads explicitly; no relay session inside the signer |
+| Network attacker on the same LAN    | Snoop or inject                                          | The signer never opens network sockets; the companion's NIP-46 path is encrypted upstream |
+| Tampered firmware (supply chain)    | Bypass review on-device                                  | `firmware-boot-hardening-v0` is the required gate (still under work) before any production ESP32 USB claim |
+| Physical thief (device powered off) | Read flash, extract secrets                              | Stateless QR vault: nothing to read (RAM-only). Persistent solutions: depends on `persistent-secret-custody-v0` and `firmware-boot-hardening-v0` |
+| Physical attacker (device powered on)| Press buttons / approve fake event                       | `physical-approval-v0` requires a deliberate gesture distinct from navigation; a single click cannot sign anything novel |
 
 ## Assumptions
 
-- The user reads the review screen where one exists.
-- The user's local approval gesture is distinct from navigation.
-- Pre-production firmware has `sign_event` intentionally disabled until
-  hardening gates pass.
+- The user **reads the review screen** where one exists. Where one
+  does not (smartcard), an external reviewer is in scope and tied to
+  `external-review-acknowledgement-v0`.
+- The local approval gesture is **distinct from** navigation,
+  connection, or request receipt.
+- Pre-production firmware has `sign_event` **intentionally disabled**
+  until hardening gates pass — disabled-signing builds may still be
+  used for protocol-evidence collection.
+
+## What is intentionally **out of scope** (today)
+
+- Side-channel attacks against the signer (power, EM, timing) — not
+  yet exercised by vectors.
+- Secure element direct BIP-340 (e.g. TROPIC01) — research only,
+  unproven for Nostr. The default research path is host-MCU signing.
+- Multi-party signing / FROST / threshold schemes — not in v0.
+- A "make Nostr safe everywhere" claim — nSealr addresses the
+  signing boundary; everything outside (relays, content moderation,
+  client UX) lives elsewhere.
+
+See [Trust boundaries](/docs/security/trust-boundaries/) for the
+per-layer summary and [Safety contracts](/docs/security/safety-contracts/)
+for the full contract list.

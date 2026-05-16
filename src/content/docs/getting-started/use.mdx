@@ -3,17 +3,74 @@ title: 'Using a signer'
 description: 'End-to-end flow: a Nostr client requests a signature, the companion routes it, and a signer reviews and signs.'
 section: 'getting-started'
 order: 2
-updatedAt: 2026-05-15
+updatedAt: 2026-05-16
 ---
 
-1. A Nostr client builds an event template and asks for a signature.
-2. The **companion** validates the request, normalizes it to the v0
-   contract, and routes it over the right transport (QR, USB serial,
-   APDU, or NIP-46 bridge).
-3. The **signer** displays the event for review where hardware allows it,
-   binds the local approval to `approval_digest`, and signs BIP-340.
-4. The companion **verifies the signed response** against shared fixtures
-   before handing it back to the client.
+A signing request flows through four layers: **client → companion → signer → companion → client**.
+Each step has a clear job and explicit limits.
 
-The signer keeps or protects the private key. The companion never holds
-keys. The client never sees keys.
+## Step 1 — Client builds the event
+
+The client (a Nostr app, a CLI, a service) builds an event template
+(`kind`, `content`, `tags`, `created_at`) and asks for a signature.
+It never sees the key.
+
+## Step 2 — Companion normalizes & routes
+
+The companion:
+
+1. **Validates** the request against `signing-request-v0` + implementation
+   limits. Oversized, malformed, or unsupported events are rejected before
+   review, signing, or transport.
+2. **Normalizes** the request to v0 canonical form.
+3. **Routes** it to the active signer over the right transport:
+   QR (`nsealr1`), USB serial, smartcard APDU, or NIP-46 bridge.
+
+```sh
+$ nsealr request --kind 1 --content "hello" > req.json
+$ nsealr route --request req.json --signer raspberry-qr
+```
+
+## Step 3 — Signer reviews and approves
+
+Where hardware allows, the signer:
+
+1. Renders the canonical material on a **trusted display** (the
+   universal event review contract).
+2. Binds the local approval gesture (button press, on-card
+   acknowledgement) to that material through `approval_digest`. Drift
+   between "what was shown" and "what gets signed" fails closed.
+3. Signs BIP-340 / secp256k1 only after physical approval.
+
+For display-less custody (smartcard), an **external review
+acknowledgement** must precede the APDU.
+
+## Step 4 — Companion verifies, returns
+
+Every signed response goes through `signed-response-verification-v0`
+before reaching the client:
+
+- BIP-340 signature math against the canonical bytes.
+- Event id matches the signed payload.
+- `approval_digest` matches the request the user approved.
+
+```sh
+$ nsealr verify --request req.json --response resp.json
+✓ event id matches BIP-340 signature
+✓ approval_digest matches reviewed material
+```
+
+If verification fails, the response is **rejected** even if the
+signature is mathematically valid.
+
+## Where each piece lives
+
+- The **private key** lives on the signer (RAM-only for QR vaults,
+  persistent for USB / smartcard / custom HW).
+- The **companion** holds no secrets and is replaceable.
+- The **client** never sees keys.
+- The **policy** is owned by the signer; the companion proposes.
+
+See [Transports](/docs/system/transports/) for the wire-level details
+and [Trust boundaries](/docs/security/trust-boundaries/) for what each
+layer is — and is not — trusted with.

@@ -3,16 +3,72 @@ title: 'Trust boundaries'
 description: 'Where keys live, who is trusted with what, and what each layer must not do.'
 section: 'security'
 order: 1
-updatedAt: 2026-05-15
+updatedAt: 2026-05-16
 ---
 
-| Layer       | Trusted with…                  | Not trusted with…                          |
-|-------------|--------------------------------|--------------------------------------------|
-| Client      | building requests              | private keys, approval decisions           |
-| Companion   | routing & response verification | private keys, policy execution            |
-| Signer      | private keys (per family boundary) | the universe outside its boundary      |
-| Smartcard   | persistent secret, APDU signing | trusted event review (display-less)       |
+import Callout from '~/components/Callout.astro';
 
-The companion is never trusted with key custody. Display-less smartcards
-do not provide trusted event review by themselves — an external review
-acknowledgement is required.
+A boundary in nSealr is the line beyond which one component must not be
+trusted with a specific responsibility. The same boundaries are
+exercised in vectors in [`nSealr/specs`](https://github.com/nSealr/specs).
+
+## Layer-by-layer
+
+| Layer       | Trusted with…                              | **Not** trusted with…                          |
+|-------------|---------------------------------------------|-----------------------------------------------|
+| Client      | Building requests                           | Private keys, approval decisions               |
+| Companion   | Routing, transport, response verification   | Private keys, policy execution                 |
+| QR vault    | RAM-only session signing                    | Persistent secret material                     |
+| USB signer  | Persistent secret (after gates pass)        | Anything outside its declared boundary         |
+| Smartcard   | Persistent secret, APDU signing             | Trusted event review (display-less)            |
+| Custom HW   | Persistent secret + display review (after)  | Claims before evidence                         |
+
+## Rules nSealr enforces today
+
+- **Private keys must not be exposed to ordinary Nostr clients.**
+  Clients can request signatures; they cannot read keys.
+- **Sensitive signing requires explicit user review** where hardware
+  allows it. The review material is bound to the bytes that get signed
+  through [`approval_digest`](/blog/2026-05-15-approval-digest-bind-review-to-signature/).
+- **The companion is not trusted with key custody.** It is secretless
+  routing and verification — every successful signed response is
+  re-verified against shared fixtures before reaching the client.
+- **Maturity differs by signer family.** See the
+  [per-family capability matrices](/docs/signers/raspberry-qr/) for the
+  exact target/current status of each contract.
+
+## Display-less is a different boundary
+
+A standard smartcard does not have a screen. It is the
+**persistent-secret custody** boundary — not a "trusted event review"
+boundary. To sign with a smartcard, an **external review acknowledgement**
+(a screen the user trusts, with the same canonical material the card
+will sign) must occur **before** the APDU is sent.
+
+The smartcard line therefore depends on the
+`external-review-acknowledgement-v0` contract, not on
+`device-display-review-v0`.
+
+## Current contracts at a glance
+
+The shared safety contracts the project enforces today are:
+
+- `approval_digest` — the local approval is bound to the **exact**
+  reviewed material.
+- `signing_disabled` — real signing is blocked on prototype firmware
+  until hardening gates pass.
+- **NIP-46 bridge decisions** via `nsealr nip46 decide` for
+  already-decrypted payloads.
+- **request-bound capture checks** in `nsealr serial-line exchange`.
+- **review detail pages** for long content and tags without truncation.
+- **T-Display S3 review scenario smoke**, **companion-to-device serial smoke**,
+  **sign-event-disabled smoke**, **firmware protocol evidence**, and
+  **Unicode fallback** tracking — all disabled-signing development
+  evidence, not production claims.
+
+<Callout variant="warn" title="Pre-production">
+  Do not put production secrets onto current prototypes. The
+  per-solution capability matrix in
+  [each signer page](/docs/signers/raspberry-qr/) is the source of
+  truth for what is actually implemented today.
+</Callout>

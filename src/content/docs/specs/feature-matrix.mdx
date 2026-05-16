@@ -1,0 +1,66 @@
+---
+title: 'Signer feature matrix'
+description: 'Shared contracts and the same-behavior-when-present rule that holds the five solutions together.'
+section: 'specs'
+order: 3
+updatedAt: 2026-05-16
+---
+
+The five signer solutions share **contracts**, not source code. The
+authoritative table lives in
+[`nSealr/specs`](https://github.com/nSealr/specs) at
+`vectors/features/signer-feature-matrix-v0.json`. Each per-solution
+page on this site renders the live status table.
+
+## The implementation rule
+
+> A feature may be absent, forbidden, or hardware-blocked on a
+> solution. **When the same feature is active on more than one
+> solution, each implementation must use the same `contract_id` and
+> pass the same conformance vectors**, unless an approved equivalent
+> is documented in specs.
+
+In other words: if Raspberry/Pi QR vault and ESP32 QR vault both
+advertise `approval_digest_binding`, they reproduce the exact same
+digest for the same canonical bytes — period.
+
+## Parity groups
+
+Solutions that share a product class are tied through **parity
+groups**. The first one is the stateless QR vault:
+
+| Group               | Solutions                       | Same-target features                                                                                                                  |
+|---------------------|---------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| `stateless_qr_vault`| `raspberry_qr_vault`, `esp32_qr_vault` | `request_validation_v0`, `nostr_event_review_universal`, `review_detail_pages`, `approval_digest_binding`, `physical_approval`, `sign_event_bip340`, `qr_static_request`, `qr_animated_request`, `qr_response`, `stateless_session_custody`, `manual_only_policy`, `device_display_review`, `response_verification` |
+
+If a future ESP32 QR variant shipped — say with a different display —
+it joins the same parity group and must keep the same behavior on
+shared features.
+
+## Statuses you'll see
+
+Each (solution × feature) cell has a **target** and a **current**:
+
+- `required` / `optional` / `forbidden` / `not_applicable` — target.
+- `implemented`, `partial`, `planned`, `research`, `disabled_until_gates_pass`,
+  `forbidden`, `not_applicable` — current.
+
+`disabled_until_gates_pass` is the honest status of real
+`sign_event` on prototype firmware: the contract exists, the code
+exists, the gates do not.
+
+## How the site stays in sync
+
+Each [signer page](/docs/signers/raspberry-qr/) carries its own
+capability list in MDX frontmatter, mirrored from the upstream JSON.
+The `requiredText` frontmatter array drives a build-time validator
+that fails the build if a safety-contract phrase is missing from the
+rendered HTML. Drift between this site and the spec is therefore
+caught in CI.
+
+## Where to read it
+
+- Live per solution: any [signer page](/docs/signers/raspberry-qr/) +
+  its inline feature matrix component.
+- Raw JSON: [`vectors/features/signer-feature-matrix-v0.json`](https://github.com/nSealr/specs).
+- Conformance vectors: under `vectors/` in the same repo.

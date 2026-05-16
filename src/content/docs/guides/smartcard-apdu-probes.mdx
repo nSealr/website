@@ -1,0 +1,73 @@
+---
+title: 'Smartcard APDU probes'
+description: 'Drive the JavaCard/NFC signer simulator (and real readers, when available) with the nsealr-smartcard CLI.'
+section: 'guides'
+order: 4
+updatedAt: 2026-05-16
+status: 'draft'
+---
+
+import Callout from '~/components/Callout.astro';
+
+The smartcard signer is the display-less custody line. Today it ships
+with a secp256k1-backed **simulator** plus a CLI that exchanges short
+APDUs with either the simulator or a real PC/SC reader when one is
+attached.
+
+<Callout variant="warn" title="No trusted review or real-card compatibility claim">
+  The smartcard alone cannot show what it is signing — it has no
+  display. Real signing on this line requires an external review
+  acknowledgement (`external-review-acknowledgement-v0`). No claim of
+  Satochip / NostrKey / generic JavaCard real-card compatibility is
+  made yet.
+</Callout>
+
+## Install
+
+The smartcard tools live in
+[`nSealr/smartcard`](https://github.com/nSealr/smartcard).
+
+```sh
+git clone https://github.com/nSealr/smartcard
+cd smartcard
+make setup
+```
+
+## Simulator: `GET_PUBLIC_KEY`
+
+The simulator returns deterministic x-only public keys for fixture
+seeds.
+
+```sh
+$ nsealr-smartcard simulate get-public-key --seed-id 0
+04a1b2…  (x-only, 32 bytes)
+```
+
+## Simulator: `SIGN_EVENT_ID`
+
+The simulator signs a 32-byte event id with the simulator's secp256k1
+keys. The signature is BIP-340 and verifiable against the shared
+fixtures.
+
+```sh
+$ nsealr-smartcard simulate sign-event-id \
+    --seed-id 0 \
+    --event-id 9f0c…2a
+3045…  (BIP-340 signature)
+```
+
+## PC/SC probe (when a reader is connected)
+
+The same CLI can drive a real reader via `pyscard`. PC/SC commands
+fail clearly when `pyscard` or a reader is unavailable.
+
+```sh
+$ nsealr-smartcard probe get-public-key
+ERROR: pyscard not installed, or no reader detected.
+```
+
+## Status words
+
+Smartcard responses carry deterministic status words defined by
+`smartcard-apdu-v0`. The companion / external reviewer compares them
+against the shared rejection vectors in `nSealr/specs`.

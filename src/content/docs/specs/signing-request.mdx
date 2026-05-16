@@ -1,0 +1,70 @@
+---
+title: 'Signing request v0'
+description: 'Wire format and limits of a v0 nSealr signing request — what the companion sends to every signer solution.'
+section: 'specs'
+order: 1
+updatedAt: 2026-05-16
+---
+
+The `signing-request-v0` contract defines the request envelope every
+signer solution accepts. It is **transport-neutral**: the same v0
+object travels over QR, serial, APDU, or NIP-46 bridge.
+
+## Shape
+
+```json
+{
+  "spec": "nsealr/signing-request/v0",
+  "id": "01HXY…",
+  "signer": { "pubkey": "<32-byte x-only hex>" },
+  "event_template": {
+    "kind": 1,
+    "created_at": 1714838400,
+    "content": "hello",
+    "tags": [["t", "intro"]]
+  },
+  "review_context": {
+    "client": "nostr-client/0.1.0",
+    "route": "default"
+  }
+}
+```
+
+- **`id`** — opaque request id used in approval transcripts and to bind
+  serial captures and detail-page renders. ULID or compatible.
+- **`signer.pubkey`** — the expected signer public key. The signer
+  refuses to sign if its own pubkey does not match.
+- **`event_template`** — the canonical NIP-01 fields. The signer
+  computes the event id deterministically from the template, plus
+  `signer.pubkey` and `kind`/`created_at`/`tags`/`content`.
+- **`review_context`** — annotations that surface on the review screen
+  but do not affect signing. Bound to `approval_digest`.
+
+## Implementation limits
+
+The companion enforces shared `implementation-limits-v0` before the
+request reaches the signer:
+
+- Max event size.
+- Max tag count and tag length.
+- Allowed `kind` ranges per route.
+- Unicode normalisation rules for `content`.
+
+Oversized, malformed, or unsupported requests are **rejected before**
+review, approval, signing, or transport output. This keeps the signer
+firmware path linear.
+
+## Invalid vectors
+
+`nSealr/specs` ships a corpus of **invalid vectors** that every
+solution must reject. The companion exposes them through
+`nsealr fixture verify` for round-trip testing.
+
+## Cross-references
+
+- The signed response that pairs with this request: see
+  [Event canonicalization](/docs/specs/event-canonicalization/).
+- Transport-specific framing: [QR envelope](/docs/specs/qr-envelope/),
+  [Transports overview](/docs/system/transports/).
+- Per-solution implementation status:
+  [Signer feature matrix](/docs/specs/feature-matrix/).

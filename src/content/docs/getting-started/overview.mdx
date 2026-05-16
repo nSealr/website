@@ -1,33 +1,46 @@
 ---
 title: 'Overview'
-description: 'What nSealr is, who it is for, and why open hardware signing matters for Nostr.'
+description: 'What nSealr is, who it is for, and how a signing request flows from client to signer.'
 section: 'getting-started'
 order: 1
-updatedAt: 2026-05-15
+updatedAt: 2026-05-16
 ---
 
 **nSealr** is a non-profit, open-source program for Nostr signing devices.
 It is not a closed hardware wallet product. The shared shape is one
-companion plus five signer solutions, with shared specs and build
-documentation in `nSealr/specs`, `nSealr/hardware`, and per-solution
-firmware repos.
+**companion** plus **five signer solutions**, with shared specs and
+build documentation in
+[`nSealr/specs`](https://github.com/nSealr/specs),
+[`nSealr/hardware`](https://github.com/nSealr/hardware), and per-solution
+firmware repositories.
 
-## Why
+## Why hardware signing for Nostr?
 
-Private keys for Nostr accounts should not live in ordinary clients.
-Hardware signers raise the bar: secrets stay inside a device with an
-explicit trust boundary, signing requires explicit user review or
-explicit policy, and every successful response is verified by an
-untrusted companion before reaching a relay.
+A Nostr account is just a keypair. Whoever holds the secret key can
+speak as you, forever, with no recovery path. Where the key lives is
+the only honest answer to "is this account safe?". A hardware signer
+moves the answer from "everywhere a program can read it" to "inside a
+device, behind an explicit user gesture".
 
-## What this site is
+See the [Why a hardware signer](/blog/2026-05-15-why-hardware-signer-for-nostr/)
+blog post for the long-form argument.
 
-- **/system** — product shape and the five families.
-- **/docs** — guides, signer status pages, specs reference, security.
-- **/blog** — release notes, research, tutorials, news.
-- **/security** — trust boundaries and current safety contracts.
+## What this site covers
+
+- **[Getting Started](/docs/getting-started/overview/)** — what you're reading: what nSealr is, the signing flow, a glossary.
+- **[System](/docs/system/product-shape/)** — product shape, companion surfaces, transports.
+- **[Guides](/docs/guides/build-raspberry-qr-vault/)** — hands-on build, flash, and verify walkthroughs.
+- **[Signers](/docs/signers/raspberry-qr/)** — per-solution status pages with the capability matrix.
+- **[Specs & Reference](/docs/specs/event-canonicalization/)** — protocol contracts: request format, QR envelope, transports.
+- **[Security](/docs/security/trust-boundaries/)** — trust boundaries, threat model, safety contracts.
 
 ## Pre-production
 
-No part of this program currently makes a production security claim. See
-[the security page](/security/) for the contracts the site enforces today.
+No part of this program currently makes a production security claim.
+Real `sign_event` is **`signing_disabled`** on every prototype firmware
+until camera, display, button, provisioning, and secure-boot gates pass
+independently.
+
+See the [trust boundaries page](/docs/security/trust-boundaries/) for the
+contracts the site enforces today, and the [glossary](/docs/getting-started/glossary/)
+for the meaning of `approval_digest`, `signing_disabled`, and friends.

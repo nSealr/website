@@ -16,7 +16,7 @@ const blog = defineCollection({
   })
 });
 
-const DOC_SECTIONS = ['getting-started', 'guides', 'signers', 'specs', 'security'] as const;
+const DOC_SECTIONS = ['getting-started', 'system', 'guides', 'signers', 'specs', 'security'] as const;
 
 const docs = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/docs' }),

@@ -1,0 +1,63 @@
+---
+title: 'Verify a signed event'
+description: 'Use the companion to re-verify a signed Nostr event before broadcasting it.'
+section: 'guides'
+order: 3
+updatedAt: 2026-05-16
+status: 'draft'
+---
+
+import Callout from '~/components/Callout.astro';
+
+The companion verifies every signed response before returning it to
+the calling client. You can also run that verification standalone — for
+audit, for bring-up, or to validate output from a third-party signer.
+
+## Inputs
+
+- `req.json` — the v0 signing request the device received.
+- `resp.json` — the signed response the device produced.
+
+Both formats are in [`nSealr/specs`](https://github.com/nSealr/specs)
+under `examples/`.
+
+## Run
+
+```sh
+$ nsealr verify --request req.json --response resp.json
+✓ event id matches BIP-340 signature
+✓ approval_digest matches reviewed material
+✓ public key matches signer descriptor
+```
+
+Each check corresponds to a contract:
+
+| Check | Contract |
+|-------|----------|
+| Event id matches signature | `nostr-sign-event-bip340-v0` |
+| Approval bound to reviewed material | `approval-digest-v0` |
+| Response shape & error semantics | `signed-response-verification-v0` |
+
+## What it rejects
+
+- Signatures that are mathematically valid but cover a different
+  canonical serialization than the request claimed.
+- Responses whose `approval_digest` does not reproduce the digest of
+  the reviewed material.
+- Responses with a public key that does not match the declared signer.
+- Disabled-signing firmware returning a "would-have-signed" stub —
+  that path is treated as a deterministic non-signing decision, not a
+  signed event.
+
+<Callout variant="warn" title="Verification, not trust">
+  This tool verifies that the bytes are internally consistent. It does
+  not certify the signer device itself. For pre-production firmware
+  (`signing_disabled`), production secrets should still stay offline.
+</Callout>
+
+## Companion-side, automatic
+
+When a signed response flows back through `nsealr route` (or any other
+companion surface), the same verification runs **before** the response
+reaches the client. A failed verification is fatal — the client never
+sees the signature.

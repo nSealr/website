@@ -1,0 +1,85 @@
+---
+title: 'Companion'
+description: 'Host-side, secretless software that routes signing requests and verifies responses.'
+section: 'system'
+order: 2
+updatedAt: 2026-05-16
+---
+
+The **companion** is the host-side piece of every nSealr signing flow.
+It is **secretless**: it never holds private keys, never decides what
+gets signed in your name, and never owns the policy. It does the
+plumbing — and verifies the answer.
+
+## Responsibilities
+
+1. **Request construction** — given an event template from a Nostr client
+   or SDK, build a v0 signing request, normalize fields, and enforce the
+   shared implementation limits (max event size, max tag count, etc.).
+2. **Transport** — move the request to the active signer over QR, USB
+   serial, smartcard APDUs, or NIP-46 bridged payloads. Each transport
+   has its own bounded framing and integrity checks.
+3. **Policy proposal** — for routes that allow scoped automation, the
+   companion **proposes** policy to the signer; it does not enforce
+   policy on its own.
+4. **Response verification** — every signed response is checked against
+   `nSealr/specs` fixtures: signature math (BIP-340 / secp256k1), event
+   id, public key, and `approval_digest` consistency.
+5. **Audit export** — request, displayed material, approval transcript,
+   and signed output can be exported for offline review.
+
+## Surfaces
+
+Every surface is a thin shell around the same packages.
+
+### `nsealr` CLI
+
+The default surface. Used for bring-up, integration tests, and offline
+verification.
+
+```sh
+$ nsealr request --kind 1 --content "hello"   # build a v0 request
+$ nsealr verify --request req.json --response resp.json
+✓ approval_digest matches reviewed material
+✓ event id matches BIP-340 signature
+```
+
+Subcommands also include `nsealr nip46 decide` (already-decrypted
+payload policy check) and `nsealr serial-line exchange` (one-shot
+local USB-serial bring-up).
+
+### npm SDK
+
+`@nsealr/sdk` exposes the same building blocks as the CLI to any
+TypeScript / JavaScript host. Used by the extension, app, and service.
+
+### Browser extension
+
+A NIP-07-compatible extension that delegates `signEvent` to the
+companion, which routes to the active signer. Never holds keys.
+
+### Local app
+
+A desktop UI for users who want a visual approval queue plus signer
+selector. Wraps the local service.
+
+### Local service
+
+Background daemon. The extension and app talk to it over an authenticated
+local socket — keeps the heavy lifting (transports, verification) in one
+place.
+
+### NIP-46 bridge
+
+Converts **already-decrypted** NIP-46 requests into standard nSealr
+signing requests. The bridge does not implement relay sessions or
+encryption — that is intentional: the companion stays a secretless
+router.
+
+## What the companion does **not** do
+
+- It does **not** hold private keys, ever, for any solution.
+- It does **not** present a trusted review screen. The review screen
+  lives on the signer (where the signer has one).
+- It does **not** decide policy autonomously. Even when scoped
+  automation is configured, the signer is the one that enforces it.

@@ -1,0 +1,61 @@
+---
+title: 'Transports'
+description: 'QR, USB serial, smartcard APDUs, NIP-46 bridge — bounded framing on every channel.'
+section: 'system'
+order: 3
+updatedAt: 2026-05-16
+---
+
+A transport carries a v0 signing request from the companion to a signer
+and the signed response back. Every transport contract in
+`nSealr/specs` enforces **explicit bounds and integrity** before the
+decoded payload reaches request validation — so a hostile or noisy
+channel fails closed.
+
+## QR transport (`nsealr1`)
+
+Used by stateless QR vault solutions (Raspberry/Pi, ESP32 QR).
+
+- **`nsealr1:`** — single static QR for short requests.
+- **`nsealr1a:`** — animated QR, chunked with explicit bounds and
+  integrity checks, reassembled by the signer before validation.
+- **`qr-response-v0`** — signed event or deterministic error, encoded
+  for host verification without exposing secret material.
+
+See [QR envelope reference](/docs/specs/qr-envelope/).
+
+## Serial / USB
+
+Used by ESP32 USB/NIP-46 signer.
+
+- Bounded frames with explicit size limits, checksums, and
+  deterministic parse errors.
+- `nsealr serial-line exchange` (companion CLI) does a one-shot local
+  bring-up: it sends a fixture and prints whatever the device returns.
+- **Request-bound capture checks** match every captured serial frame to
+  the originating request id, so a delayed or out-of-band frame can
+  never be confused with the current exchange.
+
+## NIP-46 bridge
+
+The companion accepts already-decrypted NIP-46 payloads via
+`nsealr nip46 decide`. The bridge:
+
+- Validates the payload against the `nip46-decrypted-bridge-v0`
+  contract.
+- Converts it into a standard nSealr signing request.
+- Either returns a deterministic non-signing decision or hands the
+  request to the active signer.
+
+What the bridge does **not** do: relay sessions, encryption,
+key derivation. Those live outside the secretless companion boundary.
+
+## Smartcard APDUs
+
+Used by the JavaCard/NFC smartcard signer.
+
+- Versioned short APDUs with deterministic status words.
+- Proprietary commands `GET_PUBLIC_KEY` and `SIGN_EVENT_ID`.
+- **No trusted-review claim from the card alone** — an external
+  reviewer must acknowledge what is being signed before the APDU
+  reaches the card.

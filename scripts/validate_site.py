@@ -4,7 +4,7 @@
 Asserts that:
   * Required home strings appear on dist/index.html.
   * Each signer family page contains its declared `requiredText` phrases.
-  * The /security/ page contains the safety-contract phrases.
+  * The /docs/security/trust-boundaries/ page contains the safety-contract phrases.
   * No forbidden production claims appear anywhere in dist/.
   * No forbidden /vault repository link appears anywhere in dist/.
 """
@@ -127,9 +127,9 @@ def validate_home(dist: Path) -> None:
 
 
 def validate_security(dist: Path) -> None:
-    html = read(dist / "security" / "index.html")
-    assert_contains_all(html, SECURITY_REQUIRED_TEXT, "/security/")
-    assert_forbids_all(html, FORBIDDEN_CLAIMS, "/security/")
+    html = read(dist / "docs" / "security" / "trust-boundaries" / "index.html")
+    assert_contains_all(html, SECURITY_REQUIRED_TEXT, "/docs/security/trust-boundaries/")
+    assert_forbids_all(html, FORBIDDEN_CLAIMS, "/docs/security/trust-boundaries/")
 
 
 def validate_signers(dist: Path) -> None:

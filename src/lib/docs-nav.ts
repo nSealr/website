@@ -1,8 +1,9 @@
 import { getCollection } from 'astro:content';
 
-export const DOC_SECTION_ORDER = ['getting-started', 'guides', 'signers', 'specs', 'security'] as const;
+export const DOC_SECTION_ORDER = ['getting-started', 'system', 'guides', 'signers', 'specs', 'security'] as const;
 export const DOC_SECTION_LABEL: Record<typeof DOC_SECTION_ORDER[number], string> = {
   'getting-started': 'Getting Started',
+  'system': 'System',
   'guides': 'Guides',
   'signers': 'Signers',
   'specs': 'Specs & Reference',

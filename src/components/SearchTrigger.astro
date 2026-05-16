@@ -109,6 +109,14 @@
   }
   .search-modal__results :global(.pagefind-ui__form::before) {
     background-color: var(--accent-soft) !important;
+    transition: opacity var(--tx-fast);
+  }
+  /* Hide the magnifier icon when the input has content so it doesn't overlap text. */
+  .search-modal__results :global(.pagefind-ui__form:has(.pagefind-ui__search-input:not(:placeholder-shown))::before) {
+    opacity: 0 !important;
+  }
+  .search-modal__results :global(.pagefind-ui__form:has(.pagefind-ui__search-input:not(:placeholder-shown)) .pagefind-ui__search-input) {
+    padding-left: var(--space-8) !important;
   }
   .search-modal__results :global(.pagefind-ui__search-input) {
     background: var(--bg) !important;

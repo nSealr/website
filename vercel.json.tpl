@@ -4,7 +4,12 @@
   "buildCommand": "pnpm run build",
   "installCommand": "pnpm install --frozen-lockfile",
   "outputDirectory": "dist",
-  "redirects": [],
+  "redirects": [
+    { "source": "/system",  "destination": "/docs/system/product-shape/",   "permanent": false },
+    { "source": "/system/", "destination": "/docs/system/product-shape/",   "permanent": false },
+    { "source": "/security",  "destination": "/docs/security/trust-boundaries/", "permanent": false },
+    { "source": "/security/", "destination": "/docs/security/trust-boundaries/", "permanent": false }
+  ],
   "headers": [
     {
       "source": "/(.*)",

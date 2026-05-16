@@ -1,0 +1,100 @@
+---
+title: 'Safety contracts at a glance'
+description: 'Every safety contract the project enforces today, with a one-line meaning and the source-of-truth pointer.'
+section: 'security'
+order: 3
+updatedAt: 2026-05-16
+---
+
+import Callout from '~/components/Callout.astro';
+
+These are the contracts the site, the firmware, and the companion all
+hold each other to. Names are stable; meanings are tied to spec
+vectors.
+
+<Callout variant="warn" title="Pre-production">
+  Contracts being satisfied is necessary but **not sufficient** for a
+  production claim. Real `sign_event` remains `signing_disabled` on
+  every prototype firmware until secure boot, flash encryption, debug
+  lock, provisioning, and recovery gates pass independently.
+</Callout>
+
+## Review & approval
+
+**`approval_digest`** — `approval-digest-v0`
+: Deterministic hash over the **exact** canonical material the user
+  reviewed. The local approval is bound to this digest; the signer
+  refuses to emit a signature whose serialization does not reproduce
+  it. See the [approval_digest deep-dive](/blog/2026-05-15-approval-digest-bind-review-to-signature/).
+
+**Universal event review** — `trusted-review-v0` + `review-detail-pages-v0`
+: Every event kind uses the same structured review (kind, created_at,
+  signer author, complete content, complete tags, request id,
+  approval_digest). Long fields surface through deterministic detail
+  pages.
+
+**Physical approval** — `physical-approval-v0`
+: A real signing decision requires an intentional local gesture
+  distinct from navigation, connection, or request receipt.
+
+**Manual-only policy** — `manual-only-approval-policy-v0`
+: Default for QR vault solutions: no automated signing grants, ever.
+
+**Scoped policy automation** — `scoped-policy-automation-v0`
+: Optional, off by default. Limited to explicit account, route,
+  method, kind, client, time, and revocation policy. Unknown or denied
+  cases return deterministic non-signing decisions.
+
+## Signing & verification
+
+**`signing_disabled`**
+: Real `sign_event` is intentionally blocked on prototype firmware
+  until hardening gates pass. Disabled-signing firmware can still
+  exercise review and approval for evidence collection.
+
+**Nostr / BIP-340 signing** — `nostr-sign-event-bip340-v0`
+: Produces a NIP-01 event id and a BIP-340 Schnorr signature over
+  secp256k1, using the approved event template and the signer public
+  key.
+
+**Response verification** — `signed-response-verification-v0`
+: The host (companion) verifies signed event id, public key,
+  signature, and approved-template equivalence **before** accepting
+  device output.
+
+## Custody
+
+**Stateless session custody** — `stateless-session-custody-v0`
+: Secret material exists **only in RAM** for the current session and
+  is not persisted by the device. Required for QR vaults; forbidden
+  for persistent-secret solutions.
+
+**Persistent secret custody** — `persistent-secret-custody-v0`
+: Long-lived secret material lives inside the defined custody
+  boundary and never exports it through normal signing flows.
+
+**External review acknowledgement** — `external-review-acknowledgement-v0`
+: Display-less custody (smartcards) requires explicit acknowledgement
+  on a trusted external reviewer **before** the APDU is sent.
+
+## Transports
+
+- `qr-envelope-static-v0` and `qr-envelope-animated-v0` — QR request framing.
+- `qr-response-v0` — signed-event QR response format.
+- `serial-usb-transport-v0` — bounded USB / serial frames.
+- `nip46-decrypted-bridge-v0` — already-decrypted NIP-46 payload conversion.
+- `smartcard-apdu-v0` — versioned short APDUs with deterministic status words.
+
+## Hardening (target for production claims)
+
+**Firmware boot hardening** — `firmware-boot-hardening-v0`
+: Defines boot, flash, debug, provisioning, and recovery gates.
+  **Required** for the ESP32 USB/NIP-46 line before any production
+  signing claim; under research for the custom hardware-wallet line.
+
+## Source of truth
+
+- Contract definitions: [`nSealr/specs`](https://github.com/nSealr/specs).
+- Per-solution status: [Signers section](/docs/signers/raspberry-qr/).
+- Conformance vectors: `vectors/` in the same repo.
+- Live cross-check rule: [signer feature matrix](/docs/specs/feature-matrix/).
