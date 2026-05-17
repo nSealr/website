@@ -1,0 +1,128 @@
+---
+title: 'FAQ'
+description: 'Frequently asked questions — what nSealr is for, what it is not, and when (not) to use it.'
+section: 'getting-started'
+order: 5
+updatedAt: 2026-05-17
+---
+
+## What is nSealr in one sentence?
+
+A non-profit, open-source program of **specs, companion software, and
+five signer solutions** so that Nostr signing can happen on hardware
+you can audit, build, and verify — not inside whichever app happens
+to hold your `nsec`.
+
+## Why not just use a browser extension like nos2x or Alby?
+
+Browser extensions are a reasonable upgrade over copy-pasting `nsec`,
+but they still hold the key in software, in a process that touches
+every page you visit. A hardware signer pushes the trust boundary to
+**a device with an explicit user gesture**. If your threat model is
+"any compromised page can sign", an extension does not help. If your
+threat model is "I want to see what I sign on a separate screen",
+you need hardware.
+
+## Why not just use a Trezor / Ledger / SeedSigner?
+
+- **Trezor / Ledger**: their firmware is signing Bitcoin / EVM
+  transactions, not arbitrary Nostr events. Most do not implement
+  BIP-340 Schnorr over Nostr event ids. Some Trezor models can be
+  extended, but it's not a first-class flow.
+- **SeedSigner**: ideologically very close — air-gapped, QR-only,
+  RAM-only, open hardware. nSealr's Raspberry/Pi QR vault is the
+  SeedSigner pattern applied to Nostr events specifically, with
+  shared specs so other solutions can match its behavior.
+
+We borrow from all three. We don't fork any of them.
+
+## Can I use nSealr in production today?
+
+**No.** Real `sign_event` is **`signing_disabled`** on every prototype
+firmware. Until the secure-boot / flash-encryption / debug-lock /
+provisioning / recovery gates land independently per solution, this
+is research and development.
+
+Per-solution maturity is in each [signer page](/docs/signers/raspberry-qr/).
+
+## Why does TROPIC01 keep coming up — and why "unproven"?
+
+TROPIC01 is a secure element being investigated for the custom
+hardware-wallet line. It can do secp256k1 ECDSA off the shelf, but
+**BIP-340 Schnorr over Nostr event ids is not its native primitive
+for production-validated paths**. Until that direct path is
+independently proven, the default research direction is host-MCU
+signing with the secure element used for key wrapping and PIN
+hardening — not direct on-chip Schnorr.
+
+## Why are there five signer solutions instead of one?
+
+Different trust boundaries fit different threat models.
+
+- **QR vaults** (Raspberry/Pi, ESP32): air-gapped, RAM-only,
+  manual-only. Best for "I never want this key online, even briefly".
+- **USB / NIP-46 signer**: a persistent device for daily use, with
+  scoped automation through the companion. Best for "I sign a lot
+  and review most of them".
+- **Smartcard**: display-less custody, external review acknowledgement
+  on a trusted screen. Best for very compact carry hardware.
+- **Custom hardware wallet**: research line for purpose-built
+  persistent-secret hardware. Aspirational today.
+
+A solution shares contracts with the others where applicable — so a
+feature like `approval_digest` behaves identically across all of them
+when present.
+
+## Where do the private keys actually live?
+
+| Solution            | Key location                                            |
+|---------------------|----------------------------------------------------------|
+| Raspberry/Pi QR     | **RAM only**, wiped on power off                         |
+| ESP32 QR            | **RAM only**, wiped on power off                         |
+| ESP32 USB / NIP-46  | Persistent, inside the custody boundary (after gates)    |
+| Smartcard           | Persistent, inside the card                              |
+| Custom HW wallet    | Persistent, secure-element-assisted (research)           |
+
+The **companion** never holds keys. The **client** never sees keys.
+
+## What is `approval_digest`?
+
+A deterministic hash over the exact canonical material the user
+reviewed. The local approval gesture is bound to this digest, and
+the signer refuses to emit a signature whose serialisation does not
+reproduce the same digest. See
+[the deep-dive](/blog/2026-05-15-approval-digest-bind-review-to-signature/).
+
+## What does `signing_disabled` mean?
+
+Prototype firmware exposes the **whole signing flow** — request
+validation, review, approval — but refuses to actually emit a
+BIP-340 signature. It returns a deterministic "signing-disabled"
+decision instead. This lets us collect protocol evidence and CI
+against the contracts without ever putting a real signing path
+on hardware that hasn't passed hardening gates.
+
+## Why are docs and code in different repos?
+
+To make every signer line auditable independently. The website is
+documentation; the hardware lives in `nSealr/raspberry`,
+`nSealr/esp32`, `nSealr/smartcard`, `nSealr/hardware`; the spec is
+`nSealr/specs`. A contributor can take any one of these without
+cloning everything.
+
+## Can the companion sign things on my behalf without asking?
+
+No — the companion is **secretless**. It can propose policy to a
+signer (for the USB/NIP-46 line), but the **signer** enforces the
+policy and a signing decision still requires a deliberate local
+gesture (or, for smartcard, an external review acknowledgement).
+The companion physically cannot sign anything: it doesn't have a key.
+
+## How do I report a security issue?
+
+Open an issue on the relevant repo, or contact the
+[GitHub organisation](https://github.com/nSealr). For pre-disclosure,
+please use a private security advisory on GitHub. The project does
+not yet make a production security claim, so most issues during
+this phase are functional / contract bugs — but security reports
+are still welcome.

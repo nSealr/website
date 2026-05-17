@@ -1,0 +1,97 @@
+---
+title: 'Serial / USB transport'
+description: 'Bounded USB or serial frames with explicit size limits, checksums, and deterministic parse errors — used by the ESP32 USB/NIP-46 signer.'
+section: 'specs'
+order: 4
+updatedAt: 2026-05-17
+---
+
+The `serial-usb-transport-v0` contract defines how a v0 signing
+request travels between the companion and a USB-connected signer.
+It exists for the same reason every other transport contract does:
+to make sure a hostile, noisy, or malformed channel **fails closed
+before** anything else runs.
+
+## Frame shape
+
+A serial frame carries one of:
+
+- A complete signing request payload (single-frame variant).
+- A chunk of a multi-frame request (when the payload exceeds the
+  single-frame budget).
+- A signed response or deterministic error.
+
+Each frame has:
+
+| Field        | Purpose |
+|--------------|---------|
+| Magic bytes  | Identifies the frame as `nsealr-serial-v0` |
+| Frame length | Bounded by the contract; oversized frames are rejected |
+| Request id   | Binds the frame to a specific request |
+| Chunk index `i`, total `n` | For multi-frame payloads |
+| Payload      | CBOR-encoded v0 object |
+| CRC          | Per-frame integrity |
+
+The signer **must** reject any frame whose:
+
+- Magic bytes do not match.
+- Length exceeds the contract bound.
+- CRC fails.
+- `request_id` is not currently the active exchange.
+- Chunk index is out of `[0, n)`, or duplicates a previously-received
+  chunk with mismatching bytes.
+
+## Request-bound capture checks
+
+Frames are captured by tools like `nsealr serial-line exchange` for
+audit and smoke evidence. Every captured frame is paired with the
+**originating request id** — a delayed or out-of-band frame can
+never be confused with the current exchange.
+
+```sh
+$ nsealr serial-line exchange --port /dev/cu.usbserial-XXXX --request req.json
+↗ frame[0/1] request_id=01HXY...
+↘ frame[0/1] request_id=01HXY...
+✓ request-bound capture matches
+```
+
+If the captured `request_id` does not match the request the host
+intended to send, the exchange aborts.
+
+## Deterministic errors
+
+Every failure mode has a fixed error code. The companion can map a
+malformed device response to a typed error without parsing reasons —
+the response is a `qr-response-v0`-shaped error envelope, or in the
+serial case a typed status frame.
+
+| Error               | When |
+|---------------------|------|
+| `OVERSIZED_FRAME`   | Length exceeded the contract bound |
+| `BAD_CRC`           | Per-frame CRC failed |
+| `WRONG_REQUEST_ID`  | Frame did not belong to the active exchange |
+| `BAD_CHUNK_INDEX`   | Out-of-range or mismatched duplicate |
+| `TIMEOUT`           | The exchange did not complete within budget |
+| `DEVICE_BUSY`       | The signer is in the middle of another exchange |
+
+A signed event response is **never** mixed with an error response.
+Either the exchange completes successfully, or it returns a typed
+error.
+
+## What it does **not** cover
+
+- **Encryption on the wire**: serial transport is not encrypted. The
+  USB path is assumed to be host-local; threat model is on
+  [Trust boundaries](/docs/security/trust-boundaries/).
+- **Authentication of the host**: the signer does not authenticate
+  the companion. Authentication is contracted by the persistent-secret
+  custody side (`persistent-secret-custody-v0`), not by the wire.
+
+## See also
+
+- [Transports overview](/docs/system/transports/) — how serial fits
+  alongside QR, smartcard APDU, and NIP-46 bridge.
+- [Signing request v0](/docs/specs/signing-request/) — the request
+  shape that's carried inside the frames.
+- [`nSealr/specs`](https://github.com/nSealr/specs) under
+  `vectors/serial/` — the conformance corpus.

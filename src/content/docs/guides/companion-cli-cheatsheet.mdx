@@ -1,0 +1,93 @@
+---
+title: 'Companion CLI cheatsheet'
+description: 'Every nsealr subcommand at a glance — request construction, transport, verification, audit.'
+section: 'guides'
+order: 5
+updatedAt: 2026-05-17
+---
+
+Quick reference for `nsealr`. The CLI is one of several
+[companion surfaces](/docs/system/companion/) — every other surface
+(SDK, extension, app, service, NIP-46 bridge) wraps the same
+packages.
+
+## Requests
+
+```sh
+# Build a v0 signing request from an event template
+nsealr request --kind 1 --content "hello" > req.json
+nsealr request --kind 1 --content-file note.md --tag t:intro > req.json
+
+# Validate a request against the v0 contract + implementation limits
+nsealr request validate --file req.json
+```
+
+## Routing
+
+```sh
+# Send a request to a specific signer route
+nsealr route --request req.json --signer raspberry-qr
+nsealr route --request req.json --signer esp32-usb --port /dev/cu.usbserial-XXXX
+nsealr route --request req.json --signer smartcard
+```
+
+## Verification
+
+```sh
+# Verify a signed response against its request
+nsealr verify --request req.json --response resp.json
+
+# Verify any spec fixture (request, response, review-frame, ...)
+nsealr fixture verify --route raspberry-qr --fixture sign-event-happy-path
+nsealr fixture verify --route esp32-usb --fixture sign-event-disabled
+```
+
+## Transports
+
+```sh
+# One-shot USB-serial bring-up — request-bound capture checks
+nsealr serial-line exchange --port /dev/cu.usbserial-XXXX --request req.json
+
+# NIP-46 bridge: convert an already-decrypted payload into a v0 request
+# (or return a deterministic non-signing decision)
+nsealr nip46 decide --payload-file decrypted.json
+```
+
+## Audit
+
+```sh
+# Export the full review transcript: request, displayed material,
+# approval digest, signed output (if any), verification result.
+nsealr audit export --request req.json --response resp.json > audit.json
+```
+
+## Information
+
+```sh
+nsealr --version
+nsealr --help
+nsealr signers list           # show known signer routes
+nsealr contracts list         # show contract_ids the build knows about
+```
+
+## Exit codes
+
+| Code | Meaning |
+|------|---------|
+| `0`  | Success / verified |
+| `2`  | Bad input (malformed request or response) |
+| `3`  | Verification failure (signature, digest, or pubkey mismatch) |
+| `4`  | Transport error (timeout, parse, capture mismatch) |
+| `5`  | Policy rejection (signer returned a deterministic non-signing decision) |
+| `6`  | Pre-condition not met (e.g. `signing_disabled`) |
+
+The companion never returns `0` for a partially-verified response.
+Either every check passes or it bails out with a typed error.
+
+## See also
+
+- [Using a signer](/docs/getting-started/use/) — the end-to-end flow.
+- [Verify a signed event](/docs/guides/verify-signed-event/) — what
+  verification actually checks.
+- [Companion surfaces](/docs/system/companion/) — the npm SDK, the
+  extension, and friends reuse all of the above.

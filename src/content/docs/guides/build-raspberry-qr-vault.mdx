@@ -1,50 +1,140 @@
 ---
 title: 'Build a Raspberry/Pi QR vault'
-description: 'Assemble and run the SeedSigner-style stateless QR vault for Nostr signing on a Pi Zero kit.'
+description: 'Assemble and run the SeedSigner-style stateless QR vault for Nostr signing on a Pi Zero kit — from BOM to first signed fixture.'
 section: 'guides'
 order: 1
-updatedAt: 2026-05-15
+updatedAt: 2026-05-17
 status: 'draft'
 ---
 
 import Callout from '~/components/Callout.astro';
 
+This guide takes you from "I have a Pi Zero kit" to "the device
+returned a signed fixture event the companion verified". It tracks
+the prototype build — the device is **not** ready for production
+secrets yet.
+
 <Callout variant="warn" title="Pre-production">
-  This guide tracks the prototype build. Do not put production secrets
-  onto current hardware. Current maturity is in the
-  [signer family page](/docs/signers/raspberry-qr/).
+  Do not put production secrets onto current hardware. Real
+  `sign_event` works for fixture seeds but the secure-boot,
+  flash-encryption, and provisioning gates have not landed yet.
+  Current maturity is on the [Raspberry/Pi signer page](/docs/signers/raspberry-qr/).
 </Callout>
+
+## Prerequisites
+
+- A Linux/macOS workstation with `git`, `python3`, `make`.
+- A microSD card writer.
+- About 30 minutes for first-time setup.
 
 ## Bill of materials
 
-Follow the **Raspberry/Pi kit requirements** in
-[`nSealr/hardware`](https://github.com/nSealr/hardware): Pi Zero-class
-board, Pi/ZeroCam OV5647, Waveshare ST7789 240×240 LCD HAT, GPIO
-joystick/buttons, removable microSD.
+Follows the **Raspberry/Pi kit requirements** in
+[`nSealr/hardware`](https://github.com/nSealr/hardware). For one
+device:
+
+| Part                                          | Notes |
+|-----------------------------------------------|-------|
+| Pi Zero-class board                           | Pi Zero W is fine — wireless is **disabled** by the OS profile. |
+| Pi/ZeroCam OV5647 camera + ribbon             | The camera that fits the Pi Zero connector. |
+| Waveshare-compatible ST7789 240×240 LCD HAT   | The trusted display. |
+| GPIO joystick / buttons                       | Five-way joystick + side buttons, per the validated GPIO map. |
+| Removable microSD                             | Class 10, ≥ 8 GB. Removability matters — see the OS profile. |
+| USB power source                              | Any 5V/2A. Battery pack works for air-gapped use. |
+
+Other Pi variants (3/4/5) can be **development or accessibility
+targets** later if they preserve the same offline-QR, local-review,
+physical-approval, RAM-only-custody boundary.
 
 ## OS profile
 
-Use the **Raspberry/Pi OS profile** described in `nSealr/hardware`:
-removable boot media, disabled or absent wireless, RAM-only session
-custody, no swap during signing, no remote access during signing, and no
-persistent signing-secret storage.
+Follow the **Raspberry/Pi OS profile** in `nSealr/hardware`:
 
-## Software
+- **Removable boot media** (microSD).
+- **Wireless disabled or absent** at the firmware level.
+- **RAM-only session custody** — no persistent signing-secret storage.
+- **No swap during signing**.
+- **No remote access during signing**.
 
-Clone and bootstrap:
+The profile ships as a minimal SeedSigner-OS-inspired image. Flash it
+to the microSD with `dd` or the imager of your choice.
+
+## Build the software
+
+The Raspberry/Pi-side software lives in
+[`nSealr/raspberry`](https://github.com/nSealr/raspberry).
 
 ```sh
 git clone https://github.com/nSealr/raspberry
 cd raspberry
 make setup
-make ci
+make ci          # repo verification, tests, content lint
 ```
 
+`make ci` is **the** sanity check after a clone — it runs the verifier,
+the unit tests, and the spec fixtures. If something fails here, fix it
+locally before touching hardware.
+
+## First boot
+
+1. Insert the flashed microSD into the Pi Zero.
+2. Connect the camera (camera-connector facing the board).
+3. Connect the ST7789 HAT.
+4. Connect the joystick / buttons per the GPIO map in
+   `nSealr/hardware`.
+5. Power on. The display should show the boot splash and land on the
+   idle screen within a few seconds.
+
+If the display stays black, see [Troubleshooting](#troubleshooting).
+
 ## Sign a fixture event
+
+With the device idle, run on your host workstation:
 
 ```sh
 nsealr-rasp sign-fixture --request specs/vectors/requests/request-v0.json
 ```
 
-The CLI computes the NIP-01 event id, signs BIP-340/secp256k1, and emits
-a `nsealr1:` QR response that the companion can verify.
+Expected output (abridged):
+
+```text
+↗ nsealr1:<base32-payload>
+  (the device should scan this QR — point the camera at the screen,
+   confirm on the display, press OK)
+↘ nsealr1r:<base32-response>
+✓ event id matches BIP-340 signature
+✓ approval_digest matches reviewed material
+```
+
+The CLI computes the canonical NIP-01 event id, signs BIP-340 /
+secp256k1, and emits a `nsealr1:` QR response that the host verifies
+through the same `signed-response-verification-v0` contract used by
+the companion.
+
+## Verify with the companion
+
+```sh
+nsealr verify --request request-v0.json --response response.json
+```
+
+If you see the same two `✓` lines, the device + companion handshake
+is intact.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+|---------|--------------|-----|
+| Display stays black | Wrong HAT pinout, or HAT not seated | Reseat the HAT; verify it's the ST7789 240×240 variant |
+| Camera not detected | Ribbon flipped, or camera not enabled in firmware config | Reseat ribbon (blue side facing the board); enable camera in `config.txt` |
+| `make ci` fails | Toolchain mismatch | `make setup` re-pins versions; on macOS also `xcode-select --install` |
+| Joystick presses ignored | GPIO map mismatch | Double-check the 40-pin map in `nSealr/hardware`; some kits use a different button arrangement |
+| QR not decoded | Glare on the host screen | Lower brightness on the host screen, or move the device 10–15cm away |
+
+## Where to go next
+
+- [Verify a signed event](/docs/guides/verify-signed-event/) — the
+  same verification, standalone.
+- [Raspberry/Pi signer page](/docs/signers/raspberry-qr/) — the live
+  capability matrix.
+- [Trust boundaries](/docs/security/trust-boundaries/) — what the
+  Pi Zero QR vault is and isn't trusted with.

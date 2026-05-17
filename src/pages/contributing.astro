@@ -1,32 +1,134 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
 
+const ROUTES = [
+  {
+    area: 'Protocol & specs',
+    repo: 'nSealr/specs',
+    href: 'https://github.com/nSealr/specs',
+    desc: 'Improve a contract, add invalid vectors, document a corner case in event canonicalization or QR framing. Everything else inherits from here.',
+  },
+  {
+    area: 'Companion (CLI, SDK, extension, app, service)',
+    repo: 'nSealr/companion',
+    href: 'https://github.com/nSealr/companion',
+    desc: 'Add a transport, improve verification, polish the CLI. TypeScript monorepo with shared validation logic.',
+  },
+  {
+    area: 'Raspberry/Pi QR vault',
+    repo: 'nSealr/raspberry',
+    href: 'https://github.com/nSealr/raspberry',
+    desc: 'Python package + CLI. Air-gapped, RAM-only, SeedSigner-style. Hardware adapters welcome.',
+  },
+  {
+    area: 'ESP32 firmware (both lines)',
+    repo: 'nSealr/esp32',
+    href: 'https://github.com/nSealr/esp32',
+    desc: 'C / C++ on ESP-IDF v5+. Real signing stays disabled until hardening gates pass.',
+  },
+  {
+    area: 'Smartcard',
+    repo: 'nSealr/smartcard',
+    href: 'https://github.com/nSealr/smartcard',
+    desc: 'Python APDU codec + simulator. Future JavaCard applet work.',
+  },
+  {
+    area: 'Hardware',
+    repo: 'nSealr/hardware',
+    href: 'https://github.com/nSealr/hardware',
+    desc: 'BOM, KiCad files, enclosures, provisioning jigs.',
+  },
+  {
+    area: 'Research / lab',
+    repo: 'nSealr/lab',
+    href: 'https://github.com/nSealr/lab',
+    desc: 'Threat modelling, status tracking, source-backed notes. Lower bar than code repos.',
+  },
+];
+
 const RULES = [
-  'No production security claim before independent test evidence.',
-  'Shared features behave the same across signer families.',
-  'Display-less smartcards do not provide trusted event review by themselves.',
-  'TROPIC01 is not assumed to directly sign Nostr/BIP-340 until proven.',
+  { rule: 'No production security claim before independent test evidence.', why: 'Words follow vectors. Until the contract has shipped fixtures and an independent run, claims stay scoped to development evidence.' },
+  { rule: 'Shared features behave the same across signer families.', why: 'Parity groups in nSealr/specs are the source of truth. Diverging on a shared contract is a bug, not a feature.' },
+  { rule: 'Display-less smartcards do not provide trusted event review by themselves.', why: 'A card without a screen cannot bind a review it cannot show. external-review-acknowledgement-v0 covers the gap.' },
+  { rule: 'TROPIC01 is not assumed to directly sign Nostr/BIP-340 until proven.', why: 'The default research path is host-MCU signing; the secure element wraps key material and hardens PIN attempts.' },
+  { rule: 'signing_disabled stays the default on every prototype firmware.', why: 'Real signing turns on only after secure-boot / flash-encryption / debug-lock / provisioning / recovery gates pass independently.' },
+  { rule: 'Public surface respects "same-behavior-when-present" wording.', why: 'A user reading two signer pages must come away with the same understanding of what a shared contract does.' },
+];
+
+const PR_CONVENTIONS = [
+  'One change per PR. If you find yourself splitting commits in your head, split the PR.',
+  'Conventional-style commit subjects: feat:, fix:, docs:, test:, chore:, refactor:, build:, ci:.',
+  'Link the spec section or contract_id the change touches (when applicable).',
+  'Update conformance vectors in nSealr/specs in the same PR if behavior changes.',
+  'Make make ci pass locally before pushing. CI mirrors it.',
+  'No skip-hooks, no --force-push on main, no rewriting of merged history.',
 ];
 ---
 <BaseLayout title="Contributing — nSealr" description="How to contribute to nSealr signers, companion, specs, and hardware.">
   <section class="container page">
     <p class="eyebrow">// contributing</p>
-    <h1 class="page__title">Contribute to a signer family or the shared spec.</h1>
-    <ol class="page__list">
-      <li>Pick the repo for the area you want to work on (see <a href="/about/">About</a>).</li>
-      <li>Read its <code>README.md</code> for build / test instructions.</li>
-      <li>Open issues and PRs that preserve the shared <code>contract_id</code> behavior in <a href="https://github.com/nSealr/specs">nSealr/specs</a> when a feature is present on more than one solution.</li>
-    </ol>
+    <h1 class="page__title">Contribute to a signer solution or the shared spec.</h1>
+    <p class="lead">
+      nSealr is a multi-repo program. Pick the area you care about,
+      read its <code>README.md</code>, and open an issue or PR.
+      Everything else hangs off the contracts in
+      <a href="https://github.com/nSealr/specs"><code>nSealr/specs</code></a>.
+    </p>
+
+    <h2 class="page__h2">Where each kind of work lives</h2>
+    <ul class="page__list">
+      {ROUTES.map(r => (
+        <li>
+          <strong>{r.area}</strong> — <a href={r.href}><code>{r.repo}</code></a>. {r.desc}
+        </li>
+      ))}
+    </ul>
 
     <h2 class="page__h2">Ground rules</h2>
+    <p class="muted">These are tied to specific behaviors and exist for specific reasons.</p>
     <ul class="page__list">
-      {RULES.map(r => <li>{r}</li>)}
+      {RULES.map(r => (
+        <li>
+          <strong>{r.rule}</strong>
+          <p class="muted page__why">Why: {r.why}</p>
+        </li>
+      ))}
     </ul>
+
+    <h2 class="page__h2">Dev setup</h2>
+    <ol class="page__list">
+      <li>Clone the repo for the area you want to work on.</li>
+      <li>Run <code>make setup</code> (sets up pinned tool versions; Python venv where applicable; Node 22 + pnpm for TypeScript repos).</li>
+      <li>Run <code>make ci</code> on a clean checkout. If this fails before you touch anything, file an issue.</li>
+      <li>Make your change. Re-run <code>make ci</code>.</li>
+      <li>Open a PR. CI mirrors <code>make ci</code>.</li>
+    </ol>
+
+    <h2 class="page__h2">PR conventions</h2>
+    <ul class="page__list">
+      {PR_CONVENTIONS.map(p => <li>{p}</li>)}
+    </ul>
+
+    <h2 class="page__h2">First issues</h2>
+    <p>
+      Each repo carries a <code>good first issue</code> label. Documentation
+      fixes — typo, broken link, missing cross-reference, an explanation that
+      should be more obvious — are always welcome and are a good way to learn
+      the contract vocabulary before touching firmware.
+    </p>
+
+    <h2 class="page__h2">Disclosure</h2>
+    <p>
+      Security issues belong in a private GitHub security advisory on the
+      relevant repo. nSealr does not yet make a production security claim,
+      so most issues during this phase are functional / contract bugs —
+      but security reports are still welcome and triaged with priority.
+    </p>
   </section>
 </BaseLayout>
 
 <style>
-  .page { padding-block: var(--space-20); max-width: 800px; }
+  .page { padding-block: var(--space-20); max-width: 880px; }
   .page__title {
     font-family: var(--font-mono);
     color: var(--fg-strong);
@@ -39,5 +141,12 @@ const RULES = [
     font-size: var(--text-3xl);
     margin: var(--space-16) 0 var(--space-6);
   }
-  .page__list { display: grid; gap: var(--space-4); max-width: 70ch; padding-left: 1em; }
+  .lead { font-size: var(--text-xl); }
+  .page__list {
+    display: grid;
+    gap: var(--space-6);
+    max-width: 80ch;
+    padding-left: 1em;
+  }
+  .page__why { font-size: var(--text-base); margin: var(--space-2) 0 0; }
 </style>

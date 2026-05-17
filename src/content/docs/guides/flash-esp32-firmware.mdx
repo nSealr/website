@@ -1,26 +1,52 @@
 ---
 title: 'Flash ESP32 firmware'
-description: 'Build and flash the development firmware for the ESP32-S3 signer line.'
+description: 'Build, flash, and smoke-test the ESP32-S3 development firmware. Real signing stays disabled until hardening gates pass.'
 section: 'guides'
 order: 2
-updatedAt: 2026-05-15
+updatedAt: 2026-05-17
 status: 'draft'
 ---
 
 import Callout from '~/components/Callout.astro';
 
 <Callout variant="warn" title="signing_disabled">
-  The development firmware ships with real `sign_event` disabled until
-  hardening, display, button, and provisioning gates pass. Flashing it
-  on hardware does not unlock production signing.
+  Development firmware ships with real `sign_event` **disabled** until
+  the secure-boot, flash-encryption, debug-lock, provisioning, and
+  recovery gates land. Flashing it on hardware exercises every contract
+  except the BIP-340 signing path itself — perfect for protocol-evidence
+  collection, **not** ready for real keys.
 </Callout>
 
 ## Targets
 
-- ESP32-S3 (display/button) for USB/NIP-46 line.
-- T-Display S3 Pro OV5640 candidate for the stateless QR vault line.
+Two product lines share the same repo (`nSealr/esp32`):
 
-## Build
+| Line                      | Primary board                            | Status |
+|---------------------------|------------------------------------------|--------|
+| ESP32 USB/NIP-46 signer   | LILYGO T-Display S3 (no camera)          | display+button drivers under work |
+| ESP32 Stateless QR Vault  | T-Display S3 Pro OV5640 (camera+display) | pending hardware target |
+
+Both build from the same source tree; the target flag selects
+firmware features.
+
+## Prerequisites
+
+- **ESP-IDF v5+** installed and on your PATH. Follow
+  [ESP-IDF setup](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/get-started/).
+- **`esptool.py`** (ships with ESP-IDF; otherwise `pip install esptool`).
+- A USB-C cable that does **data**, not just power (cheap charge-only
+  cables are a common pitfall).
+- macOS / Linux workstation. Windows works with WSL2 — pass the USB
+  port through with `usbipd-win`.
+
+Quick check:
+
+```sh
+idf.py --version    # → ESP-IDF v5.x.x
+esptool.py version  # → esptool.py vX.Y
+```
+
+## Clone & build
 
 ```sh
 git clone https://github.com/nSealr/esp32
@@ -29,15 +55,93 @@ make setup
 make build TARGET=esp32s3-tdisplay
 ```
 
+The `TARGET` flag corresponds to a board profile in `boards/`. Other
+profiles: `esp32s3-tdisplay-pro-ov5640` (QR vault candidate),
+`esp32-classic-ttgo` (compatibility target).
+
+Build outputs land in `build/<target>/` — the relevant file is
+`firmware.bin`.
+
+## Identify the serial port
+
+| OS      | Typical port                       |
+|---------|------------------------------------|
+| macOS   | `/dev/cu.usbserial-XXXX` or `/dev/cu.usbmodemXXXX` |
+| Linux   | `/dev/ttyUSB0` / `/dev/ttyACM0`    |
+
+Plug the board in and run `ls /dev/cu.*` (macOS) or `dmesg | tail`
+(Linux) to confirm.
+
 ## Flash
 
 ```sh
 make flash TARGET=esp32s3-tdisplay PORT=/dev/cu.usbserial-XXXX
 ```
 
+This wraps `esptool.py` with the right offsets. Typical output:
+
+```text
+Connecting....
+Chip is ESP32-S3 (revision v0.2)
+Writing at 0x00010000... (100 %)
+Hash of data verified.
+Leaving...
+Hard resetting via RTS pin...
+```
+
+If `Connecting...` hangs, hold the BOOT button on the dev board while
+flashing (or strap GPIO0 to GND for breakouts that don't have a button).
+
 ## Smoke evidence
 
-Once flashed, the companion can run **companion-to-device serial smoke**
-and **sign-event-disabled smoke** to confirm the firmware protocol is
-intact. See **firmware protocol evidence** and **Unicode fallback**
-tracking in [`nSealr/esp32`](https://github.com/nSealr/esp32).
+With the firmware flashed, run the companion smoke tests from your
+workstation:
+
+```sh
+# 1. Companion ↔ device serial bring-up
+nsealr serial-line exchange --port /dev/cu.usbserial-XXXX
+# → request-bound capture checks pass
+
+# 2. Sign-event-disabled round-trip
+nsealr fixture verify --route esp32-usb --fixture sign-event-disabled
+# → ✓ approval_digest matches reviewed material
+# → ✓ deterministic "signing_disabled" decision
+```
+
+You should see these in the
+[**firmware protocol evidence**](/docs/security/safety-contracts/) and
+**Unicode fallback** tracking in `nSealr/esp32`. They are the smoke
+evidence — not a production claim.
+
+## Recovery
+
+If the firmware bricks the device, drop to bootloader:
+
+```sh
+esptool.py --port /dev/cu.usbserial-XXXX erase_flash
+make flash TARGET=esp32s3-tdisplay PORT=/dev/cu.usbserial-XXXX
+```
+
+Hold BOOT, tap RESET, release BOOT — board is in bootloader mode and
+will accept any firmware.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+|---------|--------------|-----|
+| `serial.serialutil.SerialException` | Wrong port or permission | `sudo usermod -a -G dialout $USER` on Linux; pick the right `/dev/cu.*` on macOS |
+| `Failed to connect` | Cable is charge-only, or BOOT not held | Swap to a data cable; hold BOOT while flashing |
+| Display flickers / wrong colors | SPI clock too high for the panel revision | Lower `LCD_SPI_FREQ_HZ` in `boards/<target>/Kconfig` |
+| `signing_disabled` despite gates allegedly passing | You're on dev firmware; production target not built yet | Verify the target — `esp32s3-tdisplay` is **always** signing-disabled in this tree |
+| Companion can't see the device | Some USB hubs drop the CDC ACM interface | Plug directly into the host |
+
+## Where to go next
+
+- [ESP32 USB/NIP-46 signer page](/docs/signers/esp32-usb/) — live
+  capability matrix and gates.
+- [ESP32 Stateless QR Vault signer page](/docs/signers/esp32-qr/) —
+  the QR-vault line on the same repo.
+- [Transports overview](/docs/system/transports/) — what the bounded
+  USB / serial frames look like on the wire.
+- [Verify a signed event](/docs/guides/verify-signed-event/) — the
+  same verification once real signing is enabled.

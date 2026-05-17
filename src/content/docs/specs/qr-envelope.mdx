@@ -1,16 +1,101 @@
 ---
 title: 'QR envelope (nsealr1)'
-description: 'Static and animated QR envelopes for stateless signer transport.'
+description: 'Static and animated QR envelopes for stateless signer transport — and the deterministic response format.'
 section: 'specs'
 order: 2
-updatedAt: 2026-05-15
+updatedAt: 2026-05-17
 ---
 
-Stateless QR vaults use two envelope variants:
+Stateless QR vault solutions use QR codes as the **only** transport.
+The envelope contract defines exactly what bytes the device decodes
+before request validation runs, and exactly what bytes the host
+expects back.
 
-- **`nsealr1:`** — single static QR for short signing requests.
-- **`nsealr1a:`** — animated chunked QR with explicit bounds and integrity
-  checks, reassembled by the signer before request validation.
+## Two request variants
 
-Responses use the `qr-response-v0` contract: signed event or deterministic
-error, encoded for host verification without exposing secret material.
+### `nsealr1:` — static
+
+A single QR code that contains a full signing request whose serialised
+length fits in one QR scan.
+
+- URI scheme: `nsealr1:`
+- Payload: base32 (Crockford) of a CBOR-encoded
+  [`signing-request-v0`](/docs/specs/signing-request/).
+- Decoded length: bounded by the v0 implementation limits.
+
+```text
+nsealr1:01HXY...   (base32 payload)
+```
+
+### `nsealr1a:` — animated
+
+For requests that exceed the single-QR budget. The host generates a
+sequence of QR frames, each carrying a chunk plus header metadata.
+The signer reassembles the chunks before request validation runs.
+
+- URI scheme: `nsealr1a:`
+- Each frame carries:
+  - Request id (deterministically derived from the full payload).
+  - Chunk index `i` and total chunk count `n`.
+  - Chunk bytes.
+  - Integrity tag (per-chunk CRC + reassembly hash).
+- The signer accepts frames in any order, refuses duplicate chunks
+  with mismatching bytes, and stops with a deterministic error if the
+  reassembly hash fails.
+
+```text
+nsealr1a:01HXY...:i:n:<chunk>
+```
+
+## Reassembly guarantees
+
+- **Bounded**: max chunk count and max chunk size are part of the
+  contract; the signer rejects frames outside those bounds **before**
+  doing any other work.
+- **Integrity-checked**: per-chunk CRC catches transmission flips;
+  the reassembly hash catches the entire reassembled payload mismatch.
+- **Deterministic errors**: every failure mode (oversized, duplicate
+  mismatch, hash mismatch, timeout) produces a fixed error code that
+  the companion can recognise.
+
+## Response — `qr-response-v0`
+
+A signer response is either a **signed event** or a **deterministic
+error**, never both, never a partial.
+
+```text
+nsealr1r:<base32-cbor-response>
+```
+
+The response carries:
+
+- `request_id` — bound to the original request.
+- `signer.pubkey` — the public key that signed.
+- One of:
+  - `signed_event` — `{ id, sig, pubkey, kind, created_at, tags, content }`.
+  - `error` — a code from a fixed enumeration with a short reason.
+- `approval_digest` — the digest the local approval was bound to.
+
+The host (companion) refuses any response whose `approval_digest`
+does not reproduce the digest of the originally reviewed material —
+see [`approval_digest` deep-dive](/blog/2026-05-15-approval-digest-bind-review-to-signature/).
+
+## What QR transport explicitly does **not** offer
+
+- **Network connectivity**: this is the QR vault line. The device
+  never opens a socket; the host never speaks to the device except
+  through frames on the air-gapped camera/display.
+- **Plaintext key export**: no QR can request a secret-key export.
+- **Push notifications**: every flow is initiated by the user (scan
+  one, scan back).
+
+## See also
+
+- [Event canonicalization](/docs/specs/event-canonicalization/) — the
+  bytes that get signed.
+- [Signing request v0](/docs/specs/signing-request/) — the request
+  envelope before it's encoded into a QR.
+- [Transports overview](/docs/system/transports/) — how QR sits
+  alongside serial, smartcard APDU, and NIP-46 bridge.
+- Conformance vectors: `vectors/qr/` in
+  [`nSealr/specs`](https://github.com/nSealr/specs).

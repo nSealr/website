@@ -1,0 +1,106 @@
+---
+title: 'Quickstart (no hardware)'
+description: 'Five minutes from zero to a verified signed-fixture event — using only the companion and the desktop simulator.'
+section: 'getting-started'
+order: 4
+updatedAt: 2026-05-17
+---
+
+You do not need any hardware to see the signing flow end-to-end. The
+Raspberry/Pi flow has a desktop simulator that signs fixture events,
+and the companion verifies them. This page walks through it.
+
+## What you'll have at the end
+
+- The `nsealr` CLI installed locally.
+- A signed-fixture event you produced yourself.
+- The companion verifying it against the same shared contracts that
+  govern the real hardware path.
+
+## 1. Install the companion CLI
+
+```sh
+git clone https://github.com/nSealr/companion
+cd companion
+make setup
+```
+
+Verify:
+
+```sh
+nsealr --version
+# → nsealr <semver>
+```
+
+## 2. Install the Raspberry/Pi desktop simulator
+
+The Pi software runs on desktop too — it's the same Python package
+with hardware adapters stubbed out.
+
+```sh
+git clone https://github.com/nSealr/raspberry
+cd raspberry
+make setup
+```
+
+## 3. Build a signing request
+
+A v0 signing request is just JSON — see
+[Signing request v0](/docs/specs/signing-request/) for the shape.
+A canned fixture lives in `nSealr/specs/vectors/`.
+
+```sh
+cp ../specs/vectors/requests/request-v0.json req.json
+cat req.json
+# { "spec": "nsealr/signing-request/v0", "id": "01HXY...", ... }
+```
+
+## 4. Sign it with the simulator
+
+```sh
+nsealr-rasp sign-fixture --request req.json --output resp.json
+```
+
+Behind the scenes the simulator:
+
+1. Validates the request against `signing-request-v0` and the v0
+   implementation limits.
+2. Renders the canonical material on a virtual review screen.
+3. Computes `approval_digest`.
+4. Signs BIP-340 / secp256k1 over the NIP-01 event id.
+5. Emits a `qr-response-v0` JSON in `resp.json`.
+
+## 5. Verify with the companion
+
+```sh
+nsealr verify --request req.json --response resp.json
+```
+
+Expected:
+
+```text
+✓ event id matches BIP-340 signature
+✓ approval_digest matches reviewed material
+✓ public key matches signer descriptor
+```
+
+That's the same verifier the production path uses. If any line
+fails, the response is rejected — even if the signature is
+mathematically valid.
+
+## What just happened
+
+- You did not type a private key anywhere.
+- The simulator generated a deterministic fixture key from the
+  fixture seed (`seed-id 0` in shared specs).
+- The companion verified four contracts:
+  `signing-request-v0`, `nostr-sign-event-bip340-v0`,
+  `approval-digest-v0`, `signed-response-verification-v0`.
+
+## Next
+
+- Run the same flow on real hardware:
+  [Build a Raspberry/Pi QR vault](/docs/guides/build-raspberry-qr-vault/).
+- Read the contracts: [Safety contracts at a glance](/docs/security/safety-contracts/).
+- Try the smartcard simulator:
+  [Smartcard APDU probes](/docs/guides/smartcard-apdu-probes/).

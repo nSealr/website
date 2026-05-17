@@ -2,13 +2,28 @@
 import BaseLayout from '~/layouts/BaseLayout.astro';
 
 const REPOS = [
-  { href: 'https://github.com/nSealr/specs', name: 'specs', desc: 'protocol, vectors, signer feature matrix' },
-  { href: 'https://github.com/nSealr/companion', name: 'companion', desc: 'host-side software' },
-  { href: 'https://github.com/nSealr/raspberry', name: 'raspberry' },
-  { href: 'https://github.com/nSealr/esp32', name: 'esp32' },
-  { href: 'https://github.com/nSealr/smartcard', name: 'smartcard' },
-  { href: 'https://github.com/nSealr/hardware', name: 'hardware' },
-  { href: 'https://github.com/nSealr/lab', name: 'lab' },
+  { href: 'https://github.com/nSealr/specs',     name: 'specs',     desc: 'Protocol, conformance vectors, signer feature matrix.' },
+  { href: 'https://github.com/nSealr/companion', name: 'companion', desc: 'Host-side software (CLI, SDK, extension, app, service, NIP-46 bridge).' },
+  { href: 'https://github.com/nSealr/raspberry', name: 'raspberry', desc: 'Raspberry/Pi stateless QR vault software.' },
+  { href: 'https://github.com/nSealr/esp32',     name: 'esp32',     desc: 'ESP32-S3 firmware for both QR vault and USB/NIP-46 lines.' },
+  { href: 'https://github.com/nSealr/smartcard', name: 'smartcard', desc: 'JavaCard/NFC smartcard signer research, simulator, APDU codec.' },
+  { href: 'https://github.com/nSealr/hardware', name: 'hardware', desc: 'Open hardware kit requirements, BOM, KiCad files, enclosures, jigs.' },
+  { href: 'https://github.com/nSealr/lab',       name: 'lab',       desc: 'Source-backed research, threat modelling, status tracking.' },
+];
+
+const NOT_THIS = [
+  'A closed hardware wallet product. The hardware files are open.',
+  'A custodial service. The companion is secretless; it never holds keys.',
+  'A relay implementation. NIP-46 relay sessions are upstream.',
+  'A funded company. There is no commercial entity, no token, no sale.',
+  'A "drop-in production signer". Real signing stays gated until hardening lands.',
+];
+
+const FOR_YOU_IF = [
+  'You are a Nostr user who wants to take your private key off your daily browser.',
+  'You are a developer integrating signers into clients, relays, or services.',
+  'You are a builder who wants to assemble or modify open hardware.',
+  'You are a security reviewer evaluating Nostr signing architecture.',
 ];
 ---
 <BaseLayout title="About — nSealr" description="About the non-profit open-source nSealr program.">
@@ -17,20 +32,69 @@ const REPOS = [
     <h1 class="page__title">nSealr is not a product.</h1>
     <p class="lead">
       It is a non-profit, open-source program for Nostr signing devices,
-      companion software, shared specs, and build documentation. The site
-      explains the program without turning the core work into a proprietary
-      product.
+      companion software, shared specs, and build documentation. The work
+      lives in seven repositories on GitHub. There is no commercial entity
+      behind it.
+    </p>
+
+    <h2 class="page__h2">What we are building</h2>
+    <p>
+      One <strong>companion</strong> (host-side, secretless) plus <strong>five signer solutions</strong>
+      (Raspberry/Pi QR vault, ESP32 QR vault, ESP32 USB/NIP-46, smartcard,
+      custom hardware wallet). The five solutions are not parallel
+      experiments — they share <a href="/docs/specs/feature-matrix/"><code>contract_id</code>s</a> from
+      <a href="https://github.com/nSealr/specs">nSealr/specs</a>, so a
+      feature like <code>approval_digest</code> behaves identically wherever
+      it is implemented.
+    </p>
+
+    <h2 class="page__h2">Who it is for</h2>
+    <ul class="page__list">
+      {FOR_YOU_IF.map(s => <li>{s}</li>)}
+    </ul>
+
+    <h2 class="page__h2">What it is not</h2>
+    <ul class="page__list">
+      {NOT_THIS.map(s => <li>{s}</li>)}
+    </ul>
+
+    <h2 class="page__h2">Governance</h2>
+    <p>
+      There is no company, no foundation, no incorporated entity behind
+      nSealr today. Each repository accepts pull requests under MIT (code)
+      or CC0-1.0 (content); the conformance test corpus in
+      <a href="https://github.com/nSealr/specs">nSealr/specs</a> is the
+      source of truth for cross-solution behavior. Disagreements are
+      resolved by the spec, not by precedent in any one firmware tree.
     </p>
 
     <h2 class="page__h2">Repositories</h2>
-    <ul class="page__list">
+    <ul class="page__list page__repos">
       {REPOS.map(r => (
-        <li><a href={r.href}>{r.name}</a>{r.desc && <> — {r.desc}.</>}</li>
+        <li>
+          <a href={r.href}>{r.name}</a>
+          {r.desc && <> — {r.desc}</>}
+        </li>
       ))}
     </ul>
 
     <h2 class="page__h2">License</h2>
-    <p>MIT for code. CC0-1.0 for content when published.</p>
+    <p>
+      Code is MIT-licensed. Documentation and content will move to CC0-1.0
+      when published. Hardware artifacts under
+      <a href="https://github.com/nSealr/hardware">nSealr/hardware</a> ship
+      under CERN Open Hardware Licence v2 (permissive). Each repository
+      declares the licence in its <code>LICENSE</code> file.
+    </p>
+
+    <h2 class="page__h2">How to get involved</h2>
+    <p>
+      Read <a href="/contributing/">Contributing</a>, pick a repository
+      that fits the area you care about, and open an issue or PR. The
+      easiest place to start is reading
+      <a href="https://github.com/nSealr/specs"><code>nSealr/specs</code></a> —
+      everything else hangs off it.
+    </p>
   </section>
 </BaseLayout>
 
@@ -50,4 +114,5 @@ const REPOS = [
   }
   .lead { font-size: var(--text-xl); }
   .page__list { display: grid; gap: var(--space-4); padding-left: 1em; }
+  .page__repos a { font-family: var(--font-mono); }
 </style>

@@ -1,0 +1,91 @@
+---
+title: 'NIP-46 decrypted bridge'
+description: 'How the companion converts already-decrypted NIP-46 payloads into standard nSealr signing requests — without implementing relay sessions or encryption.'
+section: 'specs'
+order: 5
+updatedAt: 2026-05-17
+---
+
+import Callout from '~/components/Callout.astro';
+
+The `nip46-decrypted-bridge-v0` contract defines what the companion
+does with an **already-decrypted** NIP-46 payload. The bridge is
+intentionally narrow: it does not implement relay sessions, does not
+do encryption, and does not derive keys.
+
+<Callout variant="info" title="Why narrow">
+  Keeping the bridge to "convert and decide" leaves the rest of the
+  NIP-46 flow (relay management, encrypted envelopes, key derivation)
+  outside the secretless companion. The companion stays a router; the
+  trust boundary remains on the signer.
+</Callout>
+
+## What the bridge accepts
+
+The companion accepts a decrypted NIP-46 payload as JSON. The bridge:
+
+1. **Validates** the payload against the NIP-46 contract: it is a
+   `sign_event` request, `get_public_key`, or another supported
+   method.
+2. **Maps** it to the equivalent v0 nSealr signing request — or, if
+   the request shape isn't supported, returns a deterministic
+   non-signing decision with a typed reason.
+3. **Hands the request** to the active signer over the relevant
+   transport, or returns the deterministic decision to the caller
+   without ever talking to the signer.
+
+```sh
+$ nsealr nip46 decide --payload-file decrypted.json
+✓ converted to nsealr/signing-request/v0
+↪ routed to esp32-usb
+```
+
+or:
+
+```sh
+$ nsealr nip46 decide --payload-file decrypted.json
+⊘ deterministic non-signing decision: UNSUPPORTED_METHOD
+```
+
+## What it does **not** do
+
+| Out of scope                  | Why |
+|-------------------------------|-----|
+| Open a relay session          | Encrypted relay sessions are upstream of the secretless companion |
+| Decrypt NIP-46 envelopes      | Decryption requires keying material; the companion is secretless |
+| Sign anything itself          | The companion never holds keys |
+| Implement remote signer logic | That's the signer's job |
+
+## Per-signer policy
+
+The bridge feeds standard v0 signing requests to the active signer.
+The **signer** then applies its policy (`scoped-policy-automation-v0`
+on the USB/NIP-46 line, manual-only on QR vaults, external review
+acknowledgement on smartcards). The bridge does not enforce policy on
+its own.
+
+## Deterministic non-signing decisions
+
+When the bridge cannot or will not route a request, it returns one of
+a fixed enumeration. The caller can rely on these as typed values.
+
+| Decision                  | When |
+|---------------------------|------|
+| `UNSUPPORTED_METHOD`      | The NIP-46 method is not part of the v0 surface |
+| `BAD_PAYLOAD_SHAPE`       | The decrypted JSON doesn't match the NIP-46 schema |
+| `IMPLEMENTATION_LIMIT`    | Request exceeds shared v0 implementation limits |
+| `POLICY_DENY_BY_DEFAULT`  | No explicit allow rule covers this request |
+| `SIGNER_UNREACHABLE`      | No active signer route can be reached now |
+
+A bridge that returns one of these has **not** signed and **will not
+sign**. The decision is final for the request id; the caller must
+build a fresh request to try again.
+
+## See also
+
+- [Transports overview](/docs/system/transports/) — how the bridge
+  sits alongside QR, serial, and smartcard.
+- [ESP32 USB/NIP-46 signer page](/docs/signers/esp32-usb/) — the
+  primary route for bridged requests.
+- [`nSealr/specs`](https://github.com/nSealr/specs) under
+  `vectors/nip46/` — conformance vectors for the bridge.
