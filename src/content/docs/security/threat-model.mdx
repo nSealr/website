@@ -3,7 +3,7 @@ title: 'Threat model'
 description: 'Adversaries, assets, and assumptions for nSealr signer families — what is in scope today and what is not.'
 section: 'security'
 order: 2
-updatedAt: 2026-05-16
+updatedAt: 2026-05-18
 status: 'draft'
 ---
 
@@ -45,8 +45,10 @@ page sketches the adversary model the contracts try to address.
 
 - Side-channel attacks against the signer (power, EM, timing) — not
   yet exercised by vectors.
-- Secure element direct BIP-340 (e.g. TROPIC01) — research only,
-  unproven for Nostr. The default research path is host-MCU signing.
+- Secure element direct BIP-340 (e.g. TROPIC01) — future-gated until a
+  public API, firmware release, or written vendor path is verified. The
+  current custom-wallet Rev A path keeps BIP-340 signing on the
+  ESP32-S3 host MCU.
 - Multi-party signing / FROST / threshold schemes — not in v0.
 - A "make Nostr safe everywhere" claim — nSealr addresses the
   signing boundary; everything outside (relays, content moderation,

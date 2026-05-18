@@ -885,9 +885,9 @@ import { FeatureMatrix } from '~/components/FeatureMatrix.astro';
 ---
 family: 'custom-wallet'
 displayName: 'Custom Nostr Hardware Wallet With Persistent Secret'
-tagline: 'Advanced persistent-secret research for custom boards and secure-element-assisted designs; direct TROPIC01 Schnorr remains unproven.'
+tagline: 'USB-C bus-powered persistent-secret wallet research with TROPIC01 assistance; direct TROPIC01 Schnorr remains future-gated.'
 repo: 'https://github.com/nSealr/hardware'
-productGoal: 'A research family for a purpose-built persistent-secret Nostr hardware wallet, including custom ESP32-S3 boards, secure-element-assisted prototypes, and firmware hardening.'
+productGoal: 'A research family for a purpose-built persistent-secret Nostr hardware wallet, now centered on a USB-C bus-powered TROPIC01-assisted Rev A scaffold before any KiCad or production claim.'
 maturity: 'research'
 order: 5
 capabilities:
@@ -904,11 +904,13 @@ capabilities:
   - { id: 'stateless_session_custody',    target: 'forbidden', current: 'forbidden' }
 requiredText:
   - 'Custom Nostr Hardware Wallet With Persistent Secret'
+  - 'USB-C bus-powered'
+  - 'Direct TROPIC01 Schnorr/BIP-340 remains future-gated'
 ---
 
 # Custom Nostr Hardware Wallet With Persistent Secret
 
-Research family for a purpose-built persistent-secret Nostr hardware wallet: custom ESP32-S3 boards, secure-element-assisted prototypes, and firmware hardening. The default research path is host-MCU signing unless secure-element direct BIP-340 (e.g. TROPIC01 Schnorr) is independently proven.
+Research family for a purpose-built persistent-secret Nostr hardware wallet. The current Rev A direction is USB-C bus-powered, connected/no-wireless, no-battery, and TROPIC01-assisted. BIP-340 signing stays on the ESP32-S3 host MCU unless a public TROPIC01 API, firmware release, or written vendor path proves non-exportable Schnorr support.
 
 <FeatureMatrix family="custom-wallet" />
 
@@ -1615,7 +1617,7 @@ import SignerFamilyGrid from '~/components/SignerFamilyGrid.astro';
       <li><strong>ESP32 QR:</strong> stateless QR vault host-core review flow and <em>T-Display S3 review scenario smoke</em> while the T-Display S3 Pro OV5640 hardware target remains pending.</li>
       <li><strong>ESP32 USB/NIP-46:</strong> native USB scaffold with get_public_key, <code>signing_disabled</code>, <code>approval_digest</code>-gated approval core, <em>companion-to-device serial smoke</em>, <em>sign-event-disabled smoke</em>, <em>firmware protocol evidence</em>, and <em>Unicode fallback</em> tracking for disabled-signing development firmware.</li>
       <li><strong>Smartcard:</strong> JavaCard/NFC Smartcard Signer research with APDU simulator plus <em>nsealr-smartcard CLI probes</em> for public-key and event-id signing research; <em>no trusted review or real-card compatibility claim</em> yet.</li>
-      <li><strong>Custom wallet:</strong> Custom Nostr Hardware Wallet With Persistent Secret research is limited to secure-element/root-of-trust and persistent-secret architecture until real hardware evidence exists.</li>
+      <li><strong>Custom wallet:</strong> Custom Nostr Hardware Wallet With Persistent Secret research now has a USB-C bus-powered, no-battery, TROPIC01-assisted Rev A scaffold; direct TROPIC01 Schnorr remains future-gated.</li>
       <li><strong>Hardware:</strong> checked requirements, BOM scaffold, and <em>Raspberry/Pi OS profile</em>, including <em>Raspberry/Pi kit requirements</em>, request-id and <code>approval_digest</code> review binding.</li>
     </ul>
   </section>

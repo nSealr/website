@@ -1,9 +1,9 @@
 ---
 family: 'custom-wallet'
 displayName: 'Custom Nostr Hardware Wallet With Persistent Secret'
-tagline: 'Advanced persistent-secret research for custom boards and secure-element-assisted designs; direct TROPIC01 Schnorr remains unproven.'
+tagline: 'USB-C bus-powered persistent-secret wallet research with TROPIC01 assistance; direct TROPIC01 Schnorr remains future-gated.'
 repo: 'https://github.com/nSealr/hardware'
-productGoal: 'A research family for a purpose-built persistent-secret Nostr hardware wallet, including custom ESP32-S3 boards, secure-element-assisted prototypes, and firmware hardening.'
+productGoal: 'A research family for a purpose-built persistent-secret Nostr hardware wallet, now centered on a USB-C bus-powered TROPIC01-assisted Rev A scaffold before any KiCad or production claim.'
 maturity: 'research'
 order: 5
 capabilities:
@@ -20,13 +20,22 @@ capabilities:
   - { id: 'stateless_session_custody',    target: 'forbidden', current: 'forbidden' }
 requiredText:
   - 'Custom Nostr Hardware Wallet With Persistent Secret'
+  - 'USB-C bus-powered'
+  - 'Direct TROPIC01 Schnorr/BIP-340 remains future-gated'
 ---
 
 import FeatureMatrix from '~/components/FeatureMatrix.astro';
 
-Research family for a purpose-built persistent-secret Nostr hardware wallet: custom ESP32-S3 boards, secure-element-assisted prototypes, and firmware hardening. The default research path is host-MCU signing unless secure-element direct BIP-340 (e.g. TROPIC01 Schnorr) is independently proven.
+Research family for a purpose-built persistent-secret Nostr hardware wallet. The current Rev A direction is USB-C bus-powered, connected/no-wireless, no-battery, and TROPIC01-assisted. BIP-340 signing stays on the ESP32-S3 host MCU unless a public TROPIC01 API, firmware release, or written vendor path proves non-exportable Schnorr support.
 
 <FeatureMatrix family="custom-wallet" />
+
+## Rev A Boundary
+
+- No air-gapped claim: USB carries data.
+- No battery subsystem in Rev A.
+- TROPIC01 is used for secure channel, TRNG, device authenticity, pairing lifecycle, MAC-and-Destroy PIN hardening, and key wrapping or unlock material.
+- Direct TROPIC01 Schnorr/BIP-340 remains future-gated, not a current capability claim.
 
 ## Repository
 

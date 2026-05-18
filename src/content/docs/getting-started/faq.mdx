@@ -3,7 +3,7 @@ title: 'FAQ'
 description: 'Frequently asked questions — what nSealr is for, what it is not, and when (not) to use it.'
 section: 'getting-started'
 order: 5
-updatedAt: 2026-05-17
+updatedAt: 2026-05-18
 ---
 
 ## What is nSealr in one sentence?
@@ -45,15 +45,16 @@ is research and development.
 
 Per-solution maturity is in each [signer page](/docs/signers/raspberry-qr/).
 
-## Why does TROPIC01 keep coming up — and why "unproven"?
+## Why does TROPIC01 keep coming up — and why is direct Schnorr future-gated?
 
 TROPIC01 is a secure element being investigated for the custom
-hardware-wallet line. It can do secp256k1 ECDSA off the shelf, but
-**BIP-340 Schnorr over Nostr event ids is not its native primitive
-for production-validated paths**. Until that direct path is
-independently proven, the default research direction is host-MCU
-signing with the secure element used for key wrapping and PIN
-hardening — not direct on-chip Schnorr.
+hardware-wallet line. Public APIs expose P-256/ECDSA and Ed25519/EdDSA,
+but **BIP-340 Schnorr over Nostr event ids is not available in a
+production-validated public path today**. The current Rev A direction is
+ESP32-S3 host-MCU signing with TROPIC01 used for secure channel, TRNG,
+device authenticity, pairing lifecycle, key wrapping/unlock material,
+and PIN hardening. Direct TROPIC01 Schnorr stays future-gated until a
+public API, firmware release, or written vendor path is verified.
 
 ## Why are there five signer solutions instead of one?
 
@@ -67,7 +68,8 @@ Different trust boundaries fit different threat models.
 - **Smartcard**: display-less custody, external review acknowledgement
   on a trusted screen. Best for very compact carry hardware.
 - **Custom hardware wallet**: research line for purpose-built
-  persistent-secret hardware. Aspirational today.
+  persistent-secret hardware. The first Rev A scaffold is USB-C
+  bus-powered, no-battery, connected/no-wireless, and TROPIC01-assisted.
 
 A solution shares contracts with the others where applicable — so a
 feature like `approval_digest` behaves identically across all of them
@@ -81,7 +83,7 @@ when present.
 | ESP32 QR            | **RAM only**, wiped on power off                         |
 | ESP32 USB / NIP-46  | Persistent, inside the custody boundary (after gates)    |
 | Smartcard           | Persistent, inside the card                              |
-| Custom HW wallet    | Persistent, secure-element-assisted (research)           |
+| Custom HW wallet    | Persistent, TROPIC01-assisted Rev A research             |
 
 The **companion** never holds keys. The **client** never sees keys.
 

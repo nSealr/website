@@ -23,17 +23,19 @@ The practical product is a shared companion plus five signer families:
   compatibility target where feasible.
 - JavaCard/NFC Smartcard Signer for compact secure-element custody without
   trusted event review by itself.
-- Custom Nostr Hardware Wallet With Persistent Secret for later TROPIC01,
-  custom PCB, and Trezor Safe 7 firmware research.
+- Custom Nostr Hardware Wallet With Persistent Secret for the USB-C
+  bus-powered TROPIC01-assisted Rev A research path, later custom PCB work,
+  and Trezor Safe 7 firmware research.
 
 The site should show these as one ecosystem, not as unrelated experiments.
 
 Account/custody copy should stay precise: QR vaults are stateless RAM-only
 session signers; ESP32 USB/NIP-46 and custom hardware-wallet lines are future
-persistent encrypted device-vault signers; smartcards are display-less
-slot-backed custody; companion is secretless routing and verification
-infrastructure. Policy records are internal nSealr records, not Nostr
-events, and the final per-account policy UX is still under design.
+persistent encrypted device-vault signers; the custom wallet Rev A is connected
+over USB data and must not be described as air-gapped; smartcards are
+display-less slot-backed custody; companion is secretless routing and
+verification infrastructure. Policy records are internal nSealr records, not
+Nostr events, and the final per-account policy UX is still under design.
 
 ## Trust Claims
 
@@ -49,7 +51,8 @@ Avoid until verified:
 - production-ready security claims;
 - secure-element guarantees without hardware tests;
 - claims that a display-less smartcard provides trusted event review;
-- claims that TROPIC01 directly signs Nostr/BIP-340.
+- claims that TROPIC01 directly signs Nostr/BIP-340 before the public/vendor
+  path is verified.
 
 ## First Release Content
 

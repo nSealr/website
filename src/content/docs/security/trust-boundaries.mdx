@@ -3,7 +3,7 @@ title: 'Trust boundaries'
 description: 'Where keys live, who is trusted with what, and what each layer must not do.'
 section: 'security'
 order: 1
-updatedAt: 2026-05-16
+updatedAt: 2026-05-18
 ---
 
 import Callout from '~/components/Callout.astro';
@@ -21,7 +21,7 @@ exercised in vectors in [`nSealr/specs`](https://github.com/nSealr/specs).
 | QR vault    | RAM-only session signing                    | Persistent secret material                     |
 | USB signer  | Persistent secret (after gates pass)        | Anything outside its declared boundary         |
 | Smartcard   | Persistent secret, APDU signing             | Trusted event review (display-less)            |
-| Custom HW   | Persistent secret + display review (after)  | Claims before evidence                         |
+| Custom HW   | Persistent secret + display review (after)  | Air-gapped or direct-Schnorr claims before evidence |
 
 ## Rules nSealr enforces today
 
