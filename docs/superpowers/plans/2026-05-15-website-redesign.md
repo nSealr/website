@@ -2878,7 +2878,7 @@ Asserts that:
   * Each signer family page contains its declared `requiredText` phrases.
   * The /security/ page contains the safety-contract phrases.
   * No forbidden production claims appear anywhere in dist/.
-  * No forbidden /vault repository link appears anywhere in dist/.
+  * No forbidden legacy vault-repo link appears anywhere in dist/.
   * Every local href in dist/index.html resolves to an existing file.
 """
 from __future__ import annotations
@@ -3233,8 +3233,8 @@ make ci           # check + build + validate_site.py + unittest + lint
 ```
 
 `scripts/validate_site.py` asserts every required safety-contract phrase
-against `dist/` (split by route: home, /security, per-family signer
-pages). Forbidden production claims and forbidden `/vault` repo links
+against `dist/` (split by route: home, /security, per-family signer pages).
+Forbidden production claims and forbidden legacy GitHub links ending in `/vault`
 are rejected.
 
 ## Deploy (Vercel)

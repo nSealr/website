@@ -6,7 +6,7 @@ Asserts that:
   * Each signer family page contains its declared `requiredText` phrases.
   * The /docs/security/trust-boundaries/ page contains the safety-contract phrases.
   * No forbidden production claims appear anywhere in dist/.
-  * No forbidden /vault repository link appears anywhere in dist/.
+  * No forbidden legacy vault-repo link appears anywhere in dist/.
 """
 from __future__ import annotations
 

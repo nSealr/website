@@ -317,7 +317,8 @@ list is partitioned by route:
 The validator uses the `signers` collection frontmatter as the source
 of truth for which family page must contain which contract phrases, so
 the assertion list stays in sync with the content. The
-`FORBIDDEN_REPOSITORY_LINK_RE` (no `/vault` repo) stays global.
+`FORBIDDEN_REPOSITORY_LINK_RE` (no legacy GitHub link ending in `/vault`) stays
+global.
 
 Adapted assertions in `tests/test_site_validation.py` call the same
 functions and assert against the built tree. `make ci` first does
@@ -445,8 +446,8 @@ jobs.build:
 
 - `pnpm run build` produces a `dist/` that passes:
   - `validate_site.py` (all required text present, no forbidden claims,
-    no `/vault` repo links, all five signer family names present, all
-    current safety-contract strings present).
+    no legacy GitHub links ending in `/vault`, all five signer family names
+    present, all current safety-contract strings present).
   - `tests/test_site_validation.py`.
   - `lychee`, `html-validate`, `axe`, `lhci` budgets.
 - A `git push` to a Vercel-connected `main` produces a production
