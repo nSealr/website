@@ -36,24 +36,28 @@ make setup
 ## Simulator: `GET_PUBLIC_KEY`
 
 The simulator returns deterministic x-only public keys for fixture
-seeds.
+secrets and writes a JSON APDU report.
 
 ```sh
-$ nsealr-smartcard simulate get-public-key --seed-id 0
-04a1b2…  (x-only, 32 bytes)
+nsealr-smartcard sim-get-public-key \
+  --secret-key <32-byte-lowercase-hex> \
+  --out public-key.json
 ```
 
 ## Simulator: `SIGN_EVENT_ID`
 
 The simulator signs a 32-byte event id with the simulator's secp256k1
-keys. The signature is BIP-340 and verifiable against the shared
-fixtures.
+key. Because the smartcard line is display-less, the report command
+requires an external review acknowledgement and the `approval_digest`
+that binds the reviewed event material.
 
 ```sh
-$ nsealr-smartcard simulate sign-event-id \
-    --seed-id 0 \
-    --event-id 9f0c…2a
-3045…  (BIP-340 signature)
+nsealr-smartcard sim-sign-event-id \
+  --secret-key <32-byte-lowercase-hex> \
+  --event-id <32-byte-event-id-hex> \
+  --review-acknowledged \
+  --approval-digest <32-byte-approval-digest-hex> \
+  --out signature.json
 ```
 
 ## PC/SC probe (when a reader is connected)
@@ -62,8 +66,7 @@ The same CLI can drive a real reader via `pyscard`. PC/SC commands
 fail clearly when `pyscard` or a reader is unavailable.
 
 ```sh
-$ nsealr-smartcard probe get-public-key
-ERROR: pyscard not installed, or no reader detected.
+nsealr-smartcard pcsc-get-public-key --out public-key.json
 ```
 
 ## Status words
