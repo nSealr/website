@@ -7,6 +7,7 @@ Asserts that:
   * The /docs/security/trust-boundaries/ page contains the safety-contract phrases.
   * No forbidden production claims appear anywhere in dist/.
   * No forbidden legacy vault-repo link appears anywhere in dist/.
+  * No stale pre-release companion CLI commands appear anywhere in dist/.
 """
 from __future__ import annotations
 
@@ -80,6 +81,18 @@ FORBIDDEN_REPOSITORY_LINK_RE = re.compile(
     r"https://github\.com/[A-Za-z0-9_.-]+/vault(?:[\"/#?]|$)"
 )
 
+FORBIDDEN_CLI_COMMAND_RE = re.compile(
+    r"\bnsealr\s+route\b"
+    r"|\bnsealr\s+verify\s+--"
+    r"|\bnsealr\s+request\s+--kind\b"
+    r"|\bnsealr\s+request\s+validate\b"
+    r"|\bnsealr\s+audit\b"
+    r"|\bnsealr\s+signers\b"
+    r"|\bnsealr\s+contracts\b"
+    r"|\bfixture\s+verify\s+--route\b"
+    r"|--payload-file\b"
+)
+
 
 def read(path: Path) -> str:
     if not path.exists():
@@ -151,6 +164,16 @@ def validate_global_no_forbidden_repo(dist: Path) -> None:
             raise ValueError(f"{path.relative_to(dist)}: forbidden /vault github link")
 
 
+def validate_global_no_stale_cli_commands(dist: Path) -> None:
+    for path in dist.rglob("*.html"):
+        text = path.read_text(encoding="utf-8")
+        match = FORBIDDEN_CLI_COMMAND_RE.search(text)
+        if match:
+            raise ValueError(
+                f"{path.relative_to(dist)}: stale companion CLI command: {match.group(0)!r}"
+            )
+
+
 def main() -> int:
     if not DIST.exists():
         print("validate_site: dist/ missing — run `pnpm run build` first", file=sys.stderr)
@@ -159,6 +182,7 @@ def main() -> int:
     validate_security(DIST)
     validate_signers(DIST)
     validate_global_no_forbidden_repo(DIST)
+    validate_global_no_stale_cli_commands(DIST)
     print("nSealr website validation passed")
     return 0
 
