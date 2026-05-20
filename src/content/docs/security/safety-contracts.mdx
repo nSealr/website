@@ -3,7 +3,7 @@ title: 'Safety contracts at a glance'
 description: 'Every safety contract the project enforces today, with a one-line meaning and the source-of-truth pointer.'
 section: 'security'
 order: 3
-updatedAt: 2026-05-16
+updatedAt: 2026-05-20
 ---
 
 import Callout from '~/components/Callout.astro';
@@ -71,7 +71,13 @@ vectors.
 
 **Persistent secret custody** — `persistent-secret-custody-v0`
 : Long-lived secret material lives inside the defined custody
-  boundary and never exports it through normal signing flows.
+  boundary and never exports it through normal signing flows. For the
+  custom wallet Rev A research line, the checked lifecycle forbids
+  plaintext secrets at rest, permits only wrapped/encrypted at-rest
+  blobs before persistent custody, limits plaintext to ESP32-S3 RAM
+  after local TROPIC01-assisted unlock, requires wipe events, and keeps
+  backup/export disabled by default behind local review plus physical
+  approval.
 
 **External review acknowledgement** — `external-review-acknowledgement-v0`
 : Display-less custody (smartcards) requires explicit acknowledgement

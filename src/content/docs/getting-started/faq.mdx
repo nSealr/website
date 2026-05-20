@@ -3,7 +3,7 @@ title: 'FAQ'
 description: 'Frequently asked questions — what nSealr is for, what it is not, and when (not) to use it.'
 section: 'getting-started'
 order: 5
-updatedAt: 2026-05-18
+updatedAt: 2026-05-20
 ---
 
 ## What is nSealr in one sentence?
@@ -69,7 +69,9 @@ Different trust boundaries fit different threat models.
   on a trusted screen. Best for very compact carry hardware.
 - **Custom hardware wallet**: research line for purpose-built
   persistent-secret hardware. The first Rev A scaffold is USB-C
-  bus-powered, no-battery, connected/no-wireless, and TROPIC01-assisted.
+  bus-powered, no-battery, connected/no-wireless, TROPIC01-assisted,
+  and now pinned to the checked `persistent-secret-custody-v0`
+  lifecycle contract.
 
 A solution shares contracts with the others where applicable — so a
 feature like `approval_digest` behaves identically across all of them
@@ -83,7 +85,7 @@ when present.
 | ESP32 QR            | **RAM only**, wiped on power off                         |
 | ESP32 USB / NIP-46  | Persistent, inside the custody boundary (after gates)    |
 | Smartcard           | Persistent, inside the card                              |
-| Custom HW wallet    | Persistent, TROPIC01-assisted Rev A research             |
+| Custom HW wallet    | Persistent, TROPIC01-assisted Rev A research, checked by `persistent-secret-custody-v0` |
 
 The **companion** never holds keys. The **client** never sees keys.
 

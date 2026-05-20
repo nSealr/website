@@ -3,7 +3,7 @@ title: 'Product shape'
 description: 'One companion plus five signer solutions. Not five unrelated experiments.'
 section: 'system'
 order: 1
-updatedAt: 2026-05-18
+updatedAt: 2026-05-20
 ---
 
 import SystemMap from '~/components/SystemMap.astro';
@@ -25,7 +25,7 @@ capability matrix and live maturity.
 - **ESP32 Stateless QR Vault** — air-gapped ESP32-S3 camera + display.
 - **ESP32 USB/NIP-46 Signer** — daily-use connected signer, real signing gated.
 - **JavaCard/NFC Smartcard Signer** — display-less APDU custody, external review required.
-- **Custom Nostr Hardware Wallet With Persistent Secret** — USB-C Rev A research line for TROPIC01-assisted purpose-built hardware.
+- **Custom Nostr Hardware Wallet With Persistent Secret** — USB-C Rev A research line for TROPIC01-assisted purpose-built hardware, checked against `persistent-secret-custody-v0`.
 
 ## Companion surfaces
 
@@ -55,7 +55,7 @@ successful response against shared fixtures.
 | QR vault     | RAM-only signing | persistent secret |
 | USB signer   | persistent secret (after gates) | the universe outside its boundary |
 | Smartcard    | persistent secret, APDU signing | trusted event review (display-less) |
-| Custom HW    | persistent secret + display review (after gates) | air-gapped claims, direct TROPIC01 Schnorr claims before evidence |
+| Custom HW    | persistent secret + display review (after gates), under `persistent-secret-custody-v0` | air-gapped claims, direct TROPIC01 Schnorr claims before evidence |
 
 The [trust boundaries page](/docs/security/trust-boundaries/) and the
 [threat model](/docs/security/threat-model/) cover this in depth.

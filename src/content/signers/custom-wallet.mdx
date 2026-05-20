@@ -21,6 +21,7 @@ capabilities:
 requiredText:
   - 'Custom Nostr Hardware Wallet With Persistent Secret'
   - 'USB-C bus-powered'
+  - 'persistent-secret-custody-v0'
   - 'Direct TROPIC01 Schnorr/BIP-340 remains future-gated'
 ---
 
@@ -34,6 +35,11 @@ Research family for a purpose-built persistent-secret Nostr hardware wallet. The
 
 - No air-gapped claim: USB carries data.
 - No battery subsystem in Rev A.
+- `persistent-secret-custody-v0` is now a checked lifecycle contract: no
+  plaintext secrets at rest, wrapped/encrypted storage only before persistent
+  custody, ESP32-S3 RAM-only plaintext after TROPIC01-assisted unlock,
+  required wipe events, and disabled-by-default backup/export behind local
+  review plus physical approval.
 - TROPIC01 is used for secure channel, TRNG, device authenticity, pairing lifecycle, MAC-and-Destroy PIN hardening, and key wrapping or unlock material.
 - Direct TROPIC01 Schnorr/BIP-340 remains future-gated, not a current capability claim.
 
