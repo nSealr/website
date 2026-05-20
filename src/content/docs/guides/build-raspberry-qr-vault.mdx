@@ -3,7 +3,7 @@ title: 'Build a Raspberry/Pi QR vault'
 description: 'Assemble and run the SeedSigner-style stateless QR vault for Nostr signing on a Pi Zero kit — from BOM to first signed fixture.'
 section: 'guides'
 order: 1
-updatedAt: 2026-05-17
+updatedAt: 2026-05-20
 status: 'draft'
 ---
 
@@ -114,7 +114,7 @@ the companion.
 ## Verify with the companion
 
 ```sh
-nsealr verify --request request-v0.json --response response.json
+nsealr verify-response --request request-v0.json --response response.json
 ```
 
 If you see the same two `✓` lines, the device + companion handshake

@@ -1282,8 +1282,8 @@ import StatusPill from './StatusPill.astro';
     <StatusPill variant="neutral">v0 spec</StatusPill>
     <StatusPill variant="neutral">non-profit · open-source</StatusPill>
   </div>
-  <pre class="snippet"><code>{`# verify a request — companion
-$ nsealr verify --request req.json
+  <pre class="snippet"><code>{`# verify a response — companion
+$ nsealr verify-response --request req.json --response resp.json
 ✓ approval_digest ok
 ! sign-event disabled in dev firmware`}</code></pre>
 </section>

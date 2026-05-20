@@ -3,7 +3,7 @@ title: 'Using a signer'
 description: 'End-to-end flow: a Nostr client requests a signature, the companion routes it, and a signer reviews and signs.'
 section: 'getting-started'
 order: 2
-updatedAt: 2026-05-16
+updatedAt: 2026-05-20
 ---
 
 A signing request flows through four layers: **client → companion → signer → companion → client**.
@@ -27,9 +27,15 @@ The companion:
    QR (`nsealr1`), USB serial, smartcard APDU, or NIP-46 bridge.
 
 ```sh
-$ nsealr request --kind 1 --content "hello" > req.json
-$ nsealr route --request req.json --signer raspberry-qr
+$ nsealr request sign-event --event-template event-template.json --request-id req-demo --out req.json
+$ nsealr review-request --request req.json --screen-review --out screen-review.json
 ```
+
+Transport is signer-specific: QR vaults exchange `nsealr1` envelopes,
+ESP32 USB uses `nsealr serial-line exchange`, smartcard uses APDUs,
+and NIP-46 uses already-decrypted bridge decisions. The current CLI
+keeps these explicit instead of hiding them behind a generic route
+command.
 
 ## Step 3 — Signer reviews and approves
 
@@ -55,7 +61,7 @@ before reaching the client:
 - `approval_digest` matches the request the user approved.
 
 ```sh
-$ nsealr verify --request req.json --response resp.json
+$ nsealr verify-response --request req.json --response resp.json
 ✓ event id matches BIP-340 signature
 ✓ approval_digest matches reviewed material
 ```

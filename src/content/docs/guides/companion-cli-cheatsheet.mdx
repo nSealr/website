@@ -1,88 +1,128 @@
 ---
 title: 'Companion CLI cheatsheet'
-description: 'Every nsealr subcommand at a glance — request construction, transport, verification, audit.'
+description: 'Current nsealr CLI commands for request construction, review, transport, verification, policy, and NIP-46 inspection.'
 section: 'guides'
 order: 5
-updatedAt: 2026-05-17
+updatedAt: 2026-05-20
 ---
 
 Quick reference for `nsealr`. The CLI is one of several
 [companion surfaces](/docs/system/companion/) — every other surface
 (SDK, extension, app, service, NIP-46 bridge) wraps the same
-packages.
+packages. This page tracks the current pre-production CLI surface; real
+ESP32 production signing remains disabled until the device gates pass.
 
 ## Requests
 
 ```sh
-# Build a v0 signing request from an event template
-nsealr request --kind 1 --content "hello" > req.json
-nsealr request --kind 1 --content-file note.md --tag t:intro > req.json
+# Build a v0 signing request from an explicit event-template JSON file
+nsealr request sign-event \
+  --event-template event-template.json \
+  --request-id req-kind-1 \
+  --out request.json
 
-# Validate a request against the v0 contract + implementation limits
-nsealr request validate --file req.json
+# Emit the same request as a static or animated QR envelope
+nsealr request sign-event --event-template event-template.json --out request.qr --output-format qr
+nsealr request sign-event --event-template event-template.json --out request.qra --output-format qr-animated
 ```
 
-## Routing
+## Review
 
 ```sh
-# Send a request to a specific signer route
-nsealr route --request req.json --signer raspberry-qr
-nsealr route --request req.json --signer esp32-usb --port /dev/cu.usbserial-XXXX
-nsealr route --request req.json --signer smartcard
+# Render host-side review previews. Trusted approval still belongs to the signer.
+nsealr review-request --request request.json --screen-review --out screen-review.json
+nsealr review-request --request request.qr --request-format qr --detail-pages \
+  --author-pubkey 4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa \
+  --out detail-pages.json
 ```
 
 ## Verification
 
 ```sh
 # Verify a signed response against its request
-nsealr verify --request req.json --response resp.json
+nsealr verify-response --request request.json --response response.json
 
-# Verify any spec fixture (request, response, review-frame, ...)
-nsealr fixture verify --route raspberry-qr --fixture sign-event-happy-path
-nsealr fixture verify --route esp32-usb --fixture sign-event-disabled
+# Verify QR-encoded request/response pairs
+nsealr verify-response --request request.qr --request-format qr --response response.qr --response-format qr
+
+# Verify shared specs fixtures from a local specs checkout
+nsealr fixture verify --specs ../specs
 ```
 
-## Transports
+## Serial Transport
 
 ```sh
-# One-shot USB-serial bring-up — request-bound capture checks
-nsealr serial-line exchange --port /dev/cu.usbserial-XXXX --request req.json
-
-# NIP-46 bridge: convert an already-decrypted payload into a v0 request
-# (or return a deterministic non-signing decision)
-nsealr nip46 decide --payload-file decrypted.json
+# One request-bound USB serial exchange with verified response handling
+nsealr serial-line exchange \
+  --port /dev/cu.usbmodem1101 \
+  --request request.json \
+  --out response.json
 ```
 
-## Audit
+## NIP-46 Inspection
 
 ```sh
-# Export the full review transcript: request, displayed material,
-# approval digest, signed output (if any), verification result.
-nsealr audit export --request req.json --response resp.json > audit.json
+# Convert an already-decrypted NIP-46 payload into a deterministic decision
+nsealr nip46 decide --message decrypted-message.json --permissions sign_event:1 --out decision.json
+
+# Read permissions from the shared policy-file format instead of the shell
+nsealr nip46 decide \
+  --message decrypted-message.json \
+  --policy-file policy.json \
+  --out decision.json
+
+# Review and approve a connect request without acknowledging it or opening relays
+nsealr nip46 review-connect --message connect-message.json --out connect-review.json
+nsealr nip46 approve-connect \
+  --review connect-review.json \
+  --reviewed-connect-digest <digest-hex> \
+  --approved-at 1900000000 \
+  --out connect-approval.json
+
+# Create and gate a reviewed-but-not-active session checkpoint
+nsealr nip46 create-session-checkpoint \
+  --review connect-review.json \
+  --approval connect-approval.json \
+  --name local-checkpoint \
+  --client-pubkey <64-hex> \
+  --relays wss://relay.example.com \
+  --policy-file policy.json \
+  --expires-at 1900003600 \
+  --out session.json
+nsealr nip46 gate-session-request \
+  --session session.json \
+  --event relay-envelope.json \
+  --message decrypted-message.json \
+  --evaluated-at 1900000100 \
+  --out session-gate.json
 ```
 
-## Information
+## Local Service Artifacts
 
 ```sh
-nsealr --version
-nsealr --help
-nsealr signers list           # show known signer routes
-nsealr contracts list         # show contract_ids the build knows about
+nsealr local review-pairing --intent pairing-intent.json --out pairing-review.json
+nsealr local approve-pairing \
+  --intent pairing-intent.json \
+  --reviewed-pairing-digest <digest-hex> \
+  --approved-at 1900000000 \
+  --out pairing-approval.json
+
+nsealr local review-storage \
+  --grant-store local-grants.json \
+  --account-store accounts.json \
+  --route-driver-store route-drivers.json \
+  --grant-store-output local-grants.next.json \
+  --out storage-review.json
+nsealr local approve-storage \
+  --review storage-review.json \
+  --reviewed-storage-digest <digest-hex> \
+  --approved-at 1900000000 \
+  --out storage-approval.json
 ```
 
-## Exit codes
-
-| Code | Meaning |
-|------|---------|
-| `0`  | Success / verified |
-| `2`  | Bad input (malformed request or response) |
-| `3`  | Verification failure (signature, digest, or pubkey mismatch) |
-| `4`  | Transport error (timeout, parse, capture mismatch) |
-| `5`  | Policy rejection (signer returned a deterministic non-signing decision) |
-| `6`  | Pre-condition not met (e.g. `signing_disabled`) |
-
-The companion never returns `0` for a partially-verified response.
-Either every check passes or it bails out with a typed error.
+Use explicit output paths for scripted runs. Validation, policy,
+storage approval, transport, or response-verification failures should
+occur before any requested output path is written.
 
 ## See also
 

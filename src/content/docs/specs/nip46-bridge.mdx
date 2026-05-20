@@ -3,7 +3,7 @@ title: 'NIP-46 decrypted bridge'
 description: 'How the companion converts already-decrypted NIP-46 payloads into standard nSealr signing requests — without implementing relay sessions or encryption.'
 section: 'specs'
 order: 5
-updatedAt: 2026-05-17
+updatedAt: 2026-05-20
 ---
 
 import Callout from '~/components/Callout.astro';
@@ -30,20 +30,19 @@ The companion accepts a decrypted NIP-46 payload as JSON. The bridge:
 2. **Maps** it to the equivalent v0 nSealr signing request — or, if
    the request shape isn't supported, returns a deterministic
    non-signing decision with a typed reason.
-3. **Hands the request** to the active signer over the relevant
-   transport, or returns the deterministic decision to the caller
-   without ever talking to the signer.
+3. **Returns the decision** to the calling companion surface. Routing,
+   relay sessions, and signer I/O stay outside this narrow bridge
+   contract.
 
 ```sh
-$ nsealr nip46 decide --payload-file decrypted.json
-✓ converted to nsealr/signing-request/v0
-↪ routed to esp32-usb
+$ nsealr nip46 decide --message decrypted.json --permissions sign_event:1 --out decision.json
+# decision.json contains a sign_event conversion or a deterministic refusal
 ```
 
 or:
 
 ```sh
-$ nsealr nip46 decide --payload-file decrypted.json
+$ nsealr nip46 decide --message unsupported-method.json --permissions sign_event:1 --out decision.json
 ⊘ deterministic non-signing decision: UNSUPPORTED_METHOD
 ```
 
@@ -58,16 +57,16 @@ $ nsealr nip46 decide --payload-file decrypted.json
 
 ## Per-signer policy
 
-The bridge feeds standard v0 signing requests to the active signer.
-The **signer** then applies its policy (`scoped-policy-automation-v0`
-on the USB/NIP-46 line, manual-only on QR vaults, external review
-acknowledgement on smartcards). The bridge does not enforce policy on
-its own.
+The bridge produces standard v0 signing-request decisions for the
+calling companion surface. The **signer** then applies its policy
+(`scoped-policy-automation-v0` on the USB/NIP-46 line, manual-only on
+QR vaults, external review acknowledgement on smartcards). The bridge
+does not enforce policy on its own.
 
 ## Deterministic non-signing decisions
 
-When the bridge cannot or will not route a request, it returns one of
-a fixed enumeration. The caller can rely on these as typed values.
+When the bridge cannot convert or allow a request, it returns one of a
+fixed enumeration. The caller can rely on these as typed values.
 
 | Decision                  | When |
 |---------------------------|------|

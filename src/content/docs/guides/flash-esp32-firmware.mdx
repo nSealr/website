@@ -3,7 +3,7 @@ title: 'Flash ESP32 firmware'
 description: 'Build, flash, and smoke-test the ESP32-S3 development firmware. Real signing stays disabled until hardening gates pass.'
 section: 'guides'
 order: 2
-updatedAt: 2026-05-17
+updatedAt: 2026-05-20
 status: 'draft'
 ---
 
@@ -99,11 +99,14 @@ workstation:
 
 ```sh
 # 1. Companion ↔ device serial bring-up
-nsealr serial-line exchange --port /dev/cu.usbserial-XXXX
+nsealr serial-line exchange \
+  --port /dev/cu.usbserial-XXXX \
+  --request ../specs/vectors/requests/request-v0.json \
+  --out response.json
 # → request-bound capture checks pass
 
-# 2. Sign-event-disabled round-trip
-nsealr fixture verify --route esp32-usb --fixture sign-event-disabled
+# 2. Shared fixture verification
+nsealr fixture verify --specs ../specs
 # → ✓ approval_digest matches reviewed material
 # → ✓ deterministic "signing_disabled" decision
 ```

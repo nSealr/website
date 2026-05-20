@@ -3,7 +3,7 @@ title: 'Verify a signed event'
 description: 'Use the companion to re-verify a signed Nostr event before broadcasting it.'
 section: 'guides'
 order: 3
-updatedAt: 2026-05-16
+updatedAt: 2026-05-20
 status: 'draft'
 ---
 
@@ -24,7 +24,7 @@ under `examples/`.
 ## Run
 
 ```sh
-$ nsealr verify --request req.json --response resp.json
+$ nsealr verify-response --request req.json --response resp.json
 ✓ event id matches BIP-340 signature
 ✓ approval_digest matches reviewed material
 ✓ public key matches signer descriptor
@@ -57,7 +57,7 @@ Each check corresponds to a contract:
 
 ## Companion-side, automatic
 
-When a signed response flows back through `nsealr route` (or any other
-companion surface), the same verification runs **before** the response
-reaches the client. A failed verification is fatal — the client never
-sees the signature.
+Every companion surface must run the same verification **before** a
+signed response reaches the client: CLI tooling, serial exchange,
+local service, browser extension, app, and SDK. A failed verification
+is fatal — the client never sees the signature.

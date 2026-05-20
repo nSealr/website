@@ -3,7 +3,7 @@ title: 'Companion'
 description: 'Host-side, secretless software that routes signing requests and verifies responses.'
 section: 'system'
 order: 2
-updatedAt: 2026-05-16
+updatedAt: 2026-05-20
 ---
 
 The **companion** is the host-side piece of every nSealr signing flow.
@@ -38,8 +38,8 @@ The default surface. Used for bring-up, integration tests, and offline
 verification.
 
 ```sh
-$ nsealr request --kind 1 --content "hello"   # build a v0 request
-$ nsealr verify --request req.json --response resp.json
+$ nsealr request sign-event --event-template event-template.json --out req.json
+$ nsealr verify-response --request req.json --response resp.json
 ✓ approval_digest matches reviewed material
 ✓ event id matches BIP-340 signature
 ```
