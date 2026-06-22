@@ -30,9 +30,14 @@ exercised in vectors in [`nSealr/specs`](https://github.com/nSealr/specs).
 - **Sensitive signing requires explicit user review** where hardware
   allows it. The review material is bound to the bytes that get signed
   through [`approval_digest`](/blog/2026-05-15-approval-digest-bind-review-to-signature/).
-- **The companion is not trusted with key custody.** It is secretless
-  routing and verification — every successful signed response is
-  re-verified against shared fixtures before reaching the client.
+- **The companion is not trusted with the user's key custody.** It holds
+  no user signing key; every successful signed response is re-verified
+  (request-id correlation, same-template check, NIP‑01 id recompute,
+  BIP‑340 signature) before reaching the client. The one
+  secret it does hold is an **ephemeral client transport key** for
+  [NIP‑46 relay sessions](/docs/specs/nip46-relay-session/) — RAM‑only,
+  used to sign kind‑24133 transport events and run NIP‑44, and unable to
+  sign the user's events.
 - **Maturity differs by signer family.** See the
   [per-family capability matrices](/docs/signers/raspberry-qr/) for the
   exact target/current status of each contract.

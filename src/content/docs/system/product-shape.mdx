@@ -41,10 +41,13 @@ the same validation, transport, and response-verification logic.
 | Local app        | Desktop UI for routing and review. |
 | Local service    | Background daemon for the extension and apps. |
 | NIP-46 bridge    | Converts already-decrypted NIP-46 payloads into standard nSealr signing requests. |
+| NIP-46 relay session | Runs a real remote-signer session over relays (NIP-44 + request/response correlation) with an ephemeral client transport key. |
 
-The companion is **never trusted with key custody**. It composes
-requests, moves them over the selected transport, and verifies every
-successful response against shared fixtures.
+The companion is **never trusted with the user's key custody**. It
+composes requests, moves them over the selected transport, and verifies
+every successful response against shared fixtures. The only secret it
+holds is an ephemeral client transport key for NIP-46 relay sessions
+(RAM-only, never the user signing key).
 
 ## Trust boundaries (summary)
 

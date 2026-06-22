@@ -15,7 +15,7 @@ docs, specs, and firmware. Definitive contracts live in
 **Companion**
 : Host-side, secretless software that routes signing requests and
   verifies responses. Ships as CLI, SDK, browser extension, local
-  app, local service, and NIP-46 bridge.
+  app, local service, NIP-46 bridge, and NIP-46 relay session.
 
 **Signer**
 : The device that holds (or unlocks) the private key. Five solutions:
@@ -87,8 +87,15 @@ These names recur across docs and firmware logs:
 
 **NIP-46 decrypted bridge** — `nip46-decrypted-bridge-v0`
 : Companion-side conversion of already-decrypted NIP-46 payloads into
-  standard nSealr signing requests. The bridge does not implement relay
-  sessions or encryption.
+  standard nSealr signing requests. The bridge itself does not run relay
+  sessions or encryption — those are the relay session layer
+  (`nsealr-nip46-session-active-v0`).
+
+**NIP-46 relay session** — `nsealr-nip46-session-active-v0`
+: Companion-side NIP-46 remote-signer session over Nostr relays: relay
+  I/O, NIP-44 v2 encryption, request/response correlation, and BIP-340
+  verification, using an ephemeral client transport key. The user signing
+  key never reaches the host.
 
 **Smartcard APDU** — `smartcard-apdu-v0`
 : Versioned short APDUs with deterministic status words. No trusted

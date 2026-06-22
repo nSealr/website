@@ -3,7 +3,7 @@ title: 'NIP-46 decrypted bridge'
 description: 'How the companion converts already-decrypted NIP-46 payloads into standard nSealr signing requests — without implementing relay sessions or encryption.'
 section: 'specs'
 order: 5
-updatedAt: 2026-05-20
+updatedAt: 2026-06-22
 ---
 
 import Callout from '~/components/Callout.astro';
@@ -14,10 +14,12 @@ intentionally narrow: it does not implement relay sessions, does not
 do encryption, and does not derive keys.
 
 <Callout variant="info" title="Why narrow">
-  Keeping the bridge to "convert and decide" leaves the rest of the
-  NIP-46 flow (relay management, encrypted envelopes, key derivation)
-  outside the secretless companion. The companion stays a router; the
-  trust boundary remains on the signer.
+  Keeping the bridge to "convert and decide" isolates the decision step
+  from transport. The rest of the NIP-46 flow (relay I/O, encrypted
+  envelopes, key derivation) now lives in the separate
+  [relay session layer](/docs/specs/nip46-relay-session/), which uses an
+  ephemeral **client transport key** — never the user's signing key. The
+  user's key stays on the signer; the companion remains secretless for it.
 </Callout>
 
 ## What the bridge accepts
@@ -50,9 +52,9 @@ $ nsealr nip46 decide --message unsupported-method.json --permissions sign_event
 
 | Out of scope                  | Why |
 |-------------------------------|-----|
-| Open a relay session          | Encrypted relay sessions are upstream of the secretless companion |
-| Decrypt NIP-46 envelopes      | Decryption requires keying material; the companion is secretless |
-| Sign anything itself          | The companion never holds keys |
+| Open a relay session          | Handled by the [relay session layer](/docs/specs/nip46-relay-session/) (`Nip46SessionManager`), not this narrow bridge |
+| Decrypt NIP-46 envelopes      | Done by the relay session layer with the ephemeral client transport key; this bridge takes already-decrypted input |
+| Sign user events itself       | The companion never holds the user signing key (it only signs kind‑24133 transport events with the ephemeral client key) |
 | Implement remote signer logic | That's the signer's job |
 
 ## Per-signer policy
@@ -82,6 +84,9 @@ build a fresh request to try again.
 
 ## See also
 
+- [NIP-46 relay session](/docs/specs/nip46-relay-session/) — the
+  complementary transport/session layer that opens the relay,
+  encrypts/decrypts envelopes, and verifies the signed event.
 - [Transports overview](/docs/system/transports/) — how the bridge
   sits alongside QR, serial, and smartcard.
 - [ESP32 USB/NIP-46 signer page](/docs/signers/esp32-usb/) — the
