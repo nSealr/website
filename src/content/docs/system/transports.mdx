@@ -47,8 +47,11 @@ The companion accepts already-decrypted NIP-46 payloads via
 - Either returns a deterministic non-signing decision or hands the
   request to the active signer.
 
-What the bridge does **not** do: relay sessions, encryption,
-key derivation. Those live outside the secretless companion boundary.
+What the bridge itself does **not** do: relay sessions, encryption,
+key derivation. Those now live in the separate
+[relay session layer](/docs/specs/nip46-relay-session/), which opens the
+relay and runs NIP‑44 with an ephemeral **client transport key** — never
+the user's signing key, which stays on the signer.
 
 ## Smartcard APDUs
 

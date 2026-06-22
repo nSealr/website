@@ -1,0 +1,87 @@
+---
+title: 'NIP-46 relay session'
+description: 'How the companion runs a real NIP-46 remote-signer session over Nostr relays — NIP-44 encryption, request/response correlation and BIP-340 verification — while the user signing key never leaves the device.'
+section: 'specs'
+order: 6
+updatedAt: 2026-06-22
+status: 'draft'
+---
+
+import Callout from '~/components/Callout.astro';
+
+Where the [decrypted bridge](/docs/specs/nip46-bridge/) only converts an
+already-decrypted payload into a decision, the **relay session** is the layer
+that actually talks to a remote signer over Nostr relays: it opens the relay,
+encrypts and decrypts the NIP-44 envelopes, correlates requests with responses,
+and verifies the returned event. It is built in `@nsealr/nip46` and consumes the
+frozen `nsealr-nip46-session-active-v0` contract from `nSealr/specs`.
+
+<Callout variant="warn" title="Two different keys">
+  The session uses a **client transport key** — an ephemeral keypair, held only
+  in memory, that signs the kind‑24133 transport events and performs the NIP‑44
+  ECDH. It is **not** the user's signing key. The user's signing key stays on the
+  signer device and never touches the host. The companion remains secretless for
+  the key that matters.
+</Callout>
+
+## Layers
+
+The session is composed from small, independently tested units:
+
+| Layer | What it does | Module |
+|-------|--------------|--------|
+| Relay transport | publish / subscribe-by-filter / close, I/O only | `RelayTransport` (`InMemoryRelay` fake, `NostrToolsRelay` for production) |
+| NIP‑44 v2 | authenticated encryption of the envelope payload | `@nsealr/core` `nip44` (hand-rolled ChaCha20 + HMAC-SHA256) |
+| Session protocol | build a signed + encrypted kind‑24133 event; decrypt + verify one | `buildNip46RequestEvent` / `decryptNip46Event` |
+| Session manager | the `idle → session_active → session_closed` state machine, id‑correlated timed request/response | `Nip46SessionManager` |
+| Verification | recompute the NIP‑01 id and check the BIP‑340 signature of the returned event | `@nsealr/core` `verifySignedEventResponse` |
+| Persistence | secretless session record (metadata only) | `SessionStore` / `toActiveSessionRecord` |
+
+## Flow
+
+1. **connect** — the manager subscribes for kind‑24133 events addressed to the
+   client (`#p` = client pubkey), then publishes an encrypted `connect` request
+   and waits for the signer's `ack`.
+2. **session_active** — `signEvent(template)` publishes an encrypted `sign_event`
+   request; the matching response is decrypted, then the returned event is
+   verified (NIP‑01 id recompute + BIP‑340 signature + same-template check)
+   before it is handed back. An unmatched or malformed response is rejected, not
+   silently dropped.
+3. **session_closed** — the relay subscription is closed and any in‑flight
+   request is rejected.
+
+Every transport event is verified on the way in (kind 24133, recomputed id,
+BIP‑340 signature) and checked to be addressed to this recipient before it is
+NIP‑44‑decrypted.
+
+## Cryptography stays hand-rolled
+
+NIP‑44 v2 is implemented in `@nsealr/core` from `@noble` primitives (secp256k1
+ECDH → HKDF schedule → ChaCha20 → HMAC‑SHA256), not delegated. Its correctness is
+pinned by a **dual oracle**: the official NIP‑44 v2 test vectors **and** a
+differential test against `nostr-tools/nip44`. `nostr-tools` is used in production
+only for relay transport (`SimplePool`); it never touches the signing or
+verification path.
+
+## Persistence is secretless
+
+A persisted session is a contract-conformant `nsealr-nip46-session-active-v0`
+record — pubkeys, relays, connect digest, approved permissions, lifecycle phase.
+It never stores the client transport key, the NIP‑44 conversation key, or any
+other secret material; the record is validated through the same parser the
+contract defines, which rejects any secret-bearing field.
+
+## Status
+
+<Callout variant="info" title="Tested, including against a real relay">
+  The session is exercised end-to-end in-process (connect → sign → verify over an
+  in-memory relay) and by a Docker-gated **live end-to-end** against a real
+  `nostr-rs-relay` container. On-device acceptance against the physical USB/NIP‑46
+  signer is the remaining step and is tracked with that signer (see below).
+</Callout>
+
+## See also
+
+- [NIP-46 decrypted bridge](/docs/specs/nip46-bridge/) — the complementary, narrow decision step for an already-decrypted payload (a separate component from this transport/session layer).
+- [ESP32 USB/NIP-46 signer](/docs/signers/esp32-usb/) — the device end of a bridged session.
+- [`nSealr/specs`](https://github.com/nSealr/specs) — `protocols/nip46-session-active-v0.md` and its conformance vectors.
