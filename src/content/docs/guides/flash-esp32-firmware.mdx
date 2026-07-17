@@ -21,13 +21,20 @@ import Callout from '~/components/Callout.astro';
 
 Two product lines share the same repo (`nSealr/esp32`):
 
-| Line                      | Primary board                            | Status |
-|---------------------------|------------------------------------------|--------|
-| ESP32 USB/NIP-46 signer   | LILYGO T-Display S3 (no camera)          | display+button drivers under work |
-| ESP32 Stateless QR Vault  | T-Display S3 Pro OV5640 (camera+display) | pending hardware target |
+| Line                             | Primary board                            | Status |
+|----------------------------------|------------------------------------------|--------|
+| nSealr Key (ESP32 USB/NIP-46)    | Universal Waveshare ESP32-S3-Touch-LCD family (2.8 V2 primary); LILYGO T-Display S3 dev ref | display+button drivers under work |
+| nSealr Vault — ESP32 edition (QR)| Retargeting to Waveshare ESP32-P4-3.5 (OV5647); legacy T-Display S3 Pro OV5640 dev path | ESP32-P4 retarget pending (device matrix) |
 
 Both build from the same source tree; the target flag selects
 firmware features.
+
+<Callout variant="info" title="ESP32 vault → ESP32-P4">
+  Per the device-matrix re-baseline, the **nSealr Vault — ESP32 edition** is
+  retargeted from ESP32-S3 to **ESP32-P4** (Waveshare ESP32-P4-3.5, OV5647). The
+  legacy ESP32-S3 board targets below are the transitional dev path until the
+  Rust + ESP32-P4 firmware lands; the ESP32-S3 Touch boards belong to **nSealr Key**.
+</Callout>
 
 ## Prerequisites
 
@@ -140,9 +147,9 @@ will accept any firmware.
 
 ## Where to go next
 
-- [ESP32 USB/NIP-46 signer page](/docs/signers/esp32-usb/) — live
+- [nSealr Key signer page](/docs/signers/esp32-usb/) — live
   capability matrix and gates.
-- [ESP32 Stateless QR Vault signer page](/docs/signers/esp32-qr/) —
+- [nSealr Vault — ESP32 edition signer page](/docs/signers/esp32-qr/) —
   the QR-vault line on the same repo.
 - [Transports overview](/docs/system/transports/) — what the bounded
   USB / serial frames look like on the wire.

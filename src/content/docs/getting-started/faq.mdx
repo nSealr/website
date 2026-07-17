@@ -67,11 +67,12 @@ Different trust boundaries fit different threat models.
   and review most of them".
 - **Smartcard**: display-less custody, external review acknowledgement
   on a trusted screen. Best for very compact carry hardware.
-- **Custom hardware wallet**: research line for purpose-built
-  persistent-secret hardware. The first Rev A scaffold is USB-C
-  bus-powered, no-battery, connected/no-wireless, TROPIC01-assisted,
-  and now pinned to the checked `persistent-secret-custody-v0`
-  lifecycle contract.
+- **nSealr One** (custom hardware wallet): flagship line for
+  purpose-built persistent-secret hardware — a minimal all-SMD
+  `custom-wallet-min` board (ESP32-S3 host + TROPIC01-backed encrypted
+  vault + key-split), USB-C signing, battery-operable, no wireless in v1,
+  with a hardened Rust firmware signer pinned to the checked
+  `persistent-secret-custody-v0` lifecycle contract.
 
 A solution shares contracts with the others where applicable — so a
 feature like `approval_digest` behaves identically across all of them
@@ -85,7 +86,7 @@ when present.
 | ESP32 QR            | **RAM only**, wiped on power off                         |
 | ESP32 USB / NIP-46  | Persistent, inside the custody boundary (after gates)    |
 | Smartcard           | Persistent, inside the card                              |
-| Custom HW wallet    | Persistent, TROPIC01-assisted Rev A research, checked by `persistent-secret-custody-v0` |
+| nSealr One (custom) | Persistent, encrypted in the TROPIC01 vault (key-split, unwrapped to RAM at sign time), checked by `persistent-secret-custody-v0` |
 
 The **companion** never holds keys. The **client** never sees keys.
 

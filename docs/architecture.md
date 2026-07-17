@@ -29,9 +29,8 @@ The first implementation is plain static HTML/CSS:
   model and design system.
 
 The landing page must name the five first-class signer families explicitly:
-Raspberry/Pi Stateless QR Vault, ESP32 Stateless QR Vault, ESP32 USB/NIP-46
-Signer, JavaCard/NFC Smartcard Signer, and Custom Nostr Hardware Wallet With
-Persistent Secret. This keeps the public product shape aligned with the lab
+nSealr Vault — Pi edition, nSealr Vault — ESP32 edition, nSealr Key, nSealr
+Card, and nSealr One. This keeps the public product shape aligned with the lab
 taxonomy without turning companion, specs, lab, or hardware artifacts into
 signing-solution families.
 

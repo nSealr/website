@@ -4,9 +4,9 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
 const REPOS = [
   { href: 'https://github.com/nSealr/specs',     name: 'specs',     desc: 'Protocol, conformance vectors, signer feature matrix.' },
   { href: 'https://github.com/nSealr/companion', name: 'companion', desc: 'Host-side software (CLI, SDK, extension, app, service, NIP-46 bridge).' },
-  { href: 'https://github.com/nSealr/raspberry', name: 'raspberry', desc: 'Raspberry/Pi stateless QR vault software.' },
-  { href: 'https://github.com/nSealr/esp32',     name: 'esp32',     desc: 'ESP32-S3 firmware for both QR vault and USB/NIP-46 lines.' },
-  { href: 'https://github.com/nSealr/smartcard', name: 'smartcard', desc: 'JavaCard/NFC smartcard signer research, simulator, APDU codec.' },
+  { href: 'https://github.com/nSealr/raspberry', name: 'raspberry', desc: 'nSealr Vault — Pi edition: Raspberry/Pi stateless QR vault software.' },
+  { href: 'https://github.com/nSealr/esp32',     name: 'esp32',     desc: 'Firmware for the ESP32-P4 QR vault (nSealr Vault — ESP32 edition) and ESP32-S3 USB signer (nSealr Key) lines.' },
+  { href: 'https://github.com/nSealr/smartcard', name: 'smartcard', desc: 'nSealr Card: Satochip JavaCard signer research, simulator, APDU codec.' },
   { href: 'https://github.com/nSealr/hardware', name: 'hardware', desc: 'Open hardware kit requirements, BOM, KiCad files, enclosures, jigs.' },
   { href: 'https://github.com/nSealr/lab',       name: 'lab',       desc: 'Source-backed research, threat modelling, status tracking.' },
 ];
@@ -40,8 +40,8 @@ const FOR_YOU_IF = [
     <h2 class="page__h2">What we are building</h2>
     <p>
       One <strong>companion</strong> (host-side, secretless) plus <strong>five signer solutions</strong>
-      (Raspberry/Pi QR vault, ESP32 QR vault, ESP32 USB/NIP-46, smartcard,
-      custom hardware wallet). The five solutions are not parallel
+      (nSealr Vault — Pi edition, nSealr Vault — ESP32 edition, nSealr Key,
+      nSealr Card, nSealr One). The five solutions are not parallel
       experiments — they share <a href="/docs/specs/feature-matrix/"><code>contract_id</code>s</a> from
       <a href="https://github.com/nSealr/specs">nSealr/specs</a>, so a
       feature like <code>approval_digest</code> behaves identically wherever

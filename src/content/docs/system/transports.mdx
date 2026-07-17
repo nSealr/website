@@ -14,7 +14,7 @@ channel fails closed.
 
 ## QR transport (`nsealr1`)
 
-Used by stateless QR vault solutions (Raspberry/Pi, ESP32 QR).
+Used by the nSealr Vault editions (the Pi and ESP32 stateless QR vaults).
 
 - **`nsealr1:`** — single static QR for short requests.
 - **`nsealr1a:`** — animated QR, chunked with explicit bounds and
@@ -26,7 +26,7 @@ See [QR envelope reference](/docs/specs/qr-envelope/).
 
 ## Serial / USB
 
-Used by ESP32 USB/NIP-46 signer.
+Used by nSealr Key (the ESP32-S3 USB/NIP-46 signer).
 
 - Bounded frames with explicit size limits, checksums, and
   deterministic parse errors.
@@ -55,7 +55,7 @@ the user's signing key, which stays on the signer.
 
 ## Smartcard APDUs
 
-Used by the JavaCard/NFC smartcard signer.
+Used by nSealr Card (the Satochip JavaCard signer).
 
 - Versioned short APDUs with deterministic status words.
 - Proprietary commands `GET_PUBLIC_KEY` and `SIGN_EVENT_ID`.

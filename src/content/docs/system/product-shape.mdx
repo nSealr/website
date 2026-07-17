@@ -21,11 +21,11 @@ A solution is the unit at which feature parity is contracted. See the
 [Signers section](/docs/signers/raspberry-qr/) for the per-solution
 capability matrix and live maturity.
 
-- **Raspberry/Pi Stateless QR Vault** — air-gapped, RAM-only, SeedSigner-style.
-- **ESP32 Stateless QR Vault** — air-gapped ESP32-S3 camera + display.
-- **ESP32 USB/NIP-46 Signer** — daily-use connected signer, real signing gated.
-- **JavaCard/NFC Smartcard Signer** — display-less APDU custody, external review required.
-- **Custom Nostr Hardware Wallet With Persistent Secret** — USB-C Rev A research line for TROPIC01-assisted purpose-built hardware, checked against `persistent-secret-custody-v0`.
+- **nSealr Vault — Pi edition** — air-gapped, RAM-only, SeedSigner-style Raspberry Pi Zero.
+- **nSealr Vault — ESP32 edition** — air-gapped ESP32-P4 camera + display (Waveshare P4-3.5).
+- **nSealr Key** — daily-use connected ESP32-S3 signer (universal Waveshare S3-Touch family), real signing gated.
+- **nSealr Card** — display-less Satochip JavaCard, in-card signing, external review required.
+- **nSealr One** — USB-C flagship: hardened firmware signer + TROPIC01-backed vault + key-split, battery-operable, checked against `persistent-secret-custody-v0`.
 
 ## Companion surfaces
 
