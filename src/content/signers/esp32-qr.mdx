@@ -1,9 +1,9 @@
 ---
 family: 'esp32-qr'
-displayName: 'ESP32 Stateless QR Vault'
-tagline: 'Air-gapped ESP32-S3 camera/display signer line; T-Display S3 Pro OV5640 candidate, no persistent secret.'
+displayName: 'nSealr Vault — ESP32 edition'
+tagline: 'Air-gapped ESP32-P4 QR signer on the Waveshare ESP32-P4-WIFI6-Touch-LCD-3.5 with an OV5647 camera; RAM-only, no persistent secret.'
 repo: 'https://github.com/nSealr/esp32'
-productGoal: 'An airgapped ESP32-S3 QR signer with camera, display, local controls, RAM-only key custody, and behavior matching the Raspberry QR vault where features overlap.'
+productGoal: 'An air-gapped ESP32-P4 QR signer on the Waveshare ESP32-P4-WIFI6-Touch-LCD-3.5 (OV5647 camera, ST7796 320×480 display, FT6336 touch; onboard C6 radio disabled for the air-gap), libwally/Kern-aligned with RAM-only key custody, and behavior matching the Pi QR vault where features overlap.'
 maturity: 'prototype'
 order: 2
 capabilities:
@@ -22,7 +22,7 @@ capabilities:
   - { id: 'response_verification',        target: 'required', current: 'planned',     contractId: 'signed-response-verification-v0' }
   - { id: 'secure_boot_hardening',        target: 'optional', current: 'planned',     contractId: 'firmware-boot-hardening-v0' }
 requiredText:
-  - 'ESP32 Stateless QR Vault'
+  - 'nSealr Vault — ESP32 edition'
   - 'T-Display S3 review scenario smoke'
   - 'signing_disabled'
   - 'approval_digest'
@@ -32,17 +32,27 @@ requiredText:
 
 import FeatureMatrix from '~/components/FeatureMatrix.astro';
 
-Air-gapped ESP32-S3 camera + display signer. Behavior parity with the Raspberry QR vault is enforced through shared `contract_id`s in `nSealr/specs`.
+Air-gapped ESP32-P4 camera + display signer. Behavior parity with the Pi QR vault is enforced through shared `contract_id`s in `nSealr/specs`.
 
 ## Hardware target
 
-- Primary candidate: **T-Display S3 Pro OV5640** (camera + display).
-- Secondary target: Waveshare `ESP32-S3-Touch-LCD-3.5B-C`.
-- Production-readiness gates: real camera ingestion, display acceptance, button drivers, provisioning.
+- Board: **Waveshare ESP32-P4-WIFI6-Touch-LCD-3.5** — OV5647 camera, ST7796 320×480 display, FT6336 capacitive touch.
+- The onboard ESP32-C6 radio is **disabled** to preserve the air-gap; every request and response moves over QR, no wireless, no host link.
+- `libwally`/Kern-aligned host core with RAM-only key custody.
+- Production-readiness gates: real OV5647 camera ingestion, display acceptance, button/touch drivers, provisioning.
+
+## Secret lifecycle
+
+Secret material lives in RAM only for the current signing session; nothing is persisted, so there is no device PIN. Session sources can be:
+
+- **Imported** by scanning a SeedSigner-interoperable **Standard SeedQR or CompactSeedQR**, or a canonical NIP-19 `nsec`, after a secret-hidden source review.
+- **Generated on device** — BIP-39 words with optional extra entropy from **dice rolls** or a **camera snap** (the P4 board has an OV5647 camera), behind a one-time local backup/export ceremony before use.
+
+Both SeedQR directions are supported: the vault can **display back** a Standard SeedQR or CompactSeedQR for interoperable backup, not only scan one in. An optional **BIP-39 passphrase** is supported for NIP-06 derivation. This matches the Pi edition vault lifecycle.
 
 ## Current status
 
-Real `sign_event` is **`signing_disabled`** in development firmware until all hardening, display, button, and provisioning gates pass. The **T-Display S3 review scenario smoke** confirms host-core review frames render correctly; this is **development evidence**, not a production trusted-display claim. Approvals are bound to `approval_digest`. The **firmware protocol evidence** and **Unicode fallback** tracking are recorded in `nSealr/esp32`.
+Real `sign_event` is **`signing_disabled`** in development firmware until all hardening, display, button, and provisioning gates pass. The **T-Display S3 review scenario smoke** — host-core review-rendering evidence from an earlier development board, retained through the ESP32-P4 retarget — confirms review frames render correctly; this is **development evidence**, not a production trusted-display claim. Approvals are bound to `approval_digest`. The **firmware protocol evidence** and **Unicode fallback** tracking are recorded in `nSealr/esp32`.
 
 <FeatureMatrix family="esp32-qr" />
 

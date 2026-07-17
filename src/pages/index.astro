@@ -44,10 +44,9 @@ const SURFACES = [
     <p class="eyebrow">// families</p>
     <h2>Pick the boundary that matches your trust model.</h2>
     <p class="muted home-section__lead">
-      The five signer solutions: Raspberry/Pi Stateless QR Vault ·
-      ESP32 Stateless QR Vault · ESP32 USB/NIP-46 Signer ·
-      JavaCard/NFC Smartcard Signer · Custom Nostr Hardware Wallet With
-      Persistent Secret.
+      The five signer solutions: nSealr Vault — Pi edition ·
+      nSealr Vault — ESP32 edition · nSealr Key ·
+      nSealr Card · nSealr One.
     </p>
     <SignerFamilyGrid />
   </section>
@@ -65,10 +64,10 @@ const SURFACES = [
       <li><strong>Specs:</strong> v0 request, response, QR envelope, fixtures, review-screen vectors, <em>review detail pages</em>, <code>approval_digest</code> contracts, and <em>NIP-46 bridge decisions</em>.</li>
       <li><strong>Companion:</strong> CLI, verification, transports, QR, serial framing with <em>request-bound capture checks</em>, <code>nsealr serial-line exchange</code> for one-shot local USB-serial bring-up, <code>nsealr nip46 decide</code> for already-decrypted payload policy checks, and untrusted detail-page previews.</li>
       <li><strong>Raspberry:</strong> desktop stateless QR vault simulation with NIP-06 signing, <code>approval_digest</code>-bound review, and hardware-neutral adapter boundaries for later Pi drivers.</li>
-      <li><strong>ESP32 QR:</strong> stateless QR vault host-core review flow and <em>T-Display S3 review scenario smoke</em> while the T-Display S3 Pro OV5640 hardware target remains pending.</li>
+      <li><strong>ESP32 QR:</strong> stateless QR vault host-core review flow and <em>T-Display S3 review scenario smoke</em> while the ESP32-P4 QR-board hardware target (Waveshare ESP32-P4-WIFI6-Touch-LCD-3.5, OV5647 camera) remains pending.</li>
       <li><strong>ESP32 USB/NIP-46:</strong> native USB scaffold with get_public_key, <code>signing_disabled</code>, <code>approval_digest</code>-gated approval core, <em>companion-to-device serial smoke</em>, <em>sign-event-disabled smoke</em>, <em>firmware protocol evidence</em>, and <em>Unicode fallback</em> tracking for disabled-signing development firmware.</li>
-      <li><strong>Smartcard:</strong> JavaCard/NFC Smartcard Signer research with APDU simulator plus <em>nsealr-smartcard CLI probes</em> for public-key and event-id signing research; <em>no trusted review or real-card compatibility claim</em> yet.</li>
-      <li><strong>Custom wallet:</strong> Custom Nostr Hardware Wallet With Persistent Secret research now has a USB-C bus-powered Rev A scaffold plus checked <code>persistent-secret-custody-v0</code> lifecycle; direct TROPIC01 Schnorr remains future-gated.</li>
+      <li><strong>Smartcard:</strong> nSealr Card research — a Satochip JavaCard on an EAL6+ secure element with in-card BIP-340 Schnorr — with APDU simulator plus <em>nsealr-smartcard CLI probes</em> for public-key and event-id signing research; <em>no trusted review or real-card compatibility claim</em> yet.</li>
+      <li><strong>Custom wallet:</strong> nSealr One research — a minimal all-SMD, display-agnostic board (ESP32-S3 host + TROPIC01-backed encrypted vault + provisioned OPTIGA/ATECC key-split, USB-C, battery-operable) with a hardened Rust firmware signer and a checked <code>persistent-secret-custody-v0</code> lifecycle. The old complex board is archived.</li>
       <li><strong>Hardware:</strong> checked requirements, BOM scaffold, <em>Raspberry/Pi OS profile</em>, <em>Raspberry/Pi kit requirements</em>, request-id and <code>approval_digest</code> review binding, and specs-backed custom-wallet custody gates.</li>
     </ul>
   </section>

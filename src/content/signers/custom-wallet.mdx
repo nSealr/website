@@ -1,9 +1,9 @@
 ---
 family: 'custom-wallet'
-displayName: 'Custom Nostr Hardware Wallet With Persistent Secret'
-tagline: 'USB-C bus-powered persistent-secret wallet research with TROPIC01 assistance; direct TROPIC01 Schnorr remains future-gated.'
+displayName: 'nSealr One'
+tagline: 'Minimal all-SMD, display-agnostic Nostr hardware wallet: ESP32-S3 host + TROPIC01-backed encrypted vault + key-split, USB-C, battery-operable.'
 repo: 'https://github.com/nSealr/hardware'
-productGoal: 'A research family for a purpose-built persistent-secret Nostr hardware wallet, now centered on a USB-C bus-powered TROPIC01-assisted Rev A scaffold before any KiCad or production claim.'
+productGoal: 'A minimal, all-SMD, display-agnostic hardware-wallet board (KiCad custom-wallet-min): an ESP32-S3-WROOM-1-N16R8 host paired with a mandatory TROPIC01 open secure element (encrypted seed vault, hardware-PIN anti-bruteforce, TRNG/PUF, attestation, Ed25519/P-256) plus a provisioned 2nd-vendor SE (OPTIGA Trust M populated by default / ATECC608B alternate DNP) for Coldcard-style key-split, with USB-C, a physical confirm button, and an external SPI panel driven over an FPC connector (reference Waveshare 1.69-inch ST7789V2/CST816); battery-operable via an MX1.25 LiPo connector (user-supplied/optional battery); no JavaCard, no socket, no NFC, no camera.'
 maturity: 'research'
 order: 5
 capabilities:
@@ -19,29 +19,41 @@ capabilities:
   - { id: 'response_verification',        target: 'required', current: 'planned',  contractId: 'signed-response-verification-v0' }
   - { id: 'stateless_session_custody',    target: 'forbidden', current: 'forbidden' }
 requiredText:
-  - 'Custom Nostr Hardware Wallet With Persistent Secret'
-  - 'USB-C bus-powered'
+  - 'nSealr One'
   - 'persistent-secret-custody-v0'
-  - 'Direct TROPIC01 Schnorr/BIP-340 remains future-gated'
+  - 'USB-C is the only v1 signing transport'
+  - 'battery-operable'
+  - 'key-split'
 ---
 
 import FeatureMatrix from '~/components/FeatureMatrix.astro';
 
-Research family for a purpose-built persistent-secret Nostr hardware wallet. The current Rev A direction is USB-C bus-powered, connected/no-wireless, no-battery, and TROPIC01-assisted. BIP-340 signing stays on the ESP32-S3 host MCU unless a public TROPIC01 API, firmware release, or written vendor path proves non-exportable Schnorr support.
+Research family for a purpose-built persistent-secret Nostr hardware wallet, now targeting a **minimal, all-SMD, display-agnostic** board (KiCad `custom-wallet-min`). The old complex board is **archived**. A hardened Rust firmware on an ESP32-S3-WROOM-1-N16R8 host signs behind a TROPIC01-backed encrypted vault; the previous over-scoped board is superseded.
 
 <FeatureMatrix family="custom-wallet" />
 
-## Rev A Boundary
+## Hardware target
 
-- No air-gapped claim: USB carries data.
-- No battery subsystem in Rev A.
-- `persistent-secret-custody-v0` is now a checked lifecycle contract: no
-  plaintext secrets at rest, wrapped/encrypted storage only before persistent
-  custody, ESP32-S3 RAM-only plaintext after TROPIC01-assisted unlock,
-  required wipe events, and disabled-by-default backup/export behind local
-  review plus physical approval.
-- TROPIC01 is used for secure channel, TRNG, device authenticity, pairing lifecycle, MAC-and-Destroy PIN hardening, and key wrapping or unlock material.
-- Direct TROPIC01 Schnorr/BIP-340 remains future-gated, not a current capability claim.
+- **Host:** ESP32-S3-WROOM-1-N16R8.
+- **Vault:** a mandatory **TROPIC01** open secure element — encrypted seed vault, hardware-PIN anti-bruteforce, TRNG/PUF, attestation, Ed25519/P-256.
+- **Key-split SE:** a provisioned 2nd-vendor secure element — **OPTIGA Trust M** populated by default, **ATECC608B** alternate (DNP) — for a Coldcard-style key-split.
+- **I/O:** USB-C, a physical confirm button, and an external SPI panel driven over an FPC connector (reference Waveshare 1.69-inch ST7789V2/CST816). No JavaCard, no socket, no NFC, no camera.
+- **Power:** **battery-operable** — USB-C and an optional MX1.25 LiPo battery (user-supplied) both power the board.
+- **Transport:** **USB-C is the only v1 signing transport** (spec §3).
+- **Gated ports:** a **Qwiic/STEMMA-QT I²C port** plus a **0.1-inch expansion header**, both **default-off** (no attack surface when unused). The WROOM module's **BLE radio is present but disabled by default and out of scope for v1** (NIP-46-over-BLE reserved as a future opt-in, never enabled in a high-assurance profile); **WiFi is never used**.
+
+## Security model
+
+This board is the **hardened firmware-signer + SE-backed vault + key-split** model (mainstream Trezor/Coldcard tier), not an in-card signer:
+
+- The Rust firmware signs **secp256k1 ECDSA + BIP-340 Schnorr** on the ESP32-S3 host: the seed is unwrapped from the TROPIC01 vault into RAM at sign time and **wiped after**. **All-signatures-in-SE is an explicit non-goal here** — the in-card signing gate belongs to **nSealr Card only**.
+- The seed is stored encrypted in TROPIC01 behind a **hardware PIN enforced by TROPIC01 anti-bruteforce** (escalating delays; configurable wipe-after-N). The decryption key is **split MCU + TROPIC01 + 2nd-vendor SE**, so no single chip holds the plaintext.
+- TROPIC01's own Ed25519/P-256 signing is reserved for SSH/FIDO/attestation, **not** Nostr Schnorr.
+- Anti-klepto sign-to-contract and RAM wipe post-sign apply. A duress/decoy-wallet PIN is tracked `[DEC]` for v1.1 (spec §6), not this phase's gate.
+
+## Secret lifecycle
+
+`persistent-secret-custody-v0` is a checked lifecycle contract: no plaintext secrets at rest, wrapped/encrypted storage only before persistent custody, ESP32-S3 RAM-only plaintext after TROPIC01-assisted unlock, required wipe events, and disabled-by-default backup/export behind local review plus physical approval. The seed is **generated on device** (TROPIC01 TRNG) or **imported** from BIP-39 words; **backup-at-creation** exports BIP-39 words plus a SeedQR on the trusted display, one-time, at seed creation; an optional **BIP-39 passphrase** is supported.
 
 ## Repository
 

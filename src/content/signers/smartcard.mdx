@@ -1,9 +1,9 @@
 ---
 family: 'smartcard'
-displayName: 'JavaCard/NFC Smartcard Signer'
-tagline: 'Display-less APDU card research for key protection, not trusted event review alone.'
+displayName: 'nSealr Card'
+tagline: 'Display-less Satochip JavaCard on an EAL6+ secure element; in-card BIP-340 Schnorr, external review required.'
 repo: 'https://github.com/nSealr/smartcard'
-productGoal: 'A display-less card custody line that can sign through APDUs only after external review acknowledgement and deterministic policy checks.'
+productGoal: 'A display-less in-card signing line: a Satochip JavaCard on NXP J3R180 (JCOP4 P71, EAL6+) running the Satochip v0.14+ applet that produces in-card BIP-340 Schnorr signatures (Nostr + Taproot), signing through APDUs only after external review acknowledgement and deterministic policy checks.'
 maturity: 'research'
 order: 4
 capabilities:
@@ -18,14 +18,24 @@ capabilities:
   - { id: 'physical_approval',             target: 'not_applicable', current: 'not_applicable' }
   - { id: 'stateless_session_custody',     target: 'forbidden', current: 'forbidden' }
 requiredText:
-  - 'JavaCard/NFC Smartcard Signer'
+  - 'nSealr Card'
   - 'nsealr-smartcard CLI probes'
   - 'no trusted review or real-card compatibility claim'
 ---
 
 import FeatureMatrix from '~/components/FeatureMatrix.astro';
 
-Display-less APDU custody. The card cannot provide trusted event review by itself; external review acknowledgement is required before any APDU signing operation reaches the card.
+Display-less in-card custody. The card cannot provide trusted event review by itself; external review acknowledgement is required before any APDU signing operation reaches the card.
+
+## Hardware target
+
+- **Satochip JavaCard** on NXP **J3R180 (JCOP4 P71, EAL6+)** running the **Satochip v0.14+** applet.
+- **In-card BIP-340 Schnorr** signing (Nostr + Taproot) over secp256k1.
+- Release gate: the **private key never leaves the secure element**; all signatures are produced in-card.
+
+## Secret lifecycle
+
+The seed is imported via the companion (BIP-39) or generated on-card; the card **never exports** the seed. Access is gated by **Satochip PIN/PUK** with card-enforced retry limits, and the applet supports **up to 16 identities** (Satochip v0.14).
 
 ## Current evidence
 

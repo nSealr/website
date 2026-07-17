@@ -3,7 +3,7 @@ title: 'Signer feature matrix'
 description: 'Shared contracts and the same-behavior-when-present rule that holds the five solutions together.'
 section: 'specs'
 order: 3
-updatedAt: 2026-05-16
+updatedAt: 2026-07-17
 ---
 
 The five signer solutions share **contracts**, not source code. The
@@ -11,6 +11,19 @@ authoritative table lives in
 [`nSealr/specs`](https://github.com/nSealr/specs) at
 `vectors/features/signer-feature-matrix-v0.json`. Each per-solution
 page on this site renders the live status table.
+
+## The five solutions
+
+The family **ids are frozen** (cross-repo tests pin them); the public
+**product name** is the label from `signer-feature-matrix-v0.json`.
+
+| Family id (frozen) | Product name | Goal |
+|---|---|---|
+| `raspberry_qr_vault` | nSealr Vault — Pi edition | Air-gapped, RAM-only SeedSigner-style QR vault on Raspberry/Pi. |
+| `esp32_qr_vault` | nSealr Vault — ESP32 edition | Air-gapped ESP32-P4 QR vault (Waveshare ESP32-P4-WIFI6-Touch-LCD-3.5, OV5647 camera). |
+| `esp32_usb_nip46` | nSealr Key | Connected touch signer; one universal firmware across the curated Waveshare ESP32-S3-Touch family. |
+| `smartcard` | nSealr Card | Display-less Satochip JavaCard on an EAL6+ secure element, in-card BIP-340 Schnorr. |
+| `custom_hardware_wallet` | nSealr One | Minimal all-SMD board: ESP32-S3 host + TROPIC01-backed encrypted vault + key-split, USB-C, battery-operable. |
 
 ## The implementation rule
 
@@ -31,7 +44,7 @@ groups**. The first one is the stateless QR vault:
 
 | Group               | Solutions                       | Same-target features                                                                                                                  |
 |---------------------|---------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| `stateless_qr_vault`| `raspberry_qr_vault`, `esp32_qr_vault` | `request_validation_v0`, `nostr_event_review_universal`, `review_detail_pages`, `approval_digest_binding`, `physical_approval`, `sign_event_bip340`, `qr_static_request`, `qr_animated_request`, `qr_response`, `stateless_session_custody`, `manual_only_policy`, `device_display_review`, `response_verification` |
+| `stateless_qr_vault`| `raspberry_qr_vault`, `esp32_qr_vault` | `request_validation_v0`, `nostr_event_review_universal`, `review_detail_pages`, `approval_digest_binding`, `physical_approval`, `sign_event_bip340`, `qr_static_request`, `qr_animated_request`, `qr_response`, `stateless_session_custody`, `seedqr_session_import`, `nip19_nsec_session_import`, `session_source_generation`, `manual_only_policy`, `device_display_review`, `response_verification` |
 
 If a future ESP32 QR variant shipped — say with a different display —
 it joins the same parity group and must keep the same behavior on

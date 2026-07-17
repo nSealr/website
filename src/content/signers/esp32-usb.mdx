@@ -1,9 +1,9 @@
 ---
 family: 'esp32-usb'
-displayName: 'ESP32 USB/NIP-46 Signer'
-tagline: 'Daily-use USB/display signer firmware for ESP32-S3 first, with classic ESP32/TTGO compatibility later. Real signing still gated.'
+displayName: 'nSealr Key'
+tagline: 'Daily-use connected touch signer running one universal firmware across the curated Waveshare ESP32-S3-Touch family. Real signing still gated.'
 repo: 'https://github.com/nSealr/esp32'
-productGoal: 'A daily-use connected ESP32-S3 signer with USB/display review, optional scoped policy automation through the companion, and real signing disabled until hardening gates pass.'
+productGoal: 'A connected touch signer running one universal Rust firmware across the curated Waveshare ESP32-S3-Touch-LCD family (2.8 V2 primary, 1.69 compact, 2.0 standard, 3.5B premium), hardened with Secure Boot v2 + Flash Encryption and no discrete secure element, with USB/display review, optional scoped policy automation through the companion, and real signing disabled until hardening gates pass.'
 maturity: 'prototype'
 order: 3
 capabilities:
@@ -21,7 +21,7 @@ capabilities:
   - { id: 'response_verification',        target: 'required', current: 'implemented', contractId: 'signed-response-verification-v0' }
   - { id: 'stateless_session_custody',    target: 'forbidden', current: 'forbidden' }
 requiredText:
-  - 'ESP32 USB/NIP-46 Signer'
+  - 'nSealr Key'
   - 'NIP-46 bridge decisions'
   - 'nsealr nip46 decide'
   - 'request-bound capture checks'
@@ -36,7 +36,16 @@ requiredText:
 
 import FeatureMatrix from '~/components/FeatureMatrix.astro';
 
-Daily-use connected ESP32-S3 signer with USB/display review and bridged NIP-46 inputs.
+Daily-use connected touch signer with USB/display review and bridged NIP-46 inputs. **One universal Rust firmware** runs across the curated Waveshare ESP32-S3-Touch-LCD family, hardened with Secure Boot v2 + Flash Encryption and no discrete secure element — many devices, one firmware.
+
+## Hardware family
+
+The universal firmware targets four curated boards, distinguished by display size and role:
+
+- **Waveshare ESP32-S3-Touch-LCD-2.8 V2** — 240×320 IPS, the **primary** reference board.
+- **Waveshare ESP32-S3-Touch-LCD-1.69** — 240×280, the **compact** board.
+- **Waveshare ESP32-S3-Touch-LCD-2.0** — 240×320, the **standard** board.
+- **Waveshare ESP32-S3-Touch-LCD-3.5B** — 320×480, the **premium** board.
 
 ## Boundaries
 
@@ -44,6 +53,10 @@ Daily-use connected ESP32-S3 signer with USB/display review and bridged NIP-46 i
 - USB transport uses bounded frames with **request-bound capture checks**. Bring-up is covered by `nsealr serial-line exchange`.
 - Smoke evidence: **companion-to-device serial smoke**, **sign-event-disabled smoke**, **firmware protocol evidence**, **Unicode fallback** tracking.
 - `signing_disabled` until hardening gates pass; approvals are bound to `approval_digest`.
+
+## Secret lifecycle
+
+Unlike the QR vaults, the Key holds a **persistent secret** in encrypted flash (Flash Encryption). The seed is generated on device or imported from BIP-39 words. A **device PIN** — firmware-enforced and rate-limited — gates use of the key. **Backup-at-creation** exports BIP-39 words plus a SeedQR on the trusted display, one-time, at seed creation. An optional **BIP-39 passphrase** is supported.
 
 <FeatureMatrix family="esp32-usb" />
 

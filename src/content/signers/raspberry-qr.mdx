@@ -1,7 +1,7 @@
 ---
 family: 'raspberry-qr'
-displayName: 'Raspberry/Pi Stateless QR Vault'
-tagline: 'Air-gapped RAM-only Raspberry/Pi flow inspired by SeedSigner principles for Nostr events.'
+displayName: 'nSealr Vault — Pi edition'
+tagline: 'Air-gapped RAM-only Raspberry/Pi QR vault inspired by SeedSigner principles for Nostr events.'
 repo: 'https://github.com/nSealr/raspberry'
 productGoal: 'A SeedSigner-like airgapped Nostr signer for Raspberry/Pi hardware with RAM-only key custody and QR request/response workflows.'
 maturity: 'alpha'
@@ -23,7 +23,7 @@ capabilities:
   - { id: 'persistent_secret_custody',    target: 'forbidden', current: 'forbidden' }
   - { id: 'scoped_policy_automation',     target: 'forbidden', current: 'forbidden' }
 requiredText:
-  - 'Raspberry/Pi Stateless QR Vault'
+  - 'nSealr Vault — Pi edition'
   - 'Raspberry/Pi kit requirements'
   - 'Raspberry/Pi OS profile'
   - 'review detail pages'
@@ -46,6 +46,15 @@ The primary kit follows the SeedSigner Pi Zero pattern:
 - SeedSigner-OS-inspired minimal runtime (**Raspberry/Pi OS profile**: removable boot media, disabled or absent wireless, RAM-only session custody, no swap during signing, no remote access during signing, no persistent signing-secret storage).
 
 Pi 3/4/5 variants can be development or accessibility targets later only if they preserve the same offline QR, local review, physical approval, and RAM-only custody boundary. See the **Raspberry/Pi kit requirements** in `nSealr/hardware`.
+
+## Secret lifecycle
+
+Secret material lives in RAM only for the current signing session; nothing is persisted, so there is no device PIN. Session sources can be:
+
+- **Imported** by scanning a SeedSigner-interoperable **Standard SeedQR or CompactSeedQR**, or a canonical NIP-19 `nsec`, after a secret-hidden source review.
+- **Generated on device** — BIP-39 words with optional extra entropy from **dice rolls** or a **camera snap** (the Pi kit has a camera), behind a one-time local backup/export ceremony before use.
+
+Both SeedQR directions are supported: the vault can **display back** a Standard SeedQR or CompactSeedQR for interoperable backup, not only scan one in. An optional **BIP-39 passphrase** is supported for NIP-06 derivation. This is the same vault lifecycle as the ESP32 edition.
 
 ## Capabilities
 
