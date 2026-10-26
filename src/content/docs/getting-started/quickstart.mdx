@@ -33,14 +33,25 @@ companion, raspberry or specs as live sibling dependencies.
 
 ## Inspect the retained CLI
 
-From the prepared runtime's product checkout, with its tool environment:
+Use the same absolute runtime destination you prepared above. Select its public
+product checkout and isolated tool/configuration paths (from
+`tools/baseline/bootstrap.py:environment`), rather than a coordinator checkout:
 
 ```sh
+NSEALR_RUNTIME=/absolute/absent/runtime
+export PATH="$NSEALR_RUNTIME/.tools/bin:$NSEALR_RUNTIME/.tools/python/bin:$NSEALR_RUNTIME/.tools/node/bin:$NSEALR_RUNTIME/.tools/cargo/bin:/usr/bin:/bin"
+export npm_config_userconfig="$NSEALR_RUNTIME/.tools/npmrc"
+export npm_config_globalconfig="$NSEALR_RUNTIME/.tools/global-npmrc"
+cd "$NSEALR_RUNTIME/nsealr"
 pnpm nsealr --help
 pnpm nsealr verify-response \
-  --request protocols/contracts/v1/examples/request-kind-1-basic.json \
-  --response protocols/contracts/v1/examples/response-kind-1-basic.json
+  --request "$PWD/protocols/contracts/v1/examples/request-kind-1-basic.json" \
+  --response "$PWD/protocols/contracts/v1/examples/response-kind-1-basic.json"
 ```
+
+The caller expands `$PWD` before pnpm runs the CLI in its package directory;
+the request and response paths therefore remain absolute. This command does
+not depend on the CLI child's working directory.
 
 This verifies an existing public fixture's request binding, canonical event ID
 and signature. It does not create a signature, prove device approval, discover
