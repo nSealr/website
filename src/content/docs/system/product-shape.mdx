@@ -1,64 +1,48 @@
 ---
 title: 'Product shape'
-description: 'One companion plus five signer solutions. Not five unrelated experiments.'
+description: 'Three initial device profiles, one shared signing engine and Bridge.'
 section: 'system'
 order: 1
-updatedAt: 2026-05-20
+updatedAt: 2026-10-27
+status: 'draft'
 ---
 
 import SystemMap from '~/components/SystemMap.astro';
 
-The practical product is a shared companion plus **five signer solutions**,
-not five unrelated experiments. Every shared feature behaves the same
-across implementations because the `contract_id` in
-[`nSealr/specs`](https://github.com/nSealr/specs) defines it once.
+The first milestone is a usable client-to-device-to-verified-response workflow
+for three independently qualified device paths.
 
 <SystemMap />
 
-## The five signer solutions
+| Initial path | Intended profile | Current limitation |
+| --- | --- | --- |
+| ESP32-S3 | Connected USB, physical review, no SE or persistent identity vault | Public-fixture round trips exist; session custody, recovery, entropy and interface lifecycle still need release qualification. |
+| Raspberry Pi | Offline QR, session custody; reload after power loss | Image/adapters and the assembled-device workflow have separate physical gates. |
+| ESP32-P4 | Offline camera/display QR, session custody; reload after power loss | Public-fixture signing exists; complete manual host use and offline conditions remain under qualification. |
 
-A solution is the unit at which feature parity is contracted. See the
-[Signers section](/docs/signers/raspberry-qr/) for the per-solution
-capability matrix and live maturity.
+Connected/offline describe interaction, not a security ranking. USB-only S3
+does not require a battery. Offline Pi/P4 prerequisites do not establish radio
+absence merely because a host flag says so.
 
-- **nSealr Vault — Pi edition** — air-gapped, RAM-only, SeedSigner-style Raspberry Pi Zero.
-- **nSealr Vault — ESP32 edition** — air-gapped ESP32-P4 camera + display (Waveshare P4-3.5).
-- **nSealr Key** — daily-use connected ESP32-S3 signer (universal Waveshare S3-Touch family), real signing gated.
-- **nSealr Card** — display-less Satochip JavaCard, in-card signing, external review required.
-- **nSealr One** — USB-C flagship: hardened firmware signer + TROPIC01-backed vault + key-split, battery-operable, checked against `persistent-secret-custody-v0`.
+## Shared ownership
 
-## Companion surfaces
+[nSealr/nsealr](https://github.com/nSealr/nsealr) owns the portable normative Rust
+engine, device apps, Bridge/CLI/service/client/browser packages, the TypeScript
+SDK, contracts and the sole task graph. Host software has no identity custody
+or device-approval authority. Reference oracles and test-only software signers
+are development tools, not a second production engine.
 
-The companion is a **single TypeScript monorepo** that ships multiple
-access surfaces over the same secretless platform. Every surface reuses
-the same validation, transport, and response-verification logic.
+Local service authorization, expected-user binding, bounded transport,
+cancellation, retry/reconnect and response verification are part of the usable
+workflow. An API helper or valid signature alone does not qualify that workflow.
 
-| Surface          | Purpose |
-|------------------|---------|
-| `nsealr` CLI     | Request construction, transports, verification, audit export. |
-| npm SDK          | Embed the companion in any Nostr client or service. |
-| Browser extension| NIP-07 surface backed by a signer. |
-| Local app        | Desktop UI for routing and review. |
-| Local service    | Background daemon for the extension and apps. |
-| NIP-46 bridge    | Converts already-decrypted NIP-46 payloads into standard nSealr signing requests. |
-| NIP-46 relay session | Runs a real remote-signer session over relays (NIP-44 + request/response correlation) with an ephemeral client transport key. |
+## Future work preserved
 
-The companion is **never trusted with the user's key custody**. It
-composes requests, moves them over the selected transport, and verifies
-every successful response against shared fixtures. The only secret it
-holds is an ephemeral client transport key for NIP-46 relay sessions
-(RAM-only, never the user signing key).
+Custom Board and its Nostr-free embedded Board SDK remain separate future
+work and are not prerequisites for the three initial devices. That embedded
+SDK is distinct from the product's TypeScript SDK. Smartcard research is
+retired. Historical architecture pages are not current release promises.
 
-## Trust boundaries (summary)
-
-| Layer        | Trusted with… | Not trusted with… |
-|--------------|---------------|-------------------|
-| Client       | building requests | private keys |
-| Companion    | routing & response verification | private keys, policy execution |
-| QR vault     | RAM-only signing | persistent secret |
-| USB signer   | persistent secret (after gates) | the universe outside its boundary |
-| Smartcard    | persistent secret, APDU signing | trusted event review (display-less) |
-| Custom HW    | persistent secret + display review (after gates), under `persistent-secret-custody-v0` | air-gapped claims, direct TROPIC01 Schnorr claims before evidence |
-
-The [trust boundaries page](/docs/security/trust-boundaries/) and the
-[threat model](/docs/security/threat-model/) cover this in depth.
+The [current requirements](https://github.com/nSealr/nsealr/tree/main/docs/product)
+and [task graph](https://github.com/nSealr/nsealr/blob/main/plan/work-items.json)
+define the accepted scope. No device production-security claim is made.

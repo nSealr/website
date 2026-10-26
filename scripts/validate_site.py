@@ -23,36 +23,8 @@ SIGNERS_SRC = ROOT / "src" / "content" / "signers"
 
 
 HOME_REQUIRED_TEXT = [
-    "nSealr",
-    "open-source",
-    "non-profit",
-    "Companion",
-    "Raspberry",
-    "ESP32",
-    "Smartcard",
-    "Hardware",
-    "nSealr Vault — Pi edition",
-    "nSealr Vault — ESP32 edition",
-    "nSealr Key",
-    "nSealr Card",
-    "nSealr One",
-    "approval_digest",
-    "signing_disabled",
-    "NIP-46 bridge decisions",
-    "nsealr nip46 decide",
-    "request-bound capture checks",
-    "nsealr serial-line exchange",
-    "sign-event-disabled smoke",
-    "review detail pages",
-    "T-Display S3 review scenario smoke",
-    "companion-to-device serial smoke",
-    "firmware protocol evidence",
-    "Unicode fallback",
-    "Raspberry/Pi kit requirements",
-    "Raspberry/Pi OS profile",
-    "nsealr-smartcard CLI probes",
-    "no trusted review or real-card compatibility claim",
-    "No production security claim",
+    "nSealr", "open-source", "non-profit", "Bridge", "ESP32-S3",
+    "Raspberry Pi", "ESP32-P4", "session", "Rust", "No production security claim",
 ]
 
 SECURITY_REQUIRED_TEXT = [

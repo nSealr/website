@@ -27,6 +27,9 @@ const currentHref = Astro.url.pathname;
         <h1>{title}</h1>
         {status !== 'stable' && <StatusPill variant={status === 'draft' ? 'pending' : 'warn'}>{status}</StatusPill>}
       </header>
+      {updatedAt && updatedAt < new Date('2026-10-27T00:00:00Z') && (
+        <p><strong>Earlier research snapshot.</strong> This page predates the current consolidation and milestone. Its installation commands and capability statements are historical until checked against <a href="https://github.com/nSealr/nsealr">the current public product source and requirements</a>. No device release or real-key custody qualification is implied.</p>
+      )}
       <slot />
       <PrevNext prev={prev} next={next} />
       {updatedAt && (

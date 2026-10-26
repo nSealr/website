@@ -1,100 +1,25 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
-
-const REPOS = [
-  { href: 'https://github.com/nSealr/specs',     name: 'specs',     desc: 'Protocol, conformance vectors, signer feature matrix.' },
-  { href: 'https://github.com/nSealr/companion', name: 'companion', desc: 'Host-side software (CLI, SDK, extension, app, service, NIP-46 bridge).' },
-  { href: 'https://github.com/nSealr/raspberry', name: 'raspberry', desc: 'nSealr Vault — Pi edition: Raspberry/Pi stateless QR vault software.' },
-  { href: 'https://github.com/nSealr/esp32',     name: 'esp32',     desc: 'Firmware for the ESP32-P4 QR vault (nSealr Vault — ESP32 edition) and ESP32-S3 USB signer (nSealr Key) lines.' },
-  { href: 'https://github.com/nSealr/smartcard', name: 'smartcard', desc: 'nSealr Card: Satochip JavaCard signer research, simulator, APDU codec.' },
-  { href: 'https://github.com/nSealr/hardware', name: 'hardware', desc: 'Open hardware kit requirements, BOM, KiCad files, enclosures, jigs.' },
-  { href: 'https://github.com/nSealr/lab',       name: 'lab',       desc: 'Source-backed research, threat modelling, status tracking.' },
-];
-
-const NOT_THIS = [
-  'A closed hardware wallet product. The hardware files are open.',
-  'A custodial service. The companion is secretless; it never holds keys.',
-  'A relay implementation. NIP-46 relay sessions are upstream.',
-  'A funded company. There is no commercial entity, no token, no sale.',
-  'A "drop-in production signer". Real signing stays gated until hardening lands.',
-];
-
-const FOR_YOU_IF = [
-  'You are a Nostr user who wants to take your private key off your daily browser.',
-  'You are a developer integrating signers into clients, relays, or services.',
-  'You are a builder who wants to assemble or modify open hardware.',
-  'You are a security reviewer evaluating Nostr signing architecture.',
-];
 ---
-<BaseLayout title="About — nSealr" description="About the non-profit open-source nSealr program.">
+<BaseLayout title="About — nSealr" description="Open-source Nostr signing devices, shared software and explicit development limits.">
   <section class="container page">
     <p class="eyebrow">// about</p>
-    <h1 class="page__title">nSealr is not a product.</h1>
-    <p class="lead">
-      It is a non-profit, open-source program for Nostr signing devices,
-      companion software, shared specs, and build documentation. The work
-      lives in seven repositories on GitHub. There is no commercial entity
-      behind it.
-    </p>
-
-    <h2 class="page__h2">What we are building</h2>
-    <p>
-      One <strong>companion</strong> (host-side, secretless) plus <strong>five signer solutions</strong>
-      (nSealr Vault — Pi edition, nSealr Vault — ESP32 edition, nSealr Key,
-      nSealr Card, nSealr One). The five solutions are not parallel
-      experiments — they share <a href="/docs/specs/feature-matrix/"><code>contract_id</code>s</a> from
-      <a href="https://github.com/nSealr/specs">nSealr/specs</a>, so a
-      feature like <code>approval_digest</code> behaves identically wherever
-      it is implemented.
-    </p>
-
-    <h2 class="page__h2">Who it is for</h2>
+    <h1 class="page__title">Open-source Nostr signing devices.</h1>
+    <p class="lead">nSealr is a non-profit open-source hardware and software project. It develops devices that let a person review and approve what is signed while ordinary clients keep no identity key.</p>
+    <h2 class="page__h2">The first milestone</h2>
+    <p>A connected ESP32-S3 with display and physical confirmation, without a secure element or persistent identity vault; and independent offline Raspberry Pi and ESP32-P4 signers with session custody. The shared Rust engine, Bridge, CLI/service, browser/client integration and TypeScript SDK belong to the complete user workflow.</p>
+    <p>Public-fixture physical signing and verified responses are development evidence. Entropy, recovery, interface lifecycle, installation and each profile's security gates remain explicit. No production-ready device or real-key custody qualification is claimed.</p>
+    <h2 class="page__h2">Current owners</h2>
     <ul class="page__list">
-      {FOR_YOU_IF.map(s => <li>{s}</li>)}
+      <li><a href="https://github.com/nSealr/nsealr">nsealr</a>: Signer, Bridge, device apps, shared contracts, requirements and the sole task graph.</li>
+      <li><a href="https://github.com/nSealr/website">website</a> and <a href="https://github.com/nSealr/.github">.github</a>: public documentation and community guidance.</li>
+      <li><a href="https://github.com/nSealr/hardware">hardware</a> and <a href="https://github.com/nSealr/board-sdk">board-sdk</a>: future programmable board and independent embedded platform, outside the initial release path.</li>
     </ul>
-
-    <h2 class="page__h2">What it is not</h2>
-    <ul class="page__list">
-      {NOT_THIS.map(s => <li>{s}</li>)}
-    </ul>
-
-    <h2 class="page__h2">Governance</h2>
-    <p>
-      There is no company, no foundation, no incorporated entity behind
-      nSealr today. Each repository accepts pull requests under MIT (code)
-      or CC0-1.0 (content); the conformance test corpus in
-      <a href="https://github.com/nSealr/specs">nSealr/specs</a> is the
-      source of truth for cross-solution behavior. Disagreements are
-      resolved by the spec, not by precedent in any one firmware tree.
-    </p>
-
-    <h2 class="page__h2">Repositories</h2>
-    <ul class="page__list page__repos">
-      {REPOS.map(r => (
-        <li>
-          <a href={r.href}>{r.name}</a>
-          {r.desc && <> — {r.desc}</>}
-        </li>
-      ))}
-    </ul>
-
+    <p>Selected companion, raspberry and specs source was consolidated through the reviewed A02 migration. Original repositories preserve source history and licenses. Smartcard research is retired.</p>
+    <h2 class="page__h2">Source and contribution</h2>
+    <p>Start with the <a href="https://github.com/nSealr/nsealr">current product README</a>, <a href="https://github.com/nSealr/nsealr/tree/main/docs/product">requirements</a> and <a href="/contributing/">contribution guide</a>. Historical capability pages and blog posts are dated context, not a current release catalog.</p>
     <h2 class="page__h2">License</h2>
-    <p>
-      Code is MIT-licensed. Documentation and content will move to CC0-1.0
-      when published. Hardware artifacts under
-      <a href="https://github.com/nSealr/hardware">nSealr/hardware</a> ship
-      under CERN Open Hardware Licence v2 (permissive). Each repository
-      declares the licence in its <code>LICENSE</code> file.
-    </p>
-
-    <h2 class="page__h2">How to get involved</h2>
-    <p>
-      Read <a href="/contributing/">Contributing</a>, pick a repository
-      that fits the area you care about, and open an issue or PR. The
-      easiest place to start is reading
-      <a href="https://github.com/nSealr/specs"><code>nSealr/specs</code></a> —
-      everything else hangs off it.
-    </p>
+    <p>Each repository and imported component retains its own license and attribution. Software, specifications and hardware have distinct notices; a migration does not relicense third-party material. See the source LICENSE and retained notices for the artifact you use.</p>
   </section>
 </BaseLayout>
 

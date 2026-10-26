@@ -26,6 +26,9 @@ requiredText:
   - 'key-split'
 ---
 
+> **Current scope (2026-10-27):** Custom Board and its independent embedded Board SDK are future work, outside the first milestone critical path. The earlier wallet architecture below is historical research, not an accepted current component or release decision. See [current requirements](https://github.com/nSealr/nsealr/tree/main/docs/product).
+
+
 import FeatureMatrix from '~/components/FeatureMatrix.astro';
 
 Research family for a purpose-built persistent-secret Nostr hardware wallet, now targeting a **minimal, all-SMD, display-agnostic** board (KiCad `custom-wallet-min`). The old complex board is **archived**. A hardened Rust firmware on an ESP32-S3-WROOM-1-N16R8 host signs behind a TROPIC01-backed encrypted vault; the previous over-scoped board is superseded.

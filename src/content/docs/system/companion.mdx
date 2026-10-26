@@ -1,85 +1,49 @@
 ---
-title: 'Companion'
-description: 'Host-side, secretless software that routes signing requests and verifies responses.'
+title: 'Bridge and host software'
+description: 'Current ownership, client/service entry points and trust boundaries.'
 section: 'system'
 order: 2
-updatedAt: 2026-05-20
+updatedAt: 2026-10-27
+status: 'draft'
 ---
 
-The **companion** is the host-side piece of every nSealr signing flow.
-It is **secretless**: it never holds private keys, never decides what
-gets signed in your name, and never owns the policy. It does the
-plumbing — and verifies the answer.
+Bridge connects clients to the selected signer and verifies the response for
+the separately expected identity. The normative device engine is Rust; host
+transport code does not approve signatures or hold the user's identity key.
+NIP-46 client/transport keys have a distinct bounded lifecycle.
 
-## Responsibilities
+## Current source
 
-1. **Request construction** — given an event template from a Nostr client
-   or SDK, build a v0 signing request, normalize fields, and enforce the
-   shared implementation limits (max event size, max tag count, etc.).
-2. **Transport** — move the request to the active signer over QR, USB
-   serial, smartcard APDUs, or NIP-46 bridged payloads. Each transport
-   has its own bounded framing and integrity checks.
-3. **Policy proposal** — for routes that allow scoped automation, the
-   companion **proposes** policy to the signer; it does not enforce
-   policy on its own.
-4. **Response verification** — every signed response is checked against
-   `nSealr/specs` fixtures: signature math (BIP-340 / secp256k1), event
-   id, public key, and `approval_digest` consistency.
-5. **Audit export** — request, displayed material, approval transcript,
-   and signed output can be exported for offline review.
+The [consolidated product](https://github.com/nSealr/nsealr) owns:
 
-## Surfaces
+- `apps/bridge/cli` and `apps/bridge/service`;
+- client, protocol, policy, QR and transport modules in `packages`;
+- browser-provider and extension integration;
+- `packages/sdk`, with browser and Node entry points;
+- the authoritative `protocols/contracts/v1` contracts and vectors.
 
-Every surface is a thin shell around the same packages.
+The old companion/specs/raspberry repositories retain migration history.
+Use the [public development quickstart](/docs/getting-started/quickstart/);
+no private lab or legacy sibling checkout is required.
 
-### `nsealr` CLI
+## Verified development behavior and remaining gates
 
-The default surface. Used for bring-up, integration tests, and offline
-verification.
+The S3 public-fixture flow has exercised a real CLI/client/service/USB path,
+physical approval and rejection, and cryptographically verified output.
+That evidence does not qualify general session custody, entropy, recovery,
+every client, or production release installation.
 
-```sh
-$ nsealr request sign-event --event-template event-template.json --out req.json
-$ nsealr verify-response --request req.json --response resp.json
-✓ approval_digest matches reviewed material
-✓ event id matches BIP-340 signature
-```
+P4 manual QR host wiring is still an explicitly bounded public experiment
+awaiting its full source/artifact and optical workflow qualification. Its
+future browser/manual native-host integration is not implied by the Node path.
 
-Subcommands also include `nsealr nip46 decide` (already-decrypted
-payload policy check) and `nsealr serial-line exchange` (one-shot
-local USB-serial bring-up).
+Methods and transport availability remain profile-specific. Generic metadata
+must not turn a conformance fixture into an available device, and host previews
+cannot stand in for complete physical pages or fresh consent. Unsupported
+automation or offline messaging must be refused explicitly.
 
-### npm SDK
-
-`@nsealr/sdk` exposes the same building blocks as the CLI to any
-TypeScript / JavaScript host. Used by the extension, app, and service.
-
-### Browser extension
-
-A NIP-07-compatible extension that delegates `signEvent` to the
-companion, which routes to the active signer. Never holds keys.
-
-### Local app
-
-A desktop UI for users who want a visual approval queue plus signer
-selector. Wraps the local service.
-
-### Local service
-
-Background daemon. The extension and app talk to it over an authenticated
-local socket — keeps the heavy lifting (transports, verification) in one
-place.
-
-### NIP-46 bridge
-
-Converts **already-decrypted** NIP-46 requests into standard nSealr
-signing requests. The bridge does not implement relay sessions or
-encryption — that is intentional: the companion stays a secretless
-router.
-
-## What the companion does **not** do
-
-- It does **not** hold private keys, ever, for any solution.
-- It does **not** present a trusted review screen. The review screen
-  lives on the signer (where the signer has one).
-- It does **not** decide policy autonomously. Even when scoped
-  automation is configured, the signer is the one that enforces it.
+The [current product documentation](https://github.com/nSealr/nsealr/tree/main/docs/bridge)
+and [task graph](https://github.com/nSealr/nsealr/blob/main/plan/work-items.json)
+carry exact source, version, admission and evidence limits. No global browser,
+npm, NIP-46 client or device release compatibility claim follows from a helper
+being exported.

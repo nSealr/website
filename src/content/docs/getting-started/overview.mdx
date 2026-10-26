@@ -1,46 +1,44 @@
 ---
 title: 'Overview'
-description: 'What nSealr is, who it is for, and how a signing request flows from client to signer.'
+description: 'Current nSealr device paths, shared software and development limits.'
 section: 'getting-started'
 order: 1
-updatedAt: 2026-05-16
+updatedAt: 2026-10-27
+status: 'draft'
 ---
 
-**nSealr** is a non-profit, open-source program for Nostr signing devices.
-It is not a closed hardware wallet product. The shared shape is one
-**companion** plus **five signer solutions**, with shared specs and
-build documentation in
-[`nSealr/specs`](https://github.com/nSealr/specs),
-[`nSealr/hardware`](https://github.com/nSealr/hardware), and per-solution
-firmware repositories.
+nSealr develops open-source Nostr signing devices and the software needed to
+use them. The first milestone covers a connected ESP32-S3 without a secure
+element or persistent identity vault, and independent Raspberry Pi and
+ESP32-P4 offline session signers.
 
-## Why hardware signing for Nostr?
+The shared Rust engine owns Nostr signing semantics. Bridge, CLI, service,
+client/browser integration and the TypeScript SDK connect the user workflow.
+The host prepares requests and verifies responses for a separately selected
+identity. It cannot replace device review or grant physical approval.
 
-A Nostr account is just a keypair. Whoever holds the secret key can
-speak as you, forever, with no recovery path. Where the key lives is
-the only honest answer to "is this account safe?". A hardware signer
-moves the answer from "everywhere a program can read it" to "inside a
-device, behind an explicit user gesture".
+## Current source and evidence
 
-See the [Why a hardware signer](/blog/2026-05-15-why-hardware-signer-for-nostr/)
-blog post for the long-form argument.
+Start at [nSealr/nsealr](https://github.com/nSealr/nsealr), which owns device
+apps, host packages, contracts and the public task graph. Selected companion,
+raspberry and specs sources have migrated there. Original repositories remain
+history; they are not separate current installation prerequisites.
 
-## What this site covers
+Public-fixture signatures and physical approval/rejection traces exist for
+the S3 and P4 development paths. They do not establish entropy quality,
+custody, recovery, offline state, complete interoperability or a device release.
+Pi image/adapters and its assembled-device workflow have separate gates.
+There is no production-ready signer for real identities advertised here.
 
-- **[Getting Started](/docs/getting-started/overview/)** — what you're reading: what nSealr is, the signing flow, a glossary.
-- **[System](/docs/system/product-shape/)** — product shape, companion surfaces, transports.
-- **[Guides](/docs/guides/build-raspberry-qr-vault/)** — hands-on build, flash, and verify walkthroughs.
-- **[Signers](/docs/signers/raspberry-qr/)** — per-solution status pages with the capability matrix.
-- **[Specs & Reference](/docs/specs/event-canonicalization/)** — protocol contracts: request format, QR envelope, transports.
-- **[Security](/docs/security/trust-boundaries/)** — trust boundaries, threat model, safety contracts.
+## Navigate
 
-## Pre-production
+- [Development quickstart](/docs/getting-started/quickstart/) uses the public product checkout.
+- [Product shape](/docs/system/product-shape/) identifies the three initial paths and future board work.
+- [Bridge](/docs/system/companion/) explains current host responsibilities and limits.
+- [Current product requirements](https://github.com/nSealr/nsealr/tree/main/docs/product) and
+  [task graph](https://github.com/nSealr/nsealr/blob/main/plan/work-items.json) own accepted scope.
 
-No part of this program currently makes a production security claim.
-Real `sign_event` is **`signing_disabled`** on every prototype firmware
-until camera, display, button, provisioning, and secure-boot gates pass
-independently.
-
-See the [trust boundaries page](/docs/security/trust-boundaries/) for the
-contracts the site enforces today, and the [glossary](/docs/getting-started/glossary/)
-for the meaning of `approval_digest`, `signing_disabled`, and friends.
+Older detailed guides and capability tables remain marked as research
+snapshots. Their commands and claims need reconciliation with the current
+source before use. Smartcard research is retired; custom hardware and its
+embedded Board SDK are preserved future work.
