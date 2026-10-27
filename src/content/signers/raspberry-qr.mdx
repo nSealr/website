@@ -1,10 +1,9 @@
 ---
 family: 'raspberry-qr'
-displayName: 'nSealr Vault — Pi edition'
-tagline: 'Air-gapped RAM-only Raspberry/Pi QR vault inspired by SeedSigner principles for Nostr events.'
-repo: 'https://github.com/nSealr/raspberry'
-productGoal: 'A SeedSigner-like airgapped Nostr signer for Raspberry/Pi hardware with RAM-only key custody and QR request/response workflows.'
-maturity: 'alpha'
+displayName: 'Raspberry Pi offline signer'
+tagline: 'Offline session profile under development and physical qualification.'
+repo: 'https://github.com/nSealr/nsealr'
+maturity: 'prototype'
 order: 1
 capabilities:
   - { id: 'request_validation_v0',        target: 'required', current: 'implemented', contractId: 'signing-request-v0+implementation-limits-v0+invalid-vectors' }
@@ -29,6 +28,11 @@ requiredText:
   - 'review detail pages'
   - 'approval_digest'
 ---
+
+> Historical name: **nSealr Vault — Pi edition**. This identifies the earlier research profile, not a current release name.
+
+> **Current status (2026-10-27): pre-release.** Current source, requirements and evidence are in [nSealr/nsealr](https://github.com/nSealr/nsealr). The first milestone uses session custody, with no production-ready device or real-identity security claim. The older capability table and narrative below are historical research context, not current installation or release instructions.
+
 
 import FeatureMatrix from '~/components/FeatureMatrix.astro';
 

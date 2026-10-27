@@ -1,106 +1,73 @@
 ---
-title: 'Quickstart (no hardware)'
-description: 'Five minutes from zero to a verified signed-fixture event — using only the companion and the desktop simulator.'
+title: 'Development quickstart'
+description: 'Use the consolidated public repository and pinned Linux bootstrap.'
 section: 'getting-started'
 order: 4
-updatedAt: 2026-05-20
+updatedAt: 2026-10-27
+status: 'draft'
 ---
 
-You do not need any hardware to see the signing flow end-to-end. The
-Raspberry/Pi flow has a desktop simulator that signs fixture events,
-and the companion verifies them. This page walks through it.
+This is a developer entry point, not installation of a qualified device
+release. Use public fixtures only. No hardware, private repository or
+production identity is needed for the software checks.
 
-## What you'll have at the end
-
-- The `nsealr` CLI installed locally.
-- A signed-fixture event you produced yourself.
-- The companion verifying it against the same shared contracts that
-  govern the real hardware path.
-
-## 1. Install the companion CLI
+## Public source
 
 ```sh
-git clone https://github.com/nSealr/companion
-cd companion
-make setup
+git clone https://github.com/nSealr/nsealr.git
+cd nsealr
+python3 tools/baseline/bootstrap.py /absolute/absent/runtime
+python3 /absolute/absent/runtime/nsealr/tools/baseline/run.py /absolute/absent/runtime
 ```
 
-Verify:
+Choose a new absolute destination on Linux x86_64/glibc. The pinned bootstrap
+rejects destination reuse and dirty/drifting source. Read its
+[public guide](https://github.com/nSealr/nsealr/tree/main/tools/baseline) for
+prerequisites, exact dependency pins, network requirements and limits.
+The complete run records actual commands and failures; it is not a five-minute
+device installation promise.
+
+The product checkout contains `apps/bridge`, `packages`, `apps/pi`, device
+apps and the authoritative `protocols/contracts/v1` artifact. Do not clone
+companion, raspberry or specs as live sibling dependencies.
+
+## Inspect the retained CLI
+
+Use the same absolute runtime destination you prepared above. Select its public
+product checkout and isolated tool/configuration paths (from
+`tools/baseline/bootstrap.py:environment`), rather than a coordinator checkout:
 
 ```sh
-nsealr --version
-# → nsealr <semver>
+NSEALR_RUNTIME=/absolute/absent/runtime
+export PATH="$NSEALR_RUNTIME/.tools/bin:$NSEALR_RUNTIME/.tools/python/bin:$NSEALR_RUNTIME/.tools/node/bin:$NSEALR_RUNTIME/.tools/cargo/bin:/usr/bin:/bin"
+export npm_config_userconfig="$NSEALR_RUNTIME/.tools/npmrc"
+export npm_config_globalconfig="$NSEALR_RUNTIME/.tools/global-npmrc"
+cd "$NSEALR_RUNTIME/nsealr"
+pnpm nsealr --help
+pnpm nsealr verify-response \
+  --request "$PWD/protocols/contracts/v1/examples/request-kind-1-basic.json" \
+  --response "$PWD/protocols/contracts/v1/examples/response-kind-1-basic.json"
 ```
 
-## 2. Install the Raspberry/Pi desktop simulator
+The caller expands `$PWD` before pnpm runs the CLI in its package directory;
+the request and response paths therefore remain absolute. This command does
+not depend on the CLI child's working directory.
 
-The Pi software runs on desktop too — it's the same Python package
-with hardware adapters stubbed out.
+This verifies an existing public fixture's request binding, canonical event ID
+and signature. It does not create a signature, prove device approval, discover
+an identity or independently select the expected user's key. A real round trip
+also needs the admitted profile, separate expected-key pin, current local
+grants, actual transport lifecycle and physical review.
 
-```sh
-git clone https://github.com/nSealr/raspberry
-cd raspberry
-make setup
-```
+## Before using a device
 
-## 3. Build a signing request
+Use the current [product requirements](https://github.com/nSealr/nsealr/tree/main/docs/product)
+and the exact app/qualification evidence linked by the
+[task graph](https://github.com/nSealr/nsealr/blob/main/plan/work-items.json).
+Development binaries and public-fixture paths are not supported release
+installers. Board association, entropy, session recovery and physical limits
+remain profile-specific. Browser installation and live-client compatibility
+need their own named evidence.
 
-A v0 signing request is just JSON — see
-[Signing request v0](/docs/specs/signing-request/) for the shape.
-A canned fixture lives in `nSealr/specs/vectors/`.
-
-```sh
-cp ../specs/vectors/requests/request-v0.json req.json
-cat req.json
-# { "spec": "nsealr/signing-request/v0", "id": "01HXY...", ... }
-```
-
-## 4. Sign it with the simulator
-
-```sh
-nsealr-rasp sign-fixture --request req.json --output resp.json
-```
-
-Behind the scenes the simulator:
-
-1. Validates the request against `signing-request-v0` and the v0
-   implementation limits.
-2. Renders the canonical material on a virtual review screen.
-3. Computes `approval_digest`.
-4. Signs BIP-340 / secp256k1 over the NIP-01 event id.
-5. Emits a `qr-response-v0` JSON in `resp.json`.
-
-## 5. Verify with the companion
-
-```sh
-nsealr verify-response --request req.json --response resp.json
-```
-
-Expected:
-
-```text
-✓ event id matches BIP-340 signature
-✓ approval_digest matches reviewed material
-✓ public key matches signer descriptor
-```
-
-That's the same verifier the production path uses. If any line
-fails, the response is rejected — even if the signature is
-mathematically valid.
-
-## What just happened
-
-- You did not type a private key anywhere.
-- The simulator generated a deterministic fixture key from the
-  fixture seed (`seed-id 0` in shared specs).
-- The companion verified four contracts:
-  `signing-request-v0`, `nostr-sign-event-bip340-v0`,
-  `approval-digest-v0`, `signed-response-verification-v0`.
-
-## Next
-
-- Run the same flow on real hardware:
-  [Build a Raspberry/Pi QR vault](/docs/guides/build-raspberry-qr-vault/).
-- Read the contracts: [Safety contracts at a glance](/docs/security/safety-contracts/).
-- Try the smartcard simulator:
-  [Smartcard APDU probes](/docs/guides/smartcard-apdu-probes/).
+No real identity, seed import, hardware flash or automatic device reset is part
+of this quickstart.

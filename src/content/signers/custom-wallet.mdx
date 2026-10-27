@@ -3,7 +3,6 @@ family: 'custom-wallet'
 displayName: 'nSealr One'
 tagline: 'Minimal all-SMD, display-agnostic Nostr hardware wallet: ESP32-S3 host + TROPIC01-backed encrypted vault + key-split, USB-C, battery-operable.'
 repo: 'https://github.com/nSealr/hardware'
-productGoal: 'A minimal, all-SMD, display-agnostic hardware-wallet board (KiCad custom-wallet-min): an ESP32-S3-WROOM-1-N16R8 host paired with a mandatory TROPIC01 open secure element (encrypted seed vault, hardware-PIN anti-bruteforce, TRNG/PUF, attestation, Ed25519/P-256) plus a provisioned 2nd-vendor SE (OPTIGA Trust M populated by default / ATECC608B alternate DNP) for Coldcard-style key-split, with USB-C, a physical confirm button, and an external SPI panel driven over an FPC connector (reference Waveshare 1.69-inch ST7789V2/CST816); battery-operable via an MX1.25 LiPo connector (user-supplied/optional battery); no JavaCard, no socket, no NFC, no camera.'
 maturity: 'research'
 order: 5
 capabilities:
@@ -25,6 +24,9 @@ requiredText:
   - 'battery-operable'
   - 'key-split'
 ---
+
+> **Current scope (2026-10-27):** Custom Board and its independent embedded Board SDK are future work, outside the first milestone critical path. The earlier wallet architecture below is historical research, not an accepted current component or release decision. See [current requirements](https://github.com/nSealr/nsealr/tree/main/docs/product).
+
 
 import FeatureMatrix from '~/components/FeatureMatrix.astro';
 

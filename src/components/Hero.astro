@@ -5,27 +5,27 @@ import logo from '~/assets/nsealr-logo.png';
 ---
 <section class="hero container">
   <div class="hero__copy">
-    <p class="eyebrow">// nsealr · v0 · stateless · pre-production</p>
-    <h1 class="hero__title">Sign <em>Nostr</em><br />events offline.</h1>
+    <p class="eyebrow">// nsealr · pre-release development</p>
+    <h1 class="hero__title">Review and sign<br /><em>Nostr</em> events.</h1>
     <p class="lead">
       A non-profit, open-source program for reproducible Nostr signing devices.
-      Companion software, five signer solutions, and open hardware references —
-      auditable instead of proprietary.
+      A connected ESP32-S3 and offline Raspberry Pi / ESP32-P4 session signers,
+      with shared Rust signing semantics and Bridge client software.
     </p>
     <div class="hero__actions">
       <a class="btn btn--primary" href="/docs/">$ read the docs</a>
       <a class="btn btn--ghost" href="https://github.com/nSealr" rel="noopener">github ↗</a>
     </div>
     <div class="hero__pills">
-      <StatusPill variant="ok">approval_digest</StatusPill>
-      <StatusPill variant="warn">signing_disabled</StatusPill>
-      <StatusPill variant="neutral">v0 spec</StatusPill>
+      <StatusPill variant="neutral">physical review</StatusPill>
+      <StatusPill variant="warn">public-fixture validation</StatusPill>
+      <StatusPill variant="neutral">no device release yet</StatusPill>
       <StatusPill variant="neutral">non-profit · open-source</StatusPill>
     </div>
-    <pre class="hero__snippet"><code>{`# verify a response — companion
-$ nsealr verify-response --request req.json --response resp.json
-✓ approval_digest ok
-! sign-event disabled in dev firmware`}</code></pre>
+    <pre class="hero__snippet"><code>{`# Current public source and development instructions
+https://github.com/nSealr/nsealr
+# Read tools/baseline/README.md before running checks.
+# Never use a prototype with a real identity.`}</code></pre>
   </div>
 
   <figure class="hero__visual">

@@ -1,9 +1,8 @@
 ---
 family: 'esp32-usb'
-displayName: 'nSealr Key'
-tagline: 'Daily-use connected touch signer running one universal firmware across the curated Waveshare ESP32-S3-Touch family. Real signing still gated.'
-repo: 'https://github.com/nSealr/firmware'
-productGoal: 'A connected touch signer running one universal Rust firmware across the curated Waveshare ESP32-S3-Touch-LCD family (2.8 V2 primary, 1.69 compact, 2.0 standard, 3.5B premium), hardened with Secure Boot v2 + Flash Encryption and no discrete secure element, with USB/display review, optional scoped policy automation through the companion, and real signing disabled until hardening gates pass.'
+displayName: 'ESP32-S3 connected signer'
+tagline: 'USB-connected session profile; no secure element or persistent identity vault.'
+repo: 'https://github.com/nSealr/nsealr'
 maturity: 'prototype'
 order: 3
 capabilities:
@@ -33,6 +32,11 @@ requiredText:
   - 'signing_disabled'
   - 'approval_digest'
 ---
+
+> Historical name: **nSealr Key**. This identifies the earlier research profile, not a current release name.
+
+> **Current status (2026-10-27): pre-release.** Current source, requirements and evidence are in [nSealr/nsealr](https://github.com/nSealr/nsealr). The first milestone uses session custody, with no production-ready device or real-identity security claim. The older capability table and narrative below are historical research context, not current installation or release instructions.
+
 
 import FeatureMatrix from '~/components/FeatureMatrix.astro';
 

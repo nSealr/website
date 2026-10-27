@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import SignerCard from './SignerCard.astro';
 const signers = (await getCollection('signers'))
+  .filter(s => ['esp32-usb', 'raspberry-qr', 'esp32-qr'].includes(s.data.family))
   .sort((a, b) => a.data.order - b.data.order);
 ---
 <div class="signer-grid">

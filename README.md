@@ -2,6 +2,8 @@
 
 Public website and documentation hub for nSealr.
 
+Pre-release: the initial paths are a connected ESP32-S3 without SE/persistent identity vault, and Raspberry Pi / ESP32-P4 offline session signers. The shared core, device apps, Bridge/host packages, contracts and task graph live in [nSealr/nsealr](https://github.com/nSealr/nsealr). Custom Board and its embedded SDK remain future work; smartcard research is retired. No production-ready device or real-identity security claim is made.
+
 Non-profit, open-source program for Nostr signing devices. The site
 explains the program without turning the core work into a proprietary
 product.
@@ -62,7 +64,7 @@ target is `nsealr.com`.
   `section` in `getting-started | guides | signers | specs | security`.
 - **Signer family update**: edit
   `src/content/signers/<family>.mdx`. The `capabilities` array mirrors
-  `nSealr/specs vectors/features/signer-feature-matrix-v0.json` — the
+  the product’s historical `protocols/contracts/v1/vectors/features/signer-feature-matrix-v0.json` — the
   same `contract_id` must keep the same behavior across families.
 
 ## Layout
@@ -91,8 +93,14 @@ website/
 
 ## Related repositories
 
-`nSealr/specs`, `nSealr/companion`, `nSealr/raspberry`,
-`nSealr/esp32`, `nSealr/smartcard`, `nSealr/hardware`, `nSealr/lab`.
+[nsealr](https://github.com/nSealr/nsealr),
+[hardware](https://github.com/nSealr/hardware) (future),
+[board-sdk](https://github.com/nSealr/board-sdk) (future), and
+[.github](https://github.com/nSealr/.github) (shared community guidance).
+
+Older detailed pages retain historical research context and are marked as such.
+Current getting-started/about/contribution entries point to the public product;
+those old pages are not current installer or release instructions.
 
 ## License
 

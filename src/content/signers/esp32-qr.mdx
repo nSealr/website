@@ -1,9 +1,8 @@
 ---
 family: 'esp32-qr'
-displayName: 'nSealr Vault — ESP32 edition'
-tagline: 'Air-gapped ESP32-P4 QR signer on the Waveshare ESP32-P4-WIFI6-Touch-LCD-3.5 with an OV5647 camera; RAM-only, no persistent secret.'
-repo: 'https://github.com/nSealr/firmware'
-productGoal: 'An air-gapped ESP32-P4 QR signer on the Waveshare ESP32-P4-WIFI6-Touch-LCD-3.5 (OV5647 camera, ST7796 320×480 display, FT6336 touch; onboard C6 radio disabled for the air-gap), libwally/Kern-aligned with RAM-only key custody, and behavior matching the Pi QR vault where features overlap.'
+displayName: 'ESP32-P4 offline signer'
+tagline: 'Camera/display QR session profile; public-fixture device evidence only.'
+repo: 'https://github.com/nSealr/nsealr'
 maturity: 'prototype'
 order: 2
 capabilities:
@@ -29,6 +28,11 @@ requiredText:
   - 'firmware protocol evidence'
   - 'Unicode fallback'
 ---
+
+> Historical name: **nSealr Vault — ESP32 edition**. This identifies the earlier research profile, not a current release name.
+
+> **Current status (2026-10-27): pre-release.** Current source, requirements and evidence are in [nSealr/nsealr](https://github.com/nSealr/nsealr). The first milestone uses session custody, with no production-ready device or real-identity security claim. The older capability table and narrative below are historical research context, not current installation or release instructions.
+
 
 import FeatureMatrix from '~/components/FeatureMatrix.astro';
 

@@ -44,7 +44,6 @@ const signers = defineCollection({
     displayName: z.string(),
     tagline: z.string(),
     repo: z.string().url(),
-    productGoal: z.string(),
     maturity: z.enum(['research', 'prototype', 'alpha', 'beta']),
     capabilities: z.array(z.object({
       id: z.string(),
