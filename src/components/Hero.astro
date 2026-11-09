@@ -1,131 +1,29 @@
 ---
 import { Image } from 'astro:assets';
-import StatusPill from './StatusPill.astro';
 import logo from '~/assets/nsealr-logo.png';
 ---
 <section class="hero container">
-  <div class="hero__copy">
-    <p class="eyebrow">// nsealr · pre-release development</p>
-    <h1 class="hero__title">Review and sign<br /><em>Nostr</em> events.</h1>
-    <p class="lead">
-      A non-profit, open-source program for reproducible Nostr signing devices.
-      A connected ESP32-S3 and offline Raspberry Pi / ESP32-P4 session signers,
-      with shared Rust signing semantics and Bridge client software.
-    </p>
-    <div class="hero__actions">
-      <a class="btn btn--primary" href="/docs/">$ read the docs</a>
-      <a class="btn btn--ghost" href="https://github.com/nSealr" rel="noopener">github ↗</a>
+  <div>
+    <p class="eyebrow">// your identity. your device.</p>
+    <h1>Keep your<br /><em>Nostr key</em><br />offline.</h1>
+    <p class="lead">Create or recover your identity. Read the request on your device.
+      Sign it with a touch. Share the result by QR.</p>
+    <div class="actions">
+      <a class="primary" href="/docs/">Get started →</a>
+      <a href="https://github.com/nSealr/nsealr">Explore the source ↗</a>
     </div>
-    <div class="hero__pills">
-      <StatusPill variant="neutral">physical review</StatusPill>
-      <StatusPill variant="warn">public-fixture validation</StatusPill>
-      <StatusPill variant="neutral">no device release yet</StatusPill>
-      <StatusPill variant="neutral">non-profit · open-source</StatusPill>
-    </div>
-    <pre class="hero__snippet"><code>{`# Current public source and development instructions
-https://github.com/nSealr/nsealr
-# Read tools/baseline/README.md before running checks.
-# Never use a prototype with a real identity.`}</code></pre>
+    <p class="detail">open source · ESP32-P4 · QR exchange</p>
   </div>
-
-  <figure class="hero__visual">
-    <Image
-      src={logo}
-      alt="nSealr seal mascot holding a sealed Nostr envelope"
-      width={520}
-      height={520}
-      densities={[1, 2]}
-      format="webp"
-      loading="eager"
-      decoding="async"
-    />
-  </figure>
+  <figure><Image src={logo} alt="The nSealr seal holding a Nostr envelope"
+    width={520} height={520} densities={[1, 2]} format="webp" loading="eager" /></figure>
 </section>
-
 <style>
-  .hero {
-    padding-block: clamp(var(--space-24), 8vw, var(--space-48)) clamp(var(--space-12), 4vw, var(--space-28));
-    display: grid;
-    gap: clamp(var(--space-12), 4vw, var(--space-24));
-    align-items: center;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-  }
-  .hero__copy { min-width: 0; }
-
-  .hero__title {
-    font-family: var(--font-mono);
-    color: var(--fg-strong);
-    font-size: var(--text-hero);
-    line-height: 0.96;
-    letter-spacing: -0.02em;
-    margin: var(--space-6) 0 var(--space-8);
-  }
-  .hero__title em { color: var(--accent-soft); font-style: normal; }
-
-  .hero__actions {
-    display: flex;
-    gap: var(--space-5);
-    margin: var(--space-10) 0 var(--space-12);
-    flex-wrap: wrap;
-  }
-
-  .btn {
-    display: inline-block;
-    padding: var(--space-5) var(--space-8);
-    font-family: var(--font-mono);
-    font-size: var(--text-md);
-    font-weight: 600;
-    border-radius: var(--radius-sm);
-    text-decoration: none;
-    border: 1px solid transparent;
-  }
-  .btn:hover { text-decoration: none; }
-  .btn--primary { background: var(--accent); color: white; }
-  .btn--primary:hover { background: var(--accent-soft); }
-  .btn--ghost { background: transparent; color: var(--fg-strong); border-color: var(--border-strong); }
-  .btn--ghost:hover { border-color: var(--accent); }
-
-  .hero__pills {
-    display: flex;
-    gap: var(--space-4);
-    flex-wrap: wrap;
-    margin-bottom: var(--space-12);
-  }
-
-  .hero__snippet {
-    background: var(--bg-code);
-    border: 1px solid var(--border);
-    border-left: 2px solid var(--accent);
-    padding: var(--space-7) var(--space-8);
-    border-radius: var(--radius-md);
-    font-size: var(--text-md);
-    line-height: 1.7;
-    overflow-x: auto;
-    color: var(--fg);
-    font-family: var(--font-mono);
-  }
-
-  .hero__visual {
-    margin: 0;
-    display: grid;
-    place-items: center;
-  }
-  .hero__visual :global(img) {
-    width: 100%;
-    max-width: 520px;
-    height: auto;
-    border-radius: clamp(var(--space-8), 3vw, var(--space-14));
-    box-shadow:
-      0 0 0 1px var(--border),
-      0 24px 60px -24px color-mix(in oklab, var(--accent) 60%, transparent);
-  }
-
-  @media (max-width: 880px) {
-    .hero { grid-template-columns: 1fr; }
-    .hero__visual {
-      order: -1;
-      max-width: 320px;
-      margin-inline: auto;
-    }
-  }
+.hero{padding-block:clamp(40px,8vw,96px);display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+h1{font:700 var(--text-hero)/1.04 var(--font-mono);letter-spacing:-.045em;margin:18px 0 24px;color:var(--fg-strong)}
+em{font-style:normal;color:var(--accent-soft)}.lead{max-width:40ch;line-height:1.6}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:24px;margin-top:32px;font-family:var(--font-mono);font-size:14px}
+.primary{background:var(--accent);color:white;padding:14px 20px;border-radius:var(--radius-sm);border:1px solid transparent}
+.primary:hover{text-decoration:none;border-color:var(--accent-soft)}.detail{margin-top:28px;color:var(--fg-muted);font:12px var(--font-mono)}
+figure{margin:0}figure img{width:100%;height:auto;max-width:520px;margin:auto}
+@media(max-width:720px){.hero{grid-template-columns:1fr;gap:24px;padding-top:36px}.hero figure{max-width:320px;margin:auto}.lead{font-size:18px}}
 </style>

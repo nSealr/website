@@ -10,9 +10,8 @@ const isActive = (p: string) => pathname === p || pathname.startsWith(p + '/');
 interface NavLink { href: string; label: string; external?: boolean; }
 const navLinks: NavLink[] = [
   { href: '/', label: 'Home' },
-  { href: '/docs/', label: 'Docs' },
-  { href: '/blog/', label: 'Blog' },
-  { href: 'https://github.com/nSealr', label: 'GitHub ↗', external: true },
+  { href: '/docs/', label: 'Guide' },
+  { href: 'https://github.com/nSealr/nsealr', label: 'GitHub ↗', external: true },
 ];
 ---
 <header class="site-header">

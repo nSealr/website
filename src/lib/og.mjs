@@ -49,7 +49,7 @@ export async function renderOgPng(input) {
                 type: 'div',
                 props: {
                   style: { color: '#b388ff', fontSize: '20px' },
-                  children: eyebrow ?? '// nsealr · blog'
+                  children: eyebrow ?? '// nsealr'
                 }
               },
               {

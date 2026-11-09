@@ -1,0 +1,28 @@
+---
+title: Build and use the device
+description: Hardware, software and source for the ESP32-P4 signer.
+order: 4
+---
+
+## Hardware
+
+The device uses the Waveshare ESP32-P4 WiFi6 Touch LCD 3.5 board, its touch screen,
+an OV5647 camera and a battery. Signing uses QR exchange, not a network connection.
+
+Use the [firmware source](https://github.com/nSealr/nsealr/tree/main/firmware) for
+current build and installation commands. Match the board and firmware before flashing.
+
+## Daily use
+
+Disconnect the USB data cable before loading an identity for signing. Use battery
+power. Keep the device in view while you inspect a request and approve it.
+
+The device holds a loaded identity for the current session. Keep your external
+backup; the device is not the only place to store recovery material.
+
+## Report a problem
+
+Open a [source issue](https://github.com/nSealr/nsealr/issues) with the board,
+software version and steps. Never include a private key or recovery words.
+Use the [private report form](https://github.com/nSealr/nsealr/security/advisories/new)
+for a vulnerability.

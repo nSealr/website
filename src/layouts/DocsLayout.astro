@@ -2,44 +2,19 @@
 import BaseLayout from './BaseLayout.astro';
 import DocsSidebar from '~/components/DocsSidebar.astro';
 import TableOfContents from '~/components/TableOfContents.astro';
-import StatusPill from '~/components/StatusPill.astro';
 import PrevNext from '~/components/PrevNext.astro';
-
-interface Heading { depth: number; slug: string; text: string; }
-interface NavItem { href: string; title: string; label?: string; }
 interface Props {
-  title: string;
-  description: string;
-  status?: 'stable' | 'draft' | 'research';
-  updatedAt?: Date;
-  headings: Heading[];
-  prev?: NavItem;
-  next?: NavItem;
+ title:string; description:string; headings:{depth:number;slug:string;text:string}[];
+ prev?:{href:string;title:string}; next?:{href:string;title:string};
 }
-const { title, description, status = 'stable', updatedAt, headings, prev, next } = Astro.props;
-const currentHref = Astro.url.pathname;
+const {title,description,headings,prev,next}=Astro.props;
 ---
-<BaseLayout title={`${title} — nSealr Docs`} description={description}>
-  <div class="docs-shell container">
-    <DocsSidebar currentHref={currentHref} />
-    <article class="prose docs-article">
-      <header class="docs-article__head">
-        <h1>{title}</h1>
-        {status !== 'stable' && <StatusPill variant={status === 'draft' ? 'pending' : 'warn'}>{status}</StatusPill>}
-      </header>
-      {updatedAt && updatedAt < new Date('2026-10-27T00:00:00Z') && (
-        <p><strong>Earlier research snapshot.</strong> This page predates the current consolidation and milestone. Its installation commands and capability statements are historical until checked against <a href="https://github.com/nSealr/nsealr">the current public product source and requirements</a>. No device release or real-key custody qualification is implied.</p>
-      )}
-      <slot />
-      <PrevNext prev={prev} next={next} />
-      {updatedAt && (
-        <footer class="docs-article__foot">
-          <p class="muted">Last updated {updatedAt.toISOString().slice(0, 10)}</p>
-        </footer>
-      )}
-    </article>
-    <TableOfContents headings={headings} />
-  </div>
+<BaseLayout title={`${title} — nSealr`} description={description}>
+ <div class="docs-shell container">
+  <DocsSidebar currentHref={Astro.url.pathname} />
+  <article class="prose docs-article"><h1>{title}</h1><slot /><PrevNext prev={prev} next={next} /></article>
+  <TableOfContents headings={headings} />
+ </div>
 </BaseLayout>
 <style>
   .docs-shell {
