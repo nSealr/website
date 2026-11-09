@@ -4,6 +4,30 @@ description: Keep a recoverable copy of your Nostr identity.
 order: 2
 ---
 
+## Generate recovery words
+
+Use the device on battery power, with both USB cables disconnected. Open
+**Tools → Generate a seed**, then choose the camera or dice.
+
+### Camera
+
+Point the camera at a varied scene, capture a picture, and inspect it. Retake
+it or choose **Use picture**, then choose 12 or 24 words. The device combines
+preview frames, the accepted capture and fresh hardware randomness. It does not
+save the picture. Back up the generated words: taking the same picture again
+does not recover the same identity.
+
+### Dice
+
+Use a physical six-sided die and independent rolls. Choose 12 words for 50 rolls
+or 24 words for 100 rolls. Enter each result in order; correct mistakes before
+generating the seed. Do not invent a sequence. The device cannot measure whether
+your die or rolls are random.
+
+The exact digit sequence is hashed with SHA-256. The first 16 bytes produce a
+12-word seed; all 32 bytes produce a 24-word seed. No device randomness is mixed
+into this method. Keep the recovery words as your backup.
+
 ## Choose a backup
 
 Recovery words restore a derived identity. An nsec restores one private key.
@@ -24,7 +48,7 @@ identity, without an error message.
 ### Enter a passphrase
 
 From **Identity ready**, choose **Add / change passphrase**. For a loaded identity,
-open **Identity options** first. Choose **Type passphrase** or **Scan passphrase**.
+open **Key options** first. Choose **Type passphrase** or **Scan passphrase**.
 
 For scanning, prepare a QR containing only the passphrase as plain UTF-8 text on
 an offline device. The limit is **256 UTF-8 bytes**; some characters use several
@@ -41,9 +65,19 @@ Choose **Check my backup** to answer word-position questions. For a QR backup,
 choose **Scan to check**. These checks compare your backup without clearing the
 loaded identity. A seed QR contains the words, without the passphrase or account.
 
+### Copy a SeedQR to paper
+
+For 12 or 24 words, choose **SeedQR** or **Compact SeedQR** from the backup menu.
+Choose **Copy** and copy each enlarged block at its shown coordinates.
+Keep the outer white border clear. Return to the whole QR when needed, then
+scan the paper copy with **Scan to check**. Finish only after it matches.
+
+For 15, 18 or 21 words, back up the words and use the word-position check.
+SeedQR and Compact SeedQR are not offered for these lengths.
+
 ## Restore an identity
 
-Choose **Import identity**, then scan a key QR or enter words or an nsec. For words, choose
+Choose **Load a key**, then scan a key QR or enter words or an nsec. For words, choose
 the word count and type a short prefix. Tap the matching word. Go back to correct
 a word; a checksum error keeps your entries available for editing.
 
@@ -60,7 +94,7 @@ Several copies of the same member's share still count as one member. Keep the
 shares separate: two distinct shares can sign for the group.
 
 On **Group ready**, choose **Back up this share**. For an already loaded group,
-choose **Back up identity**. The share backup is a distinct format; it is not
+choose **Back up key**. The share backup is a distinct format; it is not
 recovery words or an nsec.
 
 ### Save to an SD card
@@ -86,7 +120,7 @@ does not replace the loaded share.
 
 ## Restore a group share
 
-Choose **Import identity → Restore a group share**, then:
+Choose **Tools → Restore a group share**, then:
 
 - **Scan share QR**: show every frame from the offline backup.
 - **Read from SD card**: insert the card containing `NSEALR.NSR` at its root.
