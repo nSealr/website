@@ -21,6 +21,20 @@ You need the same words, passphrase and account to recover the same identity.
 Check the resulting npub. A different passphrase can produce a valid but different
 identity, without an error message.
 
+### Enter a passphrase
+
+From **Identity ready**, choose **Add / change passphrase**. For a loaded identity,
+open **Identity options** first. Choose **Type passphrase** or **Scan passphrase**.
+
+For scanning, prepare a QR containing only the passphrase as plain UTF-8 text on
+an offline device. The limit is **256 UTF-8 bytes**; some characters use several
+bytes. Never create or scan this secret QR through the companion, a website or
+a connected computer.
+
+Read every page of **Check passphrase**, including spaces and escaped characters.
+Choose **Use passphrase** to apply it, then check the full npub. Cancelling keeps
+the loaded identity.
+
 ## Check recovery
 
 Choose **Check my backup** to answer word-position questions. For a QR backup,
@@ -83,3 +97,7 @@ member; restore a different member's share on the other signing device.
 
 Keep the backups until you have checked the restored identity. Restoring a copy
 does not revoke an old or stolen copy of that share.
+
+If a member and its backup are lost, use both remaining devices to
+[replace the lost member](/docs/threshold/#replace-a-lost-member). This preserves
+the npub and requires new backups after repair. It does not revoke old copies.

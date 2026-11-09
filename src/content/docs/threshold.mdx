@@ -55,11 +55,53 @@ companion; the [private share backup](/docs/recovery/#back-up-a-group-share) sta
 The client still needs to publish the event. A verified signature is not a relay
 receipt. After switching identities, reconnect the client and compare the full npub.
 
+## Replace a lost member
+
+Use both surviving devices and a fresh replacement. Repair keeps the same npub
+and member numbers. It **does not revoke a stolen share or any old copy**.
+
+1. [Back up both surviving shares](/docs/recovery/#back-up-a-group-share) before
+   starting. Keep them loaded and retain their current public group record.
+2. Load that record in the companion. Open **Recover a lost share**, select the
+   missing member number, then choose **Replace lost member**.
+3. On the replacement, choose **Import identity → Restore a group share →
+   Repair lost share → Join repair**. Scan its public join code into the companion,
+   then choose **Captured** on the device.
+4. Scan the companion's repair request on all three devices. The surviving devices
+   use **Scan a request**. Check the missing member and replacement, compare the
+   complete fingerprint, and approve on every device.
+5. Collect both surviving devices' encrypted outputs before routing them as
+   directed. Collect their next two outputs, then route both to the replacement.
+6. The replacement shows two confirmation packets and a public group record.
+   Use **Captured** to move through them. Collect both confirmations and route
+   them to the surviving devices; keep the public record for the next step.
+7. Scan the new public group record from all three devices. All must agree on the
+   new fingerprint and members, with the original npub. Then save a new share
+   backup from every device and retain the new public record.
+
+Keep the old backups until all three new records agree. At **Share restored**,
+the replacement offers **Back up this share** and **View group record**. Use a
+different SD card if it already contains `NSEALR.NSR`; the device never overwrites it.
+
+## If repair stops
+
+Cancel the repair on every device. Compare their public group records before
+starting again. Never replay packets from the cancelled session.
+
+- **All three records agree:** save the updated backups and public record.
+- **Two records agree:** keep that pair loaded. Choose **Clear identity** only on
+  the inconsistent third device and obtain a fresh join code from it. Load the
+  matching pair's record in the companion, then repair the third device's member number.
+- **No matching loaded pair remains:** [restore both original surviving shares](/docs/recovery/#restore-a-group-share)
+  from the backups kept before repair. Choose **Clear identity** on the replacement,
+  obtain a fresh join code, and restart using the old public group record.
+
 ## Stop or restart
 
-Setup has a ten-minute session limit; signing has five minutes. If a device
-rejects, the session expires or you cancel, cancel on every participating device.
-Start a fresh session rather than continuing with old packets.
+Setup and repair have ten-minute session limits; signing has five minutes. If a
+setup or signing request is rejected, expires or is cancelled, cancel on every
+participating device and start a fresh session. For an interrupted repair, follow
+[the recovery steps above](#if-repair-stops).
 
 Keep the companion open during the ceremony. Reloading it loses its coordination
 state. Your private shares remain on their devices; the public group record can
