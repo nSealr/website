@@ -9,9 +9,9 @@ order: 2
 Recovery words restore a derived identity. An nsec restores one private key.
 They are different formats; keep the format and any account choice with your backup.
 
-Write words in order or use the device's QR backup. Keep the backup away from
-cameras, cloud storage and the connected computer. Anyone who obtains it may use
-your identity.
+Write words in order or use the device's QR backup. Keep secrets away from cloud
+storage and connected computers or cameras. Use only an offline receiver when
+you choose QR backup. Anyone who obtains a full private-key backup may use your identity.
 
 ## Keep the passphrase
 
@@ -29,7 +29,7 @@ loaded identity. A seed QR contains the words, without the passphrase or account
 
 ## Restore an identity
 
-Choose **Import**, then scan a key QR or enter words or an nsec. For words, choose
+Choose **Import identity**, then scan a key QR or enter words or an nsec. For words, choose
 the word count and type a short prefix. Tap the matching word. Go back to correct
 a word; a checksum error keeps your entries available for editing.
 
@@ -38,3 +38,48 @@ recorded identity. Never enter recovery words into the companion or a client.
 
 Store separate copies in places you can recover. Do not keep the only backup
 inside the device or beside the only copy of a passphrase.
+
+## Back up a group share
+
+A [2-of-3 group](/docs/threshold/) has three different shares. Back up each one.
+Several copies of the same member's share still count as one member. Keep the
+shares separate: two distinct shares can sign for the group.
+
+On **Group ready**, choose **Back up this share**. For an already loaded group,
+choose **Back up identity**. The share backup is a distinct format; it is not
+recovery words or an nsec.
+
+### Save to an SD card
+
+Choose **Save to SD card**, read the confirmation, then choose **Save share**.
+The device writes an **unencrypted** `NSEALR.NSR` file at the root of a FAT-formatted
+card. Keep the card offline and separate from other members' backups.
+
+The device never formats a card or replaces an existing file. If `NSEALR.NSR`
+already exists, use a different card. Wait for **Share saved**: the device writes
+the file and reads it back before showing success. An error means the save was
+not verified; keep the loaded share while you resolve it.
+
+### Save an animated QR
+
+Choose **Show offline QR → Show share**. Capture every frame on an offline
+receiver. Use **Pause**, **Next** and **Resume** as needed; one photograph may
+contain only part of the backup. Never scan this private QR into the companion.
+
+Choose **Done**, then **Scan to check**. Present every saved frame back to the
+device. **Backup checked** means it matches the loaded share. This comparison
+does not replace the loaded share.
+
+## Restore a group share
+
+Choose **Import identity → Restore a group share**, then:
+
+- **Scan share QR**: show every frame from the offline backup.
+- **Read from SD card**: insert the card containing `NSEALR.NSR` at its root.
+
+Review the group fingerprint, member and Nostr identity against your separately
+kept public group record before approving. A restored share belongs to the same
+member; restore a different member's share on the other signing device.
+
+Keep the backups until you have checked the restored identity. Restoring a copy
+does not revoke an old or stolen copy of that share.

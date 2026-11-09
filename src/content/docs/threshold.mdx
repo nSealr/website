@@ -1,0 +1,66 @@
+---
+title: Sign with a group
+description: Set up three devices and use any two to sign for one Nostr identity.
+order: 4
+---
+
+## What you need
+
+Use three independent devices and one [companion](/docs/clients/). Setup creates
+a new Nostr identity. Each device holds a different private share; any two
+members can sign. Keep each share and its backup in a separate safe place.
+
+A group supports public-key requests and event signatures. Use a normal identity
+created from recovery words or an nsec for NIP-44 encryption and private messages.
+
+## Create the group
+
+1. On each device, choose **Create identity → 2-of-3 signing group → Start group**.
+2. In the companion, choose **Create group**. Scan all three public join codes.
+   Choose **Captured** on each device when its code has arrived.
+3. Scan the companion's setup request on all three devices. Compare the complete
+   setup fingerprint on every device, then approve on each.
+4. Each device shows two encrypted packets. Scan both into the companion, using
+   **Captured** to move to the next packet. Collect all six before forwarding any.
+5. The companion names the device that must receive each packet. Scan it on that
+   device and check its progress before choosing **Next packet** in the companion.
+   That button records your progress; it is not an acknowledgement from the device.
+6. Repeat collection and forwarding for the second set of six packets. Finally,
+   scan the public group record from each device. All three must agree.
+
+At **Group ready**, choose **Back up this share** on every device. Follow the
+[share backup and recovery steps](/docs/recovery/#back-up-a-group-share).
+Keep the public group record separately: its fingerprint, member number and npub
+help you check a restored share. It does not contain a private share.
+
+To show the record again on a loaded device, choose
+**Public identity → Record → Show QR**. In the companion, choose
+**Load group from device** and scan every frame. **View text** on the device
+returns to its fingerprint and member record. This public QR can go through the
+companion; the [private share backup](/docs/recovery/#back-up-a-group-share) stays offline.
+
+## Sign with two members
+
+1. Load the group's public record in the companion and choose two available members.
+2. Write a note or request a signature from your [Nostr client](/docs/clients/).
+3. Scan the signing request on both selected devices. Review the complete action,
+   event and cosigner on each device before approving.
+4. Scan both devices' encrypted commitment packets into the companion, then route
+   them as directed. Repeat with both encrypted share packets. Capture every
+   outgoing packet before moving to the next phase.
+5. Scan the final signed-event response from either participating device. The
+   companion checks the original request, group identity, event and signature
+   before returning it to the client.
+
+The client still needs to publish the event. A verified signature is not a relay
+receipt. After switching identities, reconnect the client and compare the full npub.
+
+## Stop or restart
+
+Setup has a ten-minute session limit; signing has five minutes. If a device
+rejects, the session expires or you cancel, cancel on every participating device.
+Start a fresh session rather than continuing with old packets.
+
+Keep the companion open during the ceremony. Reloading it loses its coordination
+state. Your private shares remain on their devices; the public group record can
+reload the companion's routing information.
