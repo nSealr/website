@@ -1,0 +1,39 @@
+---
+title: Scan, review and sign
+description: Use the device and companion to sign a Nostr event.
+order: 1
+---
+
+## Start with your identity
+
+Create recovery words or import your existing words or nsec on the device.
+Add a passphrase if you use one. Check the npub: it identifies the account you will use.
+
+Keep a backup before relying on a new identity. Use battery power when signing;
+USB is for installing firmware.
+
+## Scan a request
+
+Open the companion and choose your public identity. When a client asks for a
+signature, show its QR request to the device camera. Keep an animated QR visible
+until all parts arrive.
+
+## Review on the device
+
+Check the action, identity and affected people or events. Read the content and
+open exact details when needed. A byte count or event ID cannot tell you what a
+message says.
+
+For a long text, use the full reader. If you choose to sign without seeing all
+of it, that choice applies only to the current request. You still need to inspect
+the recipients and other fields that grant permission.
+
+Reject a request you do not expect. A changed request needs a new decision.
+
+## Return the result
+
+Approve on the device, then scan its response with the companion. The companion
+checks the event and signature before returning it to the client. The client
+publishes the event. A signature alone does not confirm publication.
+
+Lock the device when you finish.

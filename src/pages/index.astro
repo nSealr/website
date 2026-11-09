@@ -1,176 +1,35 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import Hero from '~/components/Hero.astro';
-import SystemMap from '~/components/SystemMap.astro';
-import SignerFamilyGrid from '~/components/SignerFamilyGrid.astro';
-
-const SURFACES = [
-  { code: 'nsealr', label: 'CLI', isCode: true },
-  { label: 'TypeScript SDK' },
-  { label: 'browser extension' },
-  { label: 'local service' },
-  { label: 'NIP-46 bridge' },
+const steps = [
+  ['01', 'Load your identity', 'Create recovery words, enter an nsec, or scan a backup. Check your public identity before use.'],
+  ['02', 'Read the request', 'Scan from the companion. See what you are signing, who it affects, and the content.'],
+  ['03', 'Return the signature', 'Approve on the device. Scan the response with the companion and return to your client.'],
 ];
 ---
-<BaseLayout
-  title="nSealr — open-source hardware signers for Nostr"
-  description="nSealr is a non-profit open-source hardware and software program for Nostr signing devices."
->
+<BaseLayout title="nSealr — keep your Nostr key offline" description="An open-source offline Nostr signer. Review on your device and exchange requests and signatures by QR.">
   <Hero />
-
-  <section class="container home-section home-section--split">
-    <div>
-      <p class="eyebrow">// system</p>
-      <h2>One Bridge. Three initial device paths.</h2>
-      <p class="muted home-section__lead">
-        Bridge prepares bounded requests and verifies responses for the
-        selected identity. The device owns key custody, complete review and
-        physical approval; host software cannot approve a signature.
-      </p>
-      <p class="eyebrow-small home-surfaces-label">Companion surfaces:</p>
-      <ul class="home-surfaces">
-        {SURFACES.map(s => (
-          <li>{s.isCode ? <code>{s.code}</code> : null} {s.label}</li>
-        ))}
-      </ul>
-      <p><a class="link-arrow" href="/docs/system/product-shape/">Read product shape →</a></p>
-    </div>
-    <SystemMap />
+  <section class="container section">
+    <p class="eyebrow">// a clear path</p><h2>Scan. Review. Sign.</h2>
+    <div class="steps">{steps.map(([number,title,text]) => <article class="surface"><span class="number">{number}</span><h3>{title}</h3><p>{text}</p></article>)}</div>
   </section>
-
-  <section class="container home-section">
-    <p class="eyebrow">// first milestone</p>
-    <h2>Device profiles develop independently.</h2>
-    <p class="muted home-section__lead">
-      ESP32-S3 is connected over USB, without a secure element or persistent
-      identity vault. Raspberry Pi and ESP32-P4 target offline session custody.
-      Custom Board and its embedded Board SDK remain future work; smartcard
-      research is retired.
-    </p>
-    <SignerFamilyGrid />
+  <section class="container section split">
+    <div><p class="eyebrow">// less to trust</p><h2>Your key stays<br />with you.</h2></div>
+    <div><p class="lead">The connected client prepares the request. The device checks it and calculates the event ID. Your approval applies to that request alone.</p>
+      <p class="muted">Use battery power for signing. Keep recovery words and passphrases away from the connected computer.</p>
+      <a href="/docs/use/">Read the signing flow →</a></div>
   </section>
-
-  <section class="container home-section home-section--split-sticky">
-    <div class="home-section__lead-col">
-      <p class="eyebrow">// status</p>
-      <h2>Current maturity is explicit.</h2>
-      <p class="muted home-section__lead">
-        Current requirements, exact software and physical evidence live in
-        <a href="https://github.com/nSealr/nsealr">nSealr/nsealr</a>.
-        Public-fixture demonstrations do not qualify a device release.
-      </p>
-    </div>
-    <ul class="status-list">
-      <li><strong>ESP32-S3:</strong> public-fixture CLI → Bridge/service → USB → physical review → verified response has been exercised. Session custody, recovery, entropy quality and interface lifecycle still have release gates.</li>
-      <li><strong>ESP32-P4:</strong> camera, display, physical review and public-fixture QR signing have device evidence. The real manual client workflow and offline conditions remain under qualification.</li>
-      <li><strong>Raspberry Pi:</strong> source, adapter/image work and reference evidence are retained. Current assembled-device workflow and release qualification remain separate work.</li>
-      <li><strong>Shared software:</strong> one Rust signing core; Bridge CLI/service, client/browser integration, TypeScript SDK and contracts under one product repository. Supported methods and limits remain profile-specific.</li>
-      <li><strong>Future platform:</strong> hardware and the independent embedded Board SDK are preserved, outside the initial device release path.</li>
-    </ul>
-  </section>
-
-  <section class="container home-section home-section--split-sticky">
-    <div class="home-section__lead-col">
-      <p class="eyebrow">// security</p>
-      <h2>No production security claim yet.</h2>
-    </div>
-    <div class="home-security-body">
-      <p class="muted">
-        nSealr is pre-production research and implementation work. The
-        project documents trust boundaries, test evidence, and known limits
-        before presenting any device as ready for real keys.
-      </p>
-      <p class="muted">
-        Per-family maturity, capability matrix, and contract IDs are in the
-        signer pages; the threat model and trust boundaries get their own
-        deep-dive in <code>/docs/security/</code>.
-      </p>
-      <p><a class="link-arrow" href="/docs/security/trust-boundaries/">Read the trust model →</a></p>
-    </div>
+  <section class="container section split">
+    <div><p class="eyebrow">// fit your client</p><h2>Standard Nostr.<br />Offline signing.</h2></div>
+    <div><p class="lead">The companion connects the QR device to clients through browser signing and remote signer methods.</p>
+      <p class="muted">NIP-07 in the browser. NIP-46 for remote connections. Normal Nostr events and signatures.</p>
+      <a href="/docs/clients/">Connect a client →</a></div>
   </section>
 </BaseLayout>
-
 <style>
-  h2 {
-    font-family: var(--font-mono);
-    color: var(--fg-strong);
-    font-size: var(--text-h2);
-    line-height: 1.1;
-    letter-spacing: -0.01em;
-    margin: var(--space-3) 0 var(--space-7);
-  }
-  .home-section { padding-block: clamp(var(--space-16), 6vw, var(--space-40)); }
-
-  .home-section--split {
-    display: grid;
-    gap: clamp(var(--space-14), 5vw, var(--space-32));
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-    align-items: center;
-  }
-  .home-section--split-sticky {
-    display: grid;
-    gap: clamp(var(--space-12), 4vw, var(--space-24));
-    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-    align-items: start;
-  }
-  .home-section--split-sticky .home-section__lead-col {
-    position: sticky; top: var(--sticky-top);
-    align-self: start;
-  }
-  .home-section--split-sticky .home-section__lead-col h2 { margin-top: 0; }
-  .home-section--split-sticky .home-section__lead-col .muted { max-width: 38ch; }
-
-  @media (max-width: 880px) {
-    .home-section--split,
-    .home-section--split-sticky { grid-template-columns: 1fr; }
-    .home-section--split-sticky .home-section__lead-col { position: static; }
-  }
-
-  .home-section__lead { max-width: 64ch; }
-
-  .home-surfaces-label { margin: var(--space-8) 0 var(--space-4); }
-  .home-surfaces {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 var(--space-10);
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-  }
-  .home-surfaces li {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--accent-soft);
-    background: var(--accent-bg);
-    border: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
-    padding: var(--space-1) var(--space-5);
-    border-radius: var(--radius-pill);
-  }
-  .home-surfaces li code {
-    background: transparent;
-    border: 0;
-    padding: 0;
-    color: inherit;
-    font: inherit;
-  }
-
-  .status-list {
-    padding-left: 1em;
-    display: grid;
-    gap: var(--space-5);
-    margin: 0;
-  }
-  .status-list li { padding-left: 0; }
-  .status-list strong { font-family: var(--font-mono); color: var(--fg-strong); }
-  .status-list code,
-  .status-list em {
-    background: var(--accent-bg);
-    color: var(--accent-soft);
-    border-radius: var(--radius-sm);
-    padding: 1px var(--space-3);
-    font-style: normal;
-  }
-
-  .home-security-body { display: grid; gap: var(--space-7); }
-  .home-security-body .muted { max-width: 64ch; }
+.section{padding-block:48px}h2{font:600 clamp(28px,4vw,40px)/1.15 var(--font-mono);letter-spacing:-.035em;color:var(--fg-strong);margin:16px 0 28px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.surface{padding:28px;border-radius:6px}.number{font:14px var(--font-mono);color:var(--accent-soft)}
+h3{font:600 18px/1.4 var(--font-mono);margin:24px 0 12px}.steps p{color:var(--fg-muted);margin:0;line-height:1.7}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:64px;border-top:1px solid var(--border);align-items:start}.split .lead{margin-top:16px}.split a{display:inline-block;margin-top:16px;font-family:var(--font-mono)}
+@media(max-width:760px){.steps,.split{grid-template-columns:1fr}.split{gap:8px}.section{padding-block:32px}}
 </style>

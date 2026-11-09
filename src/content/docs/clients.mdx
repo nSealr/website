@@ -1,0 +1,31 @@
+---
+title: Connect a client
+description: Use browser signing or a remote signer connection.
+order: 3
+---
+
+## Browser clients
+
+The nSealr extension provides the standard NIP-07 signing interface. A client can
+ask for your public key, request a signature, or request supported encryption.
+The companion handles QR exchange; you approve key operations on the device.
+
+Grant access only to the client you intend to use. The connected client can still
+read the content you write there. Keeping the key offline does not make a
+compromised computer safe for private text.
+
+## Remote connections
+
+NIP-46 lets a client connect to a remote signer. The companion handles this
+connection and forwards key operations to the QR device. Connection keys are
+separate from your Nostr identity key.
+
+A connected session does not approve future signatures. Each operation still
+needs the device's decision. Unsupported requests return an error.
+
+## Integration
+
+Use existing NIP-07 or NIP-46 support in your client. Start with `getPublicKey`
+and `signEvent`; verify the returned event and display a clear cancelled state.
+See the [companion source](https://github.com/nSealr/nsealr/tree/main/companion)
+for the current build and connection steps.

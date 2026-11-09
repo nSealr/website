@@ -1,0 +1,30 @@
+---
+title: Back up and recover
+description: Keep a recoverable copy of your Nostr identity.
+order: 2
+---
+
+## Choose a backup
+
+Recovery words restore a derived identity. An nsec restores one private key.
+They are different formats; keep the format and any account choice with your backup.
+
+Write words in order or use the device's QR backup. Keep the backup away from
+cameras, cloud storage and the connected computer. Anyone who obtains it may use
+your identity.
+
+## Keep the passphrase
+
+A BIP39 passphrase changes the derived key. It is not a password that can be reset.
+You need the same words, passphrase and account to recover the same identity.
+
+Check the resulting npub. A different passphrase can produce a valid but different
+identity, without an error message.
+
+## Check recovery
+
+After making a backup, clear the loaded identity and restore it on the device.
+Compare the npub with the one you recorded. Do this before you depend on the key.
+
+Store separate copies in places you can recover. Do not keep the only backup
+inside the device or beside the only copy of a passphrase.

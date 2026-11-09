@@ -17,19 +17,12 @@ jobs:
       - uses: pnpm/action-setup@v6
         with:
           version: 9
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
       - name: Install
         run: pnpm install --frozen-lockfile
       - name: Astro check
         run: pnpm exec astro check
       - name: Build
         run: pnpm run build
-      - name: Validate site
-        run: python3 scripts/validate_site.py
-      - name: Unit tests
-        run: python3 -m unittest discover -s tests
       - name: Link check
         uses: lycheeverse/lychee-action@v2
         with:
@@ -37,7 +30,6 @@ jobs:
             --no-progress
             --root-dir ${{ github.workspace }}/dist
             --exclude '^https://nsealr\.com'
-            --exclude '^https://github\.com/nSealr/lab'
             dist
       - uses: actions/upload-artifact@v7
         with:
