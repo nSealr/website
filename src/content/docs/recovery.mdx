@@ -23,8 +23,18 @@ identity, without an error message.
 
 ## Check recovery
 
-After making a backup, clear the loaded identity and restore it on the device.
-Compare the npub with the one you recorded. Do this before you depend on the key.
+Choose **Check my backup** to answer word-position questions. For a QR backup,
+choose **Scan to check**. These checks compare your backup without clearing the
+loaded identity. A seed QR contains the words, without the passphrase or account.
+
+## Restore an identity
+
+Choose **Import**, then scan a key QR or enter words or an nsec. For words, choose
+the word count and type a short prefix. Tap the matching word. Go back to correct
+a word; a checksum error keeps your entries available for editing.
+
+Add the same passphrase and account, if used. Compare the complete npub with your
+recorded identity. Never enter recovery words into the companion or a client.
 
 Store separate copies in places you can recover. Do not keep the only backup
 inside the device or beside the only copy of a passphrase.

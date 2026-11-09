@@ -23,6 +23,21 @@ separate from your Nostr identity key.
 A connected session does not approve future signatures. Each operation still
 needs the device's decision. Unsupported requests return an error.
 
+## Private messages
+
+The companion can send one-to-one NIP17 messages and open a selected message.
+Set your inbox relays, then enter the recipient's npub and write your message.
+Both identities need signed inbox preferences so the companion can find where
+to send the recipient's copy and your copy.
+
+Review each requested operation on the device. The companion shows which relays
+accepted each encrypted copy. Retry sends only copies that remain unaccepted.
+Relay acceptance does not mean the recipient has read the message.
+
+Opening a message needs two device exchanges to open and verify its layers.
+Clear local messages when you finish reading. The computer receives approved
+plaintext; only the identity key remains on the device.
+
 ## Integration
 
 Use existing NIP-07 or NIP-46 support in your client. Start with `getPublicKey`
