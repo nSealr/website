@@ -15,7 +15,7 @@ created from recovery words or an nsec for NIP-44 encryption and private message
 
 ## Create the group
 
-1. On each device, choose **Create identity → 2-of-3 signing group → Start group**.
+1. On each device, choose **Tools → 2-of-3 signing group → Start group**.
 2. In the companion, choose **Create group**. Scan all three public join codes.
    Choose **Captured** on each device when its code has arrived.
 3. Scan the companion's setup request on all three devices. Compare the complete
@@ -64,7 +64,7 @@ and member numbers. It **does not revoke a stolen share or any old copy**.
    starting. Keep them loaded and retain their current public group record.
 2. Load that record in the companion. Open **Recover a lost share**, select the
    missing member number, then choose **Replace lost member**.
-3. On the replacement, choose **Import identity → Restore a group share →
+3. On the replacement, choose **Tools → Restore a group share →
    Repair lost share → Join repair**. Scan its public join code into the companion,
    then choose **Captured** on the device.
 4. Scan the companion's repair request on all three devices. The surviving devices
@@ -89,11 +89,11 @@ Cancel the repair on every device. Compare their public group records before
 starting again. Never replay packets from the cancelled session.
 
 - **All three records agree:** save the updated backups and public record.
-- **Two records agree:** keep that pair loaded. Choose **Clear identity** only on
+- **Two records agree:** keep that pair loaded. Choose **Clear key** only on
   the inconsistent third device and obtain a fresh join code from it. Load the
   matching pair's record in the companion, then repair the third device's member number.
 - **No matching loaded pair remains:** [restore both original surviving shares](/docs/recovery/#restore-a-group-share)
-  from the backups kept before repair. Choose **Clear identity** on the replacement,
+  from the backups kept before repair. Choose **Clear key** on the replacement,
   obtain a fresh join code, and restart using the old public group record.
 
 ## Stop or restart

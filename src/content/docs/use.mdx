@@ -4,19 +4,25 @@ description: Use the device and companion to sign a Nostr event.
 order: 1
 ---
 
-## Start with your identity
+## Start on battery power
 
-Create recovery words or import your existing words or nsec on the device.
-Add a passphrase if you use one. Check the npub: it identifies the account you will use.
+Disconnect both USB cables before loading a key. The device blocks key use when
+it detects external USB power or cannot confirm battery power. When powered USB is detected,
+the loaded key and pending request are cleared.
 
-Keep a backup before relying on a new identity. Use battery power when signing;
-USB is for installing firmware.
+Choose **Load a key** to scan your backup or enter recovery words or an nsec.
+Add a passphrase if you use one and check the full npub. To make a new seed,
+open **Tools → Generate a seed** and follow the [backup guide](/docs/recovery/).
 
 ## Scan a request
 
 Open the companion and choose your public identity. When a client asks for a
 signature, show its QR request to the device camera. Keep an animated QR visible
 until all parts arrive.
+
+You can also choose **Scan a QR** before loading a key. After the request arrives,
+load its signing key, check the npub and choose **Use identity**. The device
+resumes that request for fresh review; loading a key does not approve it or extend its expiry.
 
 ## Review on the device
 
@@ -43,4 +49,5 @@ publishes the event. A signature alone does not confirm publication.
 You can pause an animated response and move between its frames. Keep scanning
 until the companion has all parts, then choose **Done** on the device.
 
-Lock the device when you finish.
+Choose **Clear key** and confirm when you finish. This removes the key from the
+session; it is not a resumable PIN lock. Load your backup again for another session.
