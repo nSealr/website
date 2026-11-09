@@ -1,0 +1,108 @@
+---
+title: Sign with a group
+description: Set up three devices and use any two to sign for one Nostr identity.
+order: 4
+---
+
+## What you need
+
+Use three independent devices and one [companion](/docs/clients/). Setup creates
+a new Nostr identity. Each device holds a different private share; any two
+members can sign. Keep each share and its backup in a separate safe place.
+
+A group supports public-key requests and event signatures. Use a normal identity
+created from recovery words or an nsec for NIP-44 encryption and private messages.
+
+## Create the group
+
+1. On each device, choose **Create identity → 2-of-3 signing group → Start group**.
+2. In the companion, choose **Create group**. Scan all three public join codes.
+   Choose **Captured** on each device when its code has arrived.
+3. Scan the companion's setup request on all three devices. Compare the complete
+   setup fingerprint on every device, then approve on each.
+4. Each device shows two encrypted packets. Scan both into the companion, using
+   **Captured** to move to the next packet. Collect all six before forwarding any.
+5. The companion names the device that must receive each packet. Scan it on that
+   device and check its progress before choosing **Next packet** in the companion.
+   That button records your progress; it is not an acknowledgement from the device.
+6. Repeat collection and forwarding for the second set of six packets. Finally,
+   scan the public group record from each device. All three must agree.
+
+At **Group ready**, choose **Back up this share** on every device. Follow the
+[share backup and recovery steps](/docs/recovery/#back-up-a-group-share).
+Keep the public group record separately: its fingerprint, member number and npub
+help you check a restored share. It does not contain a private share.
+
+To show the record again on a loaded device, choose
+**Public identity → Record → Show QR**. In the companion, choose
+**Load group from device** and scan every frame. **View text** on the device
+returns to its fingerprint and member record. This public QR can go through the
+companion; the [private share backup](/docs/recovery/#back-up-a-group-share) stays offline.
+
+## Sign with two members
+
+1. Load the group's public record in the companion and choose two available members.
+2. Write a note or request a signature from your [Nostr client](/docs/clients/).
+3. Scan the signing request on both selected devices. Review the complete action,
+   event and cosigner on each device before approving.
+4. Scan both devices' encrypted commitment packets into the companion, then route
+   them as directed. Repeat with both encrypted share packets. Capture every
+   outgoing packet before moving to the next phase.
+5. Scan the final signed-event response from either participating device. The
+   companion checks the original request, group identity, event and signature
+   before returning it to the client.
+
+The client still needs to publish the event. A verified signature is not a relay
+receipt. After switching identities, reconnect the client and compare the full npub.
+
+## Replace a lost member
+
+Use both surviving devices and a fresh replacement. Repair keeps the same npub
+and member numbers. It **does not revoke a stolen share or any old copy**.
+
+1. [Back up both surviving shares](/docs/recovery/#back-up-a-group-share) before
+   starting. Keep them loaded and retain their current public group record.
+2. Load that record in the companion. Open **Recover a lost share**, select the
+   missing member number, then choose **Replace lost member**.
+3. On the replacement, choose **Import identity → Restore a group share →
+   Repair lost share → Join repair**. Scan its public join code into the companion,
+   then choose **Captured** on the device.
+4. Scan the companion's repair request on all three devices. The surviving devices
+   use **Scan a request**. Check the missing member and replacement, compare the
+   complete fingerprint, and approve on every device.
+5. Collect both surviving devices' encrypted outputs before routing them as
+   directed. Collect their next two outputs, then route both to the replacement.
+6. The replacement shows two confirmation packets and a public group record.
+   Use **Captured** to move through them. Collect both confirmations and route
+   them to the surviving devices; keep the public record for the next step.
+7. Scan the new public group record from all three devices. All must agree on the
+   new fingerprint and members, with the original npub. Then save a new share
+   backup from every device and retain the new public record.
+
+Keep the old backups until all three new records agree. At **Share restored**,
+the replacement offers **Back up this share** and **View group record**. Use a
+different SD card if it already contains `NSEALR.NSR`; the device never overwrites it.
+
+## If repair stops
+
+Cancel the repair on every device. Compare their public group records before
+starting again. Never replay packets from the cancelled session.
+
+- **All three records agree:** save the updated backups and public record.
+- **Two records agree:** keep that pair loaded. Choose **Clear identity** only on
+  the inconsistent third device and obtain a fresh join code from it. Load the
+  matching pair's record in the companion, then repair the third device's member number.
+- **No matching loaded pair remains:** [restore both original surviving shares](/docs/recovery/#restore-a-group-share)
+  from the backups kept before repair. Choose **Clear identity** on the replacement,
+  obtain a fresh join code, and restart using the old public group record.
+
+## Stop or restart
+
+Setup and repair have ten-minute session limits; signing has five minutes. If a
+setup or signing request is rejected, expires or is cancelled, cancel on every
+participating device and start a fresh session. For an interrupted repair, follow
+[the recovery steps above](#if-repair-stops).
+
+Keep the companion open during the ceremony. Reloading it loses its coordination
+state. Your private shares remain on their devices; the public group record can
+reload the companion's routing information.

@@ -6,9 +6,23 @@ order: 3
 
 ## Browser clients
 
+Follow the [companion setup instructions](https://github.com/nSealr/nsealr/tree/main/companion#open-the-companion)
+to build and open it. For browser signing, load the generated extension using the
+[installation steps](https://github.com/nSealr/nsealr/tree/main/companion#browser-extension),
+then reload your client tab.
+
 The nSealr extension provides the standard NIP-07 signing interface. A client can
 ask for your public key, request a signature, or request supported encryption.
 The companion handles QR exchange; you approve key operations on the device.
+
+| Client | Browser login | Remote signer login |
+| --- | --- | --- |
+| [Coracle](https://coracle.social/) | Use Browser Extension | Use Remote Signer |
+| [noStrudel](https://nostrudel.ninja/) | Browser Extension | Nostr Connect |
+
+Choose the matching login option, approve the displayed website origin in the
+companion, and complete the device QR exchange. Compare the full npub before
+posting. Reconnect the client after changing the selected identity.
 
 Grant access only to the client you intend to use. The connected client can still
 read the content you write there. Keeping the key offline does not make a
@@ -20,12 +34,21 @@ NIP-46 lets a client connect to a remote signer. The companion handles this
 connection and forwards key operations to the QR device. Connection keys are
 separate from your Nostr identity key.
 
+In the companion, choose a secure relay and **Open session**. Paste its pairing
+link into the client's remote signer login. Check the client public key shown
+by the companion before allowing it. Keep the companion open; reloading or
+closing it ends that session and requires fresh pairing.
+
 A connected session does not approve future signatures. Each operation still
 needs the device's decision. Unsupported requests return an error.
 
 ## Private messages
 
 The companion can send one-to-one NIP17 messages and open a selected message.
+Use an identity created from recovery words or an nsec. A
+[2-of-3 group](/docs/threshold/) supports signing and public-key requests, without
+NIP-44 encryption or decryption.
+
 Set your inbox relays, then enter the recipient's npub and write your message.
 Both identities need signed inbox preferences so the companion can find where
 to send the recipient's copy and your copy.
@@ -44,3 +67,8 @@ Use existing NIP-07 or NIP-46 support in your client. Start with `getPublicKey`
 and `signEvent`; verify the returned event and display a clear cancelled state.
 See the [companion source](https://github.com/nSealr/nsealr/tree/main/companion)
 for the current build and connection steps.
+
+[Client qualification notes](https://github.com/nSealr/nsealr/blob/main/companion/CLIENTS.md)
+record the checked client versions, journeys and their limits. The protocol
+interfaces are defined in [NIP-07](https://github.com/nostr-protocol/nips/blob/master/07.md)
+and [NIP-46](https://github.com/nostr-protocol/nips/blob/master/46.md).
