@@ -5,10 +5,10 @@
   "installCommand": "pnpm install --frozen-lockfile",
   "outputDirectory": "dist",
   "redirects": [
-    { "source": "/system",  "destination": "/docs/system/product-shape/",   "permanent": false },
-    { "source": "/system/", "destination": "/docs/system/product-shape/",   "permanent": false },
-    { "source": "/security",  "destination": "/docs/security/trust-boundaries/", "permanent": false },
-    { "source": "/security/", "destination": "/docs/security/trust-boundaries/", "permanent": false }
+    { "source": "/system",  "destination": "/docs/use/", "permanent": false },
+    { "source": "/system/", "destination": "/docs/use/", "permanent": false },
+    { "source": "/security",  "destination": "/docs/device/", "permanent": false },
+    { "source": "/security/", "destination": "/docs/device/", "permanent": false }
   ],
   "headers": [
     {
