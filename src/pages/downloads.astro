@@ -1,0 +1,35 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import source from '../../public/connect/source.json';
+---
+<BaseLayout title="Connect with nSealr" description="Open the companion or download a browser extension for your offline Nostr signer.">
+  <main class="container downloads">
+    <p class="eyebrow">// connect your client</p>
+    <h1>Open. Scan. Sign.</h1>
+    <p class="lead">Use the companion in your browser. Your recovery words, private key and passphrase stay on the offline device.</p>
+    <p><a class="primary" href="/connect/">Open companion →</a></p>
+    <p>The web companion handles QR requests, private messages, groups and NIP-46 client connections. Allow camera access when you scan a response. Keep this tab open while you work.</p>
+    <h2>Connect a Nostr website</h2>
+    <p>The browser extension supplies NIP-07 signing and opens its own companion tab. Choose “browser extension” in your Nostr client. <a href="/docs/clients/">Read the client guide →</a></p>
+    <div class="packages">
+      <section class="surface">
+        <h3>Chromium</h3>
+        <a href="/downloads/nsealr-chromium.zip" download>Download Chromium ZIP</a>
+        <ol><li>Download and extract the ZIP.</li><li>Open <code>chrome://extensions</code> and enable <strong>Developer mode</strong>.</li><li>Choose <strong>Load unpacked</strong> and select the extracted folder.</li></ol>
+      </section>
+      <section class="surface">
+        <h3>Firefox</h3>
+        <a href="/downloads/nsealr-firefox.zip" download>Download Firefox ZIP</a>
+        <ol><li>Download and extract the ZIP.</li><li>Open <code>about:debugging#/runtime/this-firefox</code>.</li><li>Choose <strong>Load Temporary Add-on</strong> and select <code>manifest.json</code>.</li></ol>
+        <p>This unsigned bundle stays loaded until Firefox restarts. <a href="https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/">Mozilla's loading instructions ↗</a></p>
+      </section>
+    </div>
+    <h2>Check your download</h2>
+    <p>Both bundles contain their licenses and source record. Built from <a href={`${source.repository}/tree/${source.commit}/companion`}>nSealr {source.commit.slice(0, 7)}</a>.</p>
+    <details><summary>SHA-256 checksums</summary>{Object.entries(source.downloads).map(([name, item]) => <p><strong>{name}</strong><br /><code>{item.sha256}</code></p>)}</details>
+    <p><a href="/connect/source.json">Full source and file hashes</a></p>
+  </main>
+</BaseLayout>
+<style>
+.downloads{max-width:960px;padding-block:56px}h1{font:700 clamp(32px,6vw,56px)/1.1 var(--font-mono);letter-spacing:-.04em;color:var(--fg-strong)}h2{font:600 24px var(--font-mono);margin-top:48px}h3{font:600 20px var(--font-mono)}p,li{line-height:1.7}.lead{max-width:60ch}.primary{display:inline-block;background:var(--accent);color:white;padding:14px 20px;border-radius:6px;font-family:var(--font-mono)}.packages{display:grid;grid-template-columns:1fr 1fr;gap:20px}.surface{padding:24px;border-radius:6px;min-width:0}ol{padding-left:20px}code{overflow-wrap:anywhere;font-size:13px}details{padding:16px;border:1px solid var(--border);border-radius:6px}summary{cursor:pointer}@media(max-width:720px){.packages{grid-template-columns:1fr}.downloads{padding-block:32px}}
+</style>

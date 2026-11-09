@@ -1,0 +1,29 @@
+{
+  "commit": "1c21beeae1bb17880692c79639a6f772eda458d9",
+  "companion_tree": "da8ca6b2d8c887fcae0b3fa2f7fb29ee679cec9a",
+  "downloads": {
+    "nsealr-chromium.zip": {
+      "bytes": 518021,
+      "sha256": "76c4b2106dc2961426973132e7561d88af9070b9a91d39cfe353fbc6f638e423"
+    },
+    "nsealr-firefox.zip": {
+      "bytes": 518110,
+      "sha256": "f9052b9a73259afe791a9d8b78bd89050271e435cb8613d9872ebb9ee1707ff0"
+    }
+  },
+  "repository": "https://github.com/nSealr/nsealr",
+  "version": "1.0.0",
+  "web": {
+    "LICENSE.txt": "29162f01bca1fe74659e6da905b5c4d14c87df052bf92de1e60336cf02bb1b09",
+    "THIRD_PARTY_LICENSES.txt": "f89916b92313df761a52dc1a032bcba83a4c57ba7385662fac01158e9df6eb3f",
+    "app.css": "99cdc4981749f60ac79459427e779afb4858e7fe94bd4c6e6771f305c8014e90",
+    "app.js": "6a5c52d64c680da16b66cf7eea75e86db5623ba723d69ee5ed3a13d415124144",
+    "app.js.LEGAL.txt": "5ed04c44b2ea19d486abc4dfbf4370e5919532e26091915a61178cde67ba4efc",
+    "fonts/Inter-LICENSE.txt": "262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a",
+    "fonts/Inter.woff2": "693b77d4f32ee9b8bfc995589b5fad5e99adf2832738661f5402f9978429a8e3",
+    "fonts/JetBrainsMono-OFL.txt": "a76abf002c49097d146e86740a3105a5d00450b1592e820a1109a8c5680cd697",
+    "fonts/JetBrainsMono.woff2": "18be452724bfdc236c074ca94a249a7f41a86752c7d04ab258ce9ed5651f6a7e",
+    "help.html": "216f77f93c9b43be03f33f19046e5f4b4308f3344ce881638eef06cd365d9dad",
+    "index.html": "2600436209830dfe6a0fd6dc4d046334e034ce18597f183fa398d380ad7a2057"
+  }
+}
